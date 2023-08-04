@@ -271,28 +271,31 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 	    int temp_procid = psubevt->GetProcid();
 	    int temp_type   = psubevt->GetType() ;
 	    int temp_subtype = (psubevt->GetSubtype());
+		int temp_control = psubevt->GetControl();
 	    int temp_len     = (psubevt->GetDlen()-2)/2;
 	    int *temp_pdata = psubevt->GetDataField();
-	    printf("\nprocid=%d, type=%d, subtype=%d\n",temp_procid,temp_type,temp_subtype);
+	    printf("\nprocid=%d, type=%d, subtype=%d, controlid=%d\n",temp_procid,temp_type,temp_subtype,temp_control);
 	    for(int ii=0; ii<100; ii++){
-	      for(int jj=0; jj<5; jj++){
-		if(jj+5*ii < temp_len){
-		  printf("%08x ",*(temp_pdata+jj+5*ii));
-		  if(4==jj){ printf("\n"); fflush(stdout);
-		  }
-		}
-	      }
+			for(int jj=0; jj<5; jj++){
+				if(jj+5*ii < temp_len){
+					printf("%08x ",*(temp_pdata+jj+5*ii));
+					if(4==jj){ printf("\n"); fflush(stdout);
+					}
+				}
+			}
 	    }
+		printf("\n");
 	  }
 
 
 	  //------check Type and SubType-------//
 	  // this part is still hard-coded.    //
 	  // 3700 and 3800 are rejected. (spill end?) //
-	  if( !( (psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1))  &&  //(t,s)=(12,1)->(10,1) modified on 2019/11/13
-	      !( (psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1))  &&  //(t,s)=(12,1)->(10,1) modified on 2019/11/13
-	      !( (psubevt->GetType() == 36) && (psubevt->GetSubtype() == 3600) ) &&
-	      !( (psubevt->GetType() == 88) && (psubevt->GetSubtype() == 8800) ) )
+	  if( !( (psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 12))  &&  //(t,s)=(12,1)->(10,1) modified on 2019/11/13
+	      !( (psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 12))  &&  //(t,s)=(12,1)->(10,1) modified on 2019/11/13
+		  !( (psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 30))  &&  //modified on 2023/08/03
+	      !( (psubevt->GetType() == 36) && (psubevt->GetSubtype() == 3600) && (psubevt->GetControl() == 12)) &&
+	      !( (psubevt->GetType() == 88) && (psubevt->GetSubtype() == 8800) && (psubevt->GetControl() == 12)) )
 	    {  // for all data
 	      std::cout << "getprocid  " << psubevt->GetProcid()  << std::endl;
 	      std::cout << "getsubtype " << psubevt->GetSubtype() << std::endl;
@@ -339,7 +342,7 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 	  /************************************************************************/
 	  /* Here we go for the different triggers.....                           */
 	  /************************************************************************/
-    if ((psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1)) //vme event !! WARNING, make sure we can unpack non VME systems
+    if ((psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 12)) //vme event !! WARNING, make sure we can unpack non VME systems
     {
 	    switch(fInput->GetTrigger())
 	    { // trigger value curently always one, tpat says who triggered
@@ -372,7 +375,7 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 	     }  // switch on trigger value
      }//end test of vme event
 
-    if ((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1)) //nurdlib stimstamp subevent shall be type 10
+    if ((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 12)) //nurdlib stimstamp subevent shall be type 10
     {
 	    TimeStampExtract(tgt,psubevt) ; 
 //	    switch(fInput->GetTrigger())
@@ -406,6 +409,38 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 //	     }  // switch on trigger value
      }//end timestamp subevent
 
+    if ((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 30)) //vme mvlc event !! WARNING, make sure we can unpack non VME systems
+    {
+	    switch(fInput->GetTrigger())
+	    { // trigger value curently always one, tpat says who triggered
+	      case 1:
+	      case 2:
+	      case 3:
+	      case 4:
+	      case 5:
+	      case 6:
+	      case 7:
+	      case 8:
+	      case 9:
+//	      case 10:
+//	      case 11:
+	        Event_Extract_MVLC(tgt,psubevt);
+	        break;
+	      // here do not need to put skip fir trig=12-15, because these are skipped already in the beginning of Unpack.
+         case 10:
+         case 11:
+		   case 12:
+		   case 13:
+     //      TimeStampExtract(tgt,psubevt);
+			  break ;
+	      default:
+	        {
+		        std::cout << "Invalid trigger " << fInput->GetTrigger() << std::endl;
+		        return kFALSE;
+	        }
+
+	     }  // switch on trigger value
+     }//end test of vme mvlc event
 
 
 
@@ -1374,6 +1409,149 @@ Bool_t TFRSUnpackProc::Event_Extract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent
 
 }
 
+Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int){
+	Int_t *pdata = psubevt->GetDataField();
+	Int_t len = 0;
+	
+	switch(psubevt->GetProcid())
+	{
+		//===========
+		case 30:  // FRS User Crate
+		{
+			std::cout<<"ProcID 30: word : "<<std::bitset<32>(*pdata)<<" "<< std::endl;
+		}
+		break;
+
+		//================
+		case 10:	// Main crate
+		{
+			// skip triva and vetar information
+			for(int ii=0; ii<5;ii++){
+				pdata++; len++;
+			}
+			//----  CAEN V820 ---
+			{ 
+				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed !" << *pdata  << std::endl; }
+				else{//Int_t words = getbits(*pdata,1,1,16);
+					//std::cout<< "Number of words of this modul: "<< words << std::endl;
+					pdata++; len++;
+					Int_t vme_geo = getbits(*pdata,2,12,5);
+					Int_t vme_type = getbits(*pdata,2,9,3);
+					Int_t vme_nlw =  getbits(*pdata,2,3,6);
+					//printf("Proc ID 10, geo %d, type %d, length %d\n", vme_geo, vme_type,vme_nlw);
+					if(vme_type!=4){   std::cout<<"E> Scaler type missed match ! GEO"<<vme_geo<<" "<<" type 4 =/="<<vme_type<<std::endl; }
+					pdata++; len++;
+					for(int i_ch=0; i_ch<vme_nlw; i_ch++){
+						event_out->scaler_main[i_ch] = *pdata;
+						//printf("scaler_main[ch=%d] = %d\n",i_ch,*pdata);
+						pdata++; len++;	
+					}
+					pdata++; len++;	//skipp trailer
+				}
+			} //end of V830	
+			
+			//----  CAEN V792 ---
+			{
+				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed !" << *pdata  << std::endl; }
+				else{//Int_t words = getbits(*pdata,1,1,16);
+					//std::cout<< "Number of words of this modul: "<< words << std::endl;
+					pdata++; len++;
+					Int_t vme_chn = 0;
+					Int_t vme_geo = getbits(*pdata,2,12,5);
+					Int_t vme_type = getbits(*pdata,2,9,3);
+					Int_t vme_nlw =  getbits(*pdata,1,9,6);
+					//printf("Proc ID 10, geo %d, type %d, length %d\n", vme_geo, vme_type,vme_nlw);
+					pdata++; len++;
+					if(vme_type == 6){// not valid data !
+				  	}
+				  	if ((vme_type == 2) && (vme_nlw > 0)){
+						for(int i=0;i<vme_nlw;i++){
+							vme_chn = getbits(*pdata,2,1,5);
+							event_out->vme_main[vme_geo][vme_chn] = getbits(*pdata,1,1,16);
+							//printf("vme_main[%d][%d] = %d\n",vme_geo,vme_chn,*pdata);
+							pdata++; len++;
+						}
+						pdata++; len++;pdata++; len++;pdata++; len++;
+					}
+				}
+			}  //end of V792
+			
+			//----  CAEN V1290 ---
+			{
+				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed !" << *pdata  << std::endl; }
+				else{Int_t words = getbits(*pdata,1,1,16);
+					//std::cout<< "Number of words of this modul: "<< words << std::endl;
+					pdata++; len++;
+					Int_t vme_geo = getbits(*pdata,1,1,5);
+					Int_t vme_type = getbits(*pdata,2,12,5);
+					//printf("Proc ID 10, geo %d, type %d, length %d\n", vme_geo, vme_type,words);
+					pdata++; len++;
+					Int_t multihit = 0;					
+					if(vme_type == 8){
+						bool in_event = 0;
+						for(int i_word=0; i_word< words;i_word++){
+							vme_type = getbits(*pdata,2,12,5);
+							//printf("Proc ID 10, geo %d, type %d, word %d\n", vme_geo, vme_type,i_word);
+							if(vme_type==1){ // TDC header
+								in_event = 1;
+							}
+							if(vme_type == 0 && in_event == 1){// this indicates a TDC measurement
+
+								Int_t vme_chn = getbits(*pdata,2,6,5);
+								Int_t LeadingOrTrailing = getbits(*pdata,2,11,1);
+								Int_t value = getbits(*pdata,1,1,21);
+
+								multihit = event_out->nhit_v1290_main[vme_chn][LeadingOrTrailing];    
+								if(LeadingOrTrailing == 0){
+									if (value > 0){
+										event_out->leading_v1290_main[vme_chn][multihit] = value;
+									}
+									//printf("leading_v1290_main[%d][%d] = %d\n",vme_chn,multihit,value);
+								}
+								else{
+									if (value > 0){
+									event_out->trailing_v1290_main[vme_chn][multihit] = value;
+									}
+									//printf("trailing_v1290_main[%d][%d] = %d\n",vme_chn,multihit,value);
+								}
+								event_out->nhit_v1290_main[vme_chn][LeadingOrTrailing]++;
+							}
+							if(vme_type == 0 && in_event != 1){	
+								std::cout<<"E> MTDC type 0 without header"<<std::endl;
+							}
+							if(vme_type == 3 && in_event != 1){	
+								std::cout<<"E> MTDC type 3 without header"<<std::endl;
+							}							
+							if(vme_type==3 && in_event == 1){ // TDC trailer						
+								in_event = 0;
+							}
+								
+							if(vme_type==16){
+								Int_t vme_geoEnd = getbits(*pdata,1,1,5);
+								if(vme_geo!=vme_geoEnd){
+									std::cout<<"E> MTDC strange end buffer header :"<<vme_type<<" "<<vme_geo<<" != "<<vme_geoEnd<<std::endl;
+									pdata++; len++;
+									break;
+								}
+							}
+							if(vme_type != 1 && vme_type != 0 && vme_type != 3 && vme_type !=16) std::cout<<"E> MTDC strange type :"<<vme_type<< " (word " << i_word << ")"<<std::endl;
+							pdata++; len++;
+						}
+					}
+				}
+			} //end of V1290
+		}
+		break;
+
+		//================
+		case 20:	// TPC crate
+		{
+			std::cout<<"ProcID 20: word : "<<std::bitset<32>(*pdata)<<" "<< std::endl;
+		}
+		break;
+	} // end switch prodID
+	return kTRUE;
+}
 
 void TFRSUnpackProc::VFTX_Readout(TFRSUnpackEvent* unp, Int_t **pdata, int module)
 {
