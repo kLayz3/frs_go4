@@ -291,11 +291,15 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 	  //------check Type and SubType-------//
 	  // this part is still hard-coded.    //
 	  // 3700 and 3800 are rejected. (spill end?) //
-	  if( !( (psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 12))  &&  //(t,s)=(12,1)->(10,1) modified on 2019/11/13
-	      !( (psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 12))  &&  //(t,s)=(12,1)->(10,1) modified on 2019/11/13
+	  if( !( (psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 20))  &&  //(t,s)=(12,1)->(10,1) modified on 2019/11/13
+		  !( (psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 21))  &&  //(t,s)=(12,1)->(10,1) modified on 2019/11/13
+	      !( (psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 20))  &&  //(t,s)=(12,1)->(10,1) modified on 2019/11/13
+		  !( (psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 21))  &&  //(t,s)=(12,1)->(10,1) modified on 2019/11/13
 		  !( (psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 30))  &&  //modified on 2023/08/03
-	      !( (psubevt->GetType() == 36) && (psubevt->GetSubtype() == 3600) && (psubevt->GetControl() == 12)) &&
-	      !( (psubevt->GetType() == 88) && (psubevt->GetSubtype() == 8800) && (psubevt->GetControl() == 12)) )
+	      !( (psubevt->GetType() == 36) && (psubevt->GetSubtype() == 3600) && (psubevt->GetControl() == 20)) &&
+		  !( (psubevt->GetType() == 36) && (psubevt->GetSubtype() == 3600) && (psubevt->GetControl() == 21))  &&  
+		  !( (psubevt->GetType() == 88) && (psubevt->GetSubtype() == 8800) && (psubevt->GetControl() == 20))  &&
+	      !( (psubevt->GetType() == 88) && (psubevt->GetSubtype() == 8800) && (psubevt->GetControl() == 21)) )
 	    {  // for all data
 	      std::cout << "getprocid  " << psubevt->GetProcid()  << std::endl;
 	      std::cout << "getsubtype " << psubevt->GetSubtype() << std::endl;
@@ -342,7 +346,7 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 	  /************************************************************************/
 	  /* Here we go for the different triggers.....                           */
 	  /************************************************************************/
-    if ((psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 12)) //vme event !! WARNING, make sure we can unpack non VME systems
+    if (((psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 20))||((psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 21))) //vme event !! WARNING, make sure we can unpack non VME systems
     {
 	    switch(fInput->GetTrigger())
 	    { // trigger value curently always one, tpat says who triggered
@@ -375,7 +379,7 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 	     }  // switch on trigger value
      }//end test of vme event
 
-    if ((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 12)) //nurdlib stimstamp subevent shall be type 10
+    if (((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 20))||((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 21))) //nurdlib stimstamp subevent shall be type 10
     {
 	    TimeStampExtract(tgt,psubevt) ; 
 //	    switch(fInput->GetTrigger())
