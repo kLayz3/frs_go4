@@ -1473,7 +1473,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 						// sanity check at the end of a v7x5 unpacking 
 						vme_type = getbits(*pdata,2,9,3);
 						//std::cout << "vme_type= "<< vme_type <<std::endl ;
-						if (vme_type != 4 ) {std::cout <<"issue in unpacking Proc Id 30, existing" <<std::endl ; break ; }
+						if (vme_type != 4 ) {std::cout <<"issue in unpacking ProcID 30, existing" <<std::endl ; break ; }
 						pdata++; len++; i_word++;
 						// skip the last words of V7x5 (these words do not apear in the RIO data)
 						//std::cout << "word= "<< i_word << ", words= "<< words<<std::endl ;
@@ -1548,14 +1548,14 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 					pdata++; len++;
 					Int_t vme_geo = getbits(*pdata,1,1,5);
 					Int_t vme_type = getbits(*pdata,2,12,5);
-					//printf("Proc ID 10, geo %d, type %d, length %d\n", vme_geo, vme_type,words);
+					//printf("ProcID 10, geo %d, type %d, length %d\n", vme_geo, vme_type,words);
 					pdata++; len++;
 					Int_t multihit = 0;					
 					if(vme_type == 8){
 						bool in_event = 0;
 						for(int i_word=0; i_word< words;i_word++){
 							vme_type = getbits(*pdata,2,12,5);
-							//printf("Proc ID 10, geo %d, type %d, word %d\n", vme_geo, vme_type,i_word);
+							//printf("ProcID 10, geo %d, type %d, word %d\n", vme_geo, vme_type,i_word);
 							if(vme_type==1){ // TDC header
 								in_event = 1;
 							}
@@ -1581,10 +1581,10 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 								event_out->nhit_v1290_main[vme_chn][LeadingOrTrailing]++;
 							}
 							if(vme_type == 0 && in_event != 1){	
-								std::cout<<"E> MTDC type 0 without header"<<std::endl;
+								std::cout<<"E> ProcID 10 MTDC type 0 without header (word " << i_word << " of "<< words <<")"<<std::endl;
 							}
 							if(vme_type == 3 && in_event != 1){	
-								std::cout<<"E> MTDC type 3 without header"<<std::endl;
+								std::cout<<"E> ProcID 10 MTDC type 3 without header (word " << i_word << " of "<< words <<")"<<std::endl;
 							}							
 							if(vme_type==3 && in_event == 1){ // TDC trailer						
 								in_event = 0;
@@ -1593,12 +1593,12 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 							if(vme_type==16){
 								Int_t vme_geoEnd = getbits(*pdata,1,1,5);
 								if(vme_geo!=vme_geoEnd){
-									std::cout<<"E> MTDC strange end buffer header :"<<vme_type<<" "<<vme_geo<<" != "<<vme_geoEnd<<std::endl;
+									std::cout<<"E> ProcID 10 MTDC strange end buffer header :"<<vme_type<<" "<<vme_geo<<" != "<<vme_geoEnd<<std::endl;
 									pdata++; len++;
 									break;
 								}
 							}
-							if(vme_type != 1 && vme_type != 0 && vme_type != 3 && vme_type !=16) std::cout<<"E> MTDC strange type :"<<vme_type<< " (word " << i_word << ")"<<std::endl;
+							if(vme_type != 1 && vme_type != 0 && vme_type != 3 && vme_type !=16) std::cout<<"E> ProcID 10 MTDC strange type :"<<vme_type<< " (word " << i_word << " of "<< words <<")"<<std::endl;
 							pdata++; len++;
 						}
 					}
@@ -1610,7 +1610,114 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 		//================
 		case 20:	// TPC crate
 		{
-			std::cout<<"ProcID 20: word : "<<std::bitset<32>(*pdata)<<" "<< std::endl;
+			for (int ii=0; ii < 2;ii++){ // read out 2 of them
+				//----  CAEN V775 and V785---
+				{ 
+					if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 20 : Barrier missed! " << *pdata  << std::endl; }
+					else{Int_t words = getbits(*pdata,1,1,16);
+						//std::cout<< "Number of words of this modul: "<< words << std::endl;
+						pdata++; len++;
+						int i_word = 0;
+						// read the header longword and extract slot, type & length 
+						Int_t vme_chn = 0;
+						Int_t vme_geo = getbits(*pdata,2,12,5);
+						Int_t vme_type = getbits(*pdata,2,9,3);
+						Int_t vme_nlw =  getbits(*pdata,1,9,6);
+						//std::cout << "vme_geo, vme_type, vme_nlw ="<< vme_geo << ", " <<  vme_type << ", " << vme_nlw <<std::endl ;
+						pdata++; len++; i_word++;
+						// read the data 
+						if ((vme_nlw > 0 && 2 == vme_type )) {
+							for(int i=0;i<vme_nlw;i++) {
+								vme_geo = getbits(*pdata,2,12,5);
+								vme_type = getbits(*pdata,2,9,3);
+								vme_chn = getbits(*pdata,2,1,5);
+								event_out->vme_frs[vme_geo][vme_chn] = getbits(*pdata,1,1,16);
+								//printf("vme_frs[geo=%d][ch=%d] = %d\n",vme_geo,vme_chn,getbits(*pdata,1,1,16));
+								pdata++; len++; i_word++;
+							}
+						}
+						// sanity check at the end of a v7x5 unpacking 
+						vme_type = getbits(*pdata,2,9,3);
+						//std::cout << "vme_type= "<< vme_type <<std::endl ;
+						if (vme_type != 4 ) {std::cout <<"issue in unpacking ProcID 20, existing" <<std::endl ; break ; }
+						pdata++; len++; i_word++;
+						// skip the last words of V7x5 (these words do not apear in the RIO data)
+						//std::cout << "word= "<< i_word << ", words= "<< words<<std::endl ;
+						for(int i=0; i<(words-i_word);i++) {
+							pdata++; len++; 
+						}
+					}
+				}//end of V7x5
+			}
+			
+			//----  CAEN V1190 ---
+			{
+				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 20 : Barrier missed! " << *pdata  << std::endl; }
+				else{Int_t words = getbits(*pdata,1,1,16);
+					//std::cout<< "Number of words of this modul: "<< words << std::endl;
+					pdata++; len++;
+					Int_t vme_geo = getbits(*pdata,1,1,5);
+					Int_t vme_type = getbits(*pdata,2,12,5);
+					//printf("ProcID 20, geo %d, type %d, length %d\n", vme_geo, vme_type,words);
+					pdata++; len++;
+					Int_t multihit = 0;					
+					if(vme_type == 8){
+						bool in_event = 0;
+						for(int i_word=0; i_word< words;i_word++){
+							vme_type = getbits(*pdata,2,12,5);
+							//printf("ProcID 20, geo %d, type %d, word %d\n", vme_geo, vme_type,i_word);
+							if(vme_type==1){ // TDC header
+								in_event = 1;
+							}
+							if(vme_type == 0 && in_event == 1){// this indicates a TDC measurement
+
+								Int_t vme_chn = getbits(*pdata,2,6,5);
+								Int_t LeadingOrTrailing = getbits(*pdata,2,11,1);
+								Int_t value = getbits(*pdata,1,1,21);
+
+								//multihit = event_out->nhit_v1190_tpcs2[vme_chn][LeadingOrTrailing];  
+																
+								if(LeadingOrTrailing == 0){
+									if (value > 0){
+										multihit = event_out->nhit_v1190_tpcs2[vme_chn]; 
+										event_out->leading_v1190_tpcs2[vme_chn][multihit] = value;
+										event_out->nhit_v1190_tpcs2[vme_chn]++;
+									}
+									//printf("leading_v1190_tpcs2[%d][%d] = %d\n",vme_chn,multihit,value);
+								}
+								else{
+									if (value > 0){
+									//event_out->trailing_v1190_tpcs2[vme_chn][multihit] = value;
+									}
+									//printf("trailing_v1190_tpcs2[%d][%d] = %d\n",vme_chn,multihit,value);
+								}
+								//event_out->nhit_v1190_tpcs2[vme_chn][LeadingOrTrailing]++;
+								
+							}
+							if(vme_type == 0 && in_event != 1){	
+								std::cout<<"E> ProcID 20 MTDC type 0 without header (word " << i_word << " of "<< words <<")"<<std::endl;
+							}
+							if(vme_type == 3 && in_event != 1){	
+								std::cout<<"E> ProcID 20 MTDC type 3 without header (word " << i_word << " of "<< words <<")"<<std::endl;
+							}							
+							if(vme_type==3 && in_event == 1){ // TDC trailer						
+								in_event = 0;
+							}
+								
+							if(vme_type==16){
+								Int_t vme_geoEnd = getbits(*pdata,1,1,5);
+								if(vme_geo!=vme_geoEnd){
+									std::cout<<"E> Proc ID 20 MTDC strange end buffer header :"<<vme_type<<" "<<vme_geo<<" != "<<vme_geoEnd<<std::endl;
+									pdata++; len++;
+									break;
+								}
+							}
+							if(vme_type != 1 && vme_type != 0 && vme_type != 3 && vme_type !=16) std::cout<<"E> ProcID 20 MTDC strange type :"<<vme_type<< " (word " << i_word << " of "<< words <<")"<<std::endl;
+							pdata++; len++;
+						}
+					}
+				}
+			}// end of V1190
 		}
 		break;
 	} // end switch prodID
