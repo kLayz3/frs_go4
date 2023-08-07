@@ -1416,23 +1416,13 @@ Bool_t TFRSUnpackProc::Event_Extract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent
 Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int){
 	Int_t *pdata = psubevt->GetDataField();
 	Int_t len = 0;
+	  Int_t lenMax = (psubevt->GetDlen()-2)/2;
 	
 	switch(psubevt->GetProcid())
 	{
 		//===========
 		case 30:  // FRS User Crate
 		{
-			std::cout<<"ProcID 30: word : "<<std::bitset<32>(*pdata)<<" "<< std::endl;
-		}
-		break;
-
-		//================
-		case 10:	// Main crate
-		{
-			// skip triva and vetar information
-			for(int ii=0; ii<5;ii++){
-				pdata++; len++;
-			}
 			//----  CAEN V820 ---
 			{ 
 				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed !" << *pdata  << std::endl; }
@@ -1454,9 +1444,79 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 				}
 			} //end of V830	
 			
+			while (len < lenMax){
+				//----  CAEN V775 and V785---
+				{ 
+					if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 30 : Barrier missed! " << *pdata  << std::endl; }
+					else{Int_t words = getbits(*pdata,1,1,16);
+						//std::cout<< "Number of words of this modul: "<< words << std::endl;
+						pdata++; len++;
+						int i_word = 0;
+						// read the header longword and extract slot, type & length 
+						Int_t vme_chn = 0;
+						Int_t vme_geo = getbits(*pdata,2,12,5);
+						Int_t vme_type = getbits(*pdata,2,9,3);
+						Int_t vme_nlw =  getbits(*pdata,1,9,6);
+						//std::cout << "vme_geo, vme_type, vme_nlw ="<< vme_geo << ", " <<  vme_type << ", " << vme_nlw <<std::endl ;
+						pdata++; len++; i_word++;
+						// read the data 
+						if ((vme_nlw > 0 && 2 == vme_type )) {
+							for(int i=0;i<vme_nlw;i++) {
+								vme_geo = getbits(*pdata,2,12,5);
+								vme_type = getbits(*pdata,2,9,3);
+								vme_chn = getbits(*pdata,2,1,5);
+								event_out->vme_frs[vme_geo][vme_chn] = getbits(*pdata,1,1,16);
+								// printf("vme_frs[geo=%d][ch=%d] = %d\n",vme_geo,vme_chn,getbits(*pdata,1,1,16));
+								pdata++; len++; i_word++;
+							}
+						}
+						// sanity check at the end of a v7x5 unpacking 
+						vme_type = getbits(*pdata,2,9,3);
+						//std::cout << "vme_type= "<< vme_type <<std::endl ;
+						if (vme_type != 4 ) {std::cout <<"issue in unpacking Proc Id 30, existing" <<std::endl ; break ; }
+						pdata++; len++; i_word++;
+						// skip the last words of V7x5 (these words do not apear in the RIO data)
+						//std::cout << "word= "<< i_word << ", words= "<< words<<std::endl ;
+						for(int i=0; i<(words-i_word);i++) {
+							pdata++; len++; 
+						}
+					}
+				}//end of V7x5
+			}			
+		}
+		break;
+
+		//================
+		case 10:	// Main crate
+		{
+			// skip triva and vetar information
+			for(int ii=0; ii<5;ii++){
+				pdata++; len++;
+			}
+			//----  CAEN V820 ---
+			{ 
+				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << *pdata  << std::endl; }
+				else{//Int_t words = getbits(*pdata,1,1,16);
+					//std::cout<< "Number of words of this modul: "<< words << std::endl;
+					pdata++; len++;
+					Int_t vme_geo = getbits(*pdata,2,12,5);
+					Int_t vme_type = getbits(*pdata,2,9,3);
+					Int_t vme_nlw =  getbits(*pdata,2,3,6);
+					//printf("Proc ID 10, geo %d, type %d, length %d\n", vme_geo, vme_type,vme_nlw);
+					if(vme_type!=4){   std::cout<<"E> Scaler type missed match ! GEO"<<vme_geo<<" "<<" type 4 =/="<<vme_type<<std::endl; }
+					pdata++; len++;
+					for(int i_ch=0; i_ch<vme_nlw; i_ch++){
+						event_out->scaler_main[i_ch] = *pdata;
+						//printf("scaler_main[ch=%d] = %d\n",i_ch,*pdata);
+						pdata++; len++;	
+					}
+					pdata++; len++;	//skipp trailer
+				}
+			} //end of V830	
+			
 			//----  CAEN V792 ---
 			{
-				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed !" << *pdata  << std::endl; }
+				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << *pdata  << std::endl; }
 				else{//Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
@@ -1482,7 +1542,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			
 			//----  CAEN V1290 ---
 			{
-				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed !" << *pdata  << std::endl; }
+				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << *pdata  << std::endl; }
 				else{Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
