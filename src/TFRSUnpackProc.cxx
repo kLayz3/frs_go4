@@ -1447,7 +1447,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			while (len < lenMax){
 				//----  CAEN V775 and V785---
 				{ 
-					if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 30 : Barrier missed! " << *pdata  << std::endl; }
+					if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 30 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
 					else{Int_t words = getbits(*pdata,1,1,16);
 						//std::cout<< "Number of words of this modul: "<< words << std::endl;
 						pdata++; len++;
@@ -1495,7 +1495,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			}
 			//----  CAEN V820 ---
 			{ 
-				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << *pdata  << std::endl; }
+				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
 				else{//Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
@@ -1516,7 +1516,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			
 			//----  CAEN V792 ---
 			{
-				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << *pdata  << std::endl; }
+				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
 				else{//Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
@@ -1542,18 +1542,18 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			
 			//----  CAEN V1290 ---
 			{
-				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << *pdata  << std::endl; }
+				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
 				else{Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
 					Int_t vme_geo = getbits(*pdata,1,1,5);
 					Int_t vme_type = getbits(*pdata,2,12,5);
-					//printf("ProcID 10, geo %d, type %d, length %d\n", vme_geo, vme_type,words);
+					//printf("ProcID 10, geo %d, type %d, words %d\n", vme_geo, vme_type,words);
 					pdata++; len++;
 					Int_t multihit = 0;					
-					if(vme_type == 8){
+					if(vme_type == 8){ // Global header
 						bool in_event = 0;
-						for(int i_word=0; i_word< words;i_word++){
+						for(int i_word=2; i_word<= words;i_word++){
 							vme_type = getbits(*pdata,2,12,5);
 							//printf("ProcID 10, geo %d, type %d, word %d\n", vme_geo, vme_type,i_word);
 							if(vme_type==1){ // TDC header
@@ -1581,15 +1581,19 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 								event_out->nhit_v1290_main[vme_chn][LeadingOrTrailing]++;
 							}
 							if(vme_type == 0 && in_event != 1){	
-								std::cout<<"E> ProcID 10 MTDC type 0 without header (word " << i_word << " of "<< words <<")"<<std::endl;
+								std::cout<<"E> ProcID 10 MTDC type 0 without header (word " << i_word << " of "<< words <<"):"<< std::hex << *pdata << std::dec<<std::endl;
 							}
 							if(vme_type == 3 && in_event != 1){	
-								std::cout<<"E> ProcID 10 MTDC type 3 without header (word " << i_word << " of "<< words <<")"<<std::endl;
+								std::cout<<"E> ProcID 10 MTDC type 3 without header (word " << i_word << " of "<< words <<"):"<< std::hex << *pdata << std::dec<<std::endl;
 							}							
 							if(vme_type==3 && in_event == 1){ // TDC trailer						
 								in_event = 0;
 							}
-								
+							if(vme_type==4){ // Error status
+								std::cout<<"E> ProcID 10 MTDC error data found (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
+							}
+							if(vme_type==17){ // Extended trigger time tag
+							}								
 							if(vme_type==16){
 								Int_t vme_geoEnd = getbits(*pdata,1,1,5);
 								if(vme_geo!=vme_geoEnd){
@@ -1598,7 +1602,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 									break;
 								}
 							}
-							if(vme_type != 1 && vme_type != 0 && vme_type != 3 && vme_type !=16) std::cout<<"E> ProcID 10 MTDC strange type :"<<vme_type<< " (word " << i_word << " of "<< words <<")"<<std::endl;
+							if(vme_type != 1 && vme_type != 0 && vme_type != 3 && vme_type != 4 && vme_type !=17 && vme_type !=16) std::cout<<"E> ProcID 10 MTDC strange type :"<<vme_type<< " (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
 							pdata++; len++;
 						}
 					}
@@ -1613,7 +1617,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			for (int ii=0; ii < 2;ii++){ // read out 2 of them
 				//----  CAEN V775 and V785---
 				{ 
-					if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 20 : Barrier missed! " << *pdata  << std::endl; }
+					if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 20 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
 					else{Int_t words = getbits(*pdata,1,1,16);
 						//std::cout<< "Number of words of this modul: "<< words << std::endl;
 						pdata++; len++;
@@ -1652,7 +1656,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			
 			//----  CAEN V1190 ---
 			{
-				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 20 : Barrier missed! " << *pdata  << std::endl; }
+				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 20 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
 				else{Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
@@ -1663,7 +1667,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 					Int_t multihit = 0;					
 					if(vme_type == 8){
 						bool in_event = 0;
-						for(int i_word=0; i_word< words;i_word++){
+						for(int i_word=2; i_word<= words;i_word++){
 							vme_type = getbits(*pdata,2,12,5);
 							//printf("ProcID 20, geo %d, type %d, word %d\n", vme_geo, vme_type,i_word);
 							if(vme_type==1){ // TDC header
@@ -1695,15 +1699,19 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 								
 							}
 							if(vme_type == 0 && in_event != 1){	
-								std::cout<<"E> ProcID 20 MTDC type 0 without header (word " << i_word << " of "<< words <<")"<<std::endl;
+								std::cout<<"E> ProcID 20 MTDC type 0 without header (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
 							}
 							if(vme_type == 3 && in_event != 1){	
-								std::cout<<"E> ProcID 20 MTDC type 3 without header (word " << i_word << " of "<< words <<")"<<std::endl;
+								std::cout<<"E> ProcID 20 MTDC type 3 without header (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
 							}							
 							if(vme_type==3 && in_event == 1){ // TDC trailer						
 								in_event = 0;
 							}
-								
+							if(vme_type==4){ // Error status
+								std::cout<<"E> ProcID 20 MTDC error data found (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
+							}
+							if(vme_type==17){ // Extended trigger time tag
+							}	
 							if(vme_type==16){
 								Int_t vme_geoEnd = getbits(*pdata,1,1,5);
 								if(vme_geo!=vme_geoEnd){
@@ -1712,7 +1720,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 									break;
 								}
 							}
-							if(vme_type != 1 && vme_type != 0 && vme_type != 3 && vme_type !=16) std::cout<<"E> ProcID 20 MTDC strange type :"<<vme_type<< " (word " << i_word << " of "<< words <<")"<<std::endl;
+							if(vme_type != 1 && vme_type != 0 && vme_type != 3 && vme_type != 4 && vme_type != 17 && vme_type !=16) std::cout<<"E> ProcID 20 MTDC strange type :"<<vme_type<< " (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
 							pdata++; len++;
 						}
 					}
