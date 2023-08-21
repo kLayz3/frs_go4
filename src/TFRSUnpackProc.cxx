@@ -1660,12 +1660,16 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 				else{Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
+					if(*pdata == 0xffffffff) {
+						pdata += 2;
+						words -= 2;
+					}
 					Int_t vme_geo = getbits(*pdata,1,1,5);
 					Int_t vme_type = getbits(*pdata,2,12,5);
 					//printf("ProcID 20, geo %d, type %d, length %d\n", vme_geo, vme_type,words);
 					pdata++; len++;
-					Int_t multihit = 0;					
-					if(vme_type == 8){
+					Int_t multihit = 0;	
+					if(vme_type == 8) {
 						bool in_event = 0;
 						for(int i_word=2; i_word<= words;i_word++){
 							vme_type = getbits(*pdata,2,12,5);
