@@ -1602,7 +1602,8 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 									break;
 								}
 							}
-							if(vme_type != 1 && vme_type != 0 && vme_type != 3 && vme_type != 4 && vme_type !=17 && vme_type !=16) std::cout<<"E> ProcID 10 MTDC strange type :"<<vme_type<< " (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
+							if(vme_type==24) {}
+							if(vme_type != 1 && vme_type != 0 && vme_type != 3 && vme_type != 4 && vme_type !=17 && vme_type !=16 && vme_type!=24) std::cout<<"E> ProcID 10 MTDC strange type :"<<vme_type<< " (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
 							pdata++; len++;
 						}
 					}
@@ -1661,6 +1662,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
 					if(*pdata == 0xffffffff) {
+						//printf("Found 0xffffff, next word: %8x\n", *(pdata+1));
 						pdata += 2;
 						words -= 2;
 					}
@@ -1724,9 +1726,13 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 									break;
 								}
 							}
-							if(vme_type != 1 && vme_type != 0 && vme_type != 3 && vme_type != 4 && vme_type != 17 && vme_type !=16) std::cout<<"E> ProcID 20 MTDC strange type :"<<vme_type<< " (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
+							if(vme_type==24) {}
+							if(vme_type != 1 && vme_type != 0 && vme_type != 3 && vme_type != 4 && vme_type != 17 && vme_type !=16 && vme_type!=24) std::cout<<"E> ProcID 20 MTDC strange type :"<<vme_type<< " (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
 							pdata++; len++;
 						}
+					}
+					else {
+						std::cout<<"E> ProcID 20 MTDC global header not found :" <<vme_type<< " ; data field: " << std::hex << std::setprecision(8) << *(pdata-1) << " " << *pdata << std::dec<<std::endl;
 					}
 				}
 			}// end of V1190

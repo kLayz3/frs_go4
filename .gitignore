@@ -1,3 +1,6 @@
 src/*.o
 src/*.so
 
+# In case of hanging swap files ... *wink*
+src/*.swp
+*.lmd
