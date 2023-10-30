@@ -58,6 +58,8 @@ void TFRSUnpackEvent::ClearVftx()
 	vftx_trailing_time[module][channel][hit] = 0;
       }
       vftx_mult[module][channel] = 0;
+      vftx_lead_mult[module][channel] = 0;
+      vftx_trail_mult[module][channel] = 0;
     }
 
 }

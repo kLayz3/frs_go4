@@ -36,6 +36,7 @@
 
 // Header files passed as explicit arguments
 #include "/u/chornung/go4_2023/src/TFRSBasicProc.h"
+#include "/u/chornung/go4_2023/src/TFRSParameter.h"
 #include "/u/chornung/go4_2023/src/TFRSVftxSetting.h"
 #include "/u/chornung/go4_2023/src/TFRSCalibrProc.h"
 #include "/u/chornung/go4_2023/src/TFRSUserProc.h"
@@ -46,7 +47,6 @@
 #include "/u/chornung/go4_2023/src/TFRSAnalysis.h"
 #include "/u/chornung/go4_2023/src/TFRSAnlEvent.h"
 #include "/u/chornung/go4_2023/src/TFRSSortEvent.h"
-#include "/u/chornung/go4_2023/src/TFRSParameter.h"
 #include "/u/chornung/go4_2023/src/TFRSCalibrEvent.h"
 #include "/u/chornung/go4_2023/src/TFRSUnpackProc.h"
 
@@ -85,38 +85,6 @@ namespace ROOT {
    }
    // Static variable to force the class initialization
    static ::ROOT::TGenericClassInfo *_R__UNIQUE_DICT_(Init) = GenerateInitInstanceLocal((const ::TFRSBasicProc*)0x0); R__UseDummy(_R__UNIQUE_DICT_(Init));
-} // end of namespace ROOT
-
-namespace ROOT {
-   static void *new_TFRSCalibrEvent(void *p = 0);
-   static void *newArray_TFRSCalibrEvent(Long_t size, void *p);
-   static void delete_TFRSCalibrEvent(void *p);
-   static void deleteArray_TFRSCalibrEvent(void *p);
-   static void destruct_TFRSCalibrEvent(void *p);
-
-   // Function generating the singleton type initializer
-   static TGenericClassInfo *GenerateInitInstanceLocal(const ::TFRSCalibrEvent*)
-   {
-      ::TFRSCalibrEvent *ptr = 0;
-      static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TFRSCalibrEvent >(0);
-      static ::ROOT::TGenericClassInfo 
-         instance("TFRSCalibrEvent", ::TFRSCalibrEvent::Class_Version(), "TFRSCalibrEvent.h", 10,
-                  typeid(::TFRSCalibrEvent), ::ROOT::Internal::DefineBehavior(ptr, ptr),
-                  &::TFRSCalibrEvent::Dictionary, isa_proxy, 4,
-                  sizeof(::TFRSCalibrEvent) );
-      instance.SetNew(&new_TFRSCalibrEvent);
-      instance.SetNewArray(&newArray_TFRSCalibrEvent);
-      instance.SetDelete(&delete_TFRSCalibrEvent);
-      instance.SetDeleteArray(&deleteArray_TFRSCalibrEvent);
-      instance.SetDestructor(&destruct_TFRSCalibrEvent);
-      return &instance;
-   }
-   TGenericClassInfo *GenerateInitInstance(const ::TFRSCalibrEvent*)
-   {
-      return GenerateInitInstanceLocal((::TFRSCalibrEvent*)0);
-   }
-   // Static variable to force the class initialization
-   static ::ROOT::TGenericClassInfo *_R__UNIQUE_DICT_(Init) = GenerateInitInstanceLocal((const ::TFRSCalibrEvent*)0x0); R__UseDummy(_R__UNIQUE_DICT_(Init));
 } // end of namespace ROOT
 
 namespace ROOT {
@@ -472,6 +440,38 @@ namespace ROOT {
 } // end of namespace ROOT
 
 namespace ROOT {
+   static void *new_TFRSCalibrEvent(void *p = 0);
+   static void *newArray_TFRSCalibrEvent(Long_t size, void *p);
+   static void delete_TFRSCalibrEvent(void *p);
+   static void deleteArray_TFRSCalibrEvent(void *p);
+   static void destruct_TFRSCalibrEvent(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::TFRSCalibrEvent*)
+   {
+      ::TFRSCalibrEvent *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TFRSCalibrEvent >(0);
+      static ::ROOT::TGenericClassInfo 
+         instance("TFRSCalibrEvent", ::TFRSCalibrEvent::Class_Version(), "TFRSCalibrEvent.h", 10,
+                  typeid(::TFRSCalibrEvent), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &::TFRSCalibrEvent::Dictionary, isa_proxy, 4,
+                  sizeof(::TFRSCalibrEvent) );
+      instance.SetNew(&new_TFRSCalibrEvent);
+      instance.SetNewArray(&newArray_TFRSCalibrEvent);
+      instance.SetDelete(&delete_TFRSCalibrEvent);
+      instance.SetDeleteArray(&deleteArray_TFRSCalibrEvent);
+      instance.SetDestructor(&destruct_TFRSCalibrEvent);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::TFRSCalibrEvent*)
+   {
+      return GenerateInitInstanceLocal((::TFRSCalibrEvent*)0);
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_DICT_(Init) = GenerateInitInstanceLocal((const ::TFRSCalibrEvent*)0x0); R__UseDummy(_R__UNIQUE_DICT_(Init));
+} // end of namespace ROOT
+
+namespace ROOT {
    static void *new_TFRSCalibrProc(void *p = 0);
    static void *newArray_TFRSCalibrProc(Long_t size, void *p);
    static void delete_TFRSCalibrProc(void *p);
@@ -823,41 +823,6 @@ TClass *TFRSBasicProc::Dictionary()
 TClass *TFRSBasicProc::Class()
 {
    if (!fgIsA.load()) { R__LOCKGUARD(gInterpreterMutex); fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TFRSBasicProc*)0x0)->GetClass(); }
-   return fgIsA;
-}
-
-//______________________________________________________________________________
-atomic_TClass_ptr TFRSCalibrEvent::fgIsA(0);  // static to hold class pointer
-
-//______________________________________________________________________________
-const char *TFRSCalibrEvent::Class_Name()
-{
-   return "TFRSCalibrEvent";
-}
-
-//______________________________________________________________________________
-const char *TFRSCalibrEvent::ImplFileName()
-{
-   return ::ROOT::GenerateInitInstanceLocal((const ::TFRSCalibrEvent*)0x0)->GetImplFileName();
-}
-
-//______________________________________________________________________________
-int TFRSCalibrEvent::ImplFileLine()
-{
-   return ::ROOT::GenerateInitInstanceLocal((const ::TFRSCalibrEvent*)0x0)->GetImplFileLine();
-}
-
-//______________________________________________________________________________
-TClass *TFRSCalibrEvent::Dictionary()
-{
-   fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TFRSCalibrEvent*)0x0)->GetClass();
-   return fgIsA;
-}
-
-//______________________________________________________________________________
-TClass *TFRSCalibrEvent::Class()
-{
-   if (!fgIsA.load()) { R__LOCKGUARD(gInterpreterMutex); fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TFRSCalibrEvent*)0x0)->GetClass(); }
    return fgIsA;
 }
 
@@ -1247,6 +1212,41 @@ TClass *TRangeParameter::Class()
 }
 
 //______________________________________________________________________________
+atomic_TClass_ptr TFRSCalibrEvent::fgIsA(0);  // static to hold class pointer
+
+//______________________________________________________________________________
+const char *TFRSCalibrEvent::Class_Name()
+{
+   return "TFRSCalibrEvent";
+}
+
+//______________________________________________________________________________
+const char *TFRSCalibrEvent::ImplFileName()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TFRSCalibrEvent*)0x0)->GetImplFileName();
+}
+
+//______________________________________________________________________________
+int TFRSCalibrEvent::ImplFileLine()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::TFRSCalibrEvent*)0x0)->GetImplFileLine();
+}
+
+//______________________________________________________________________________
+TClass *TFRSCalibrEvent::Dictionary()
+{
+   fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TFRSCalibrEvent*)0x0)->GetClass();
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+TClass *TFRSCalibrEvent::Class()
+{
+   if (!fgIsA.load()) { R__LOCKGUARD(gInterpreterMutex); fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TFRSCalibrEvent*)0x0)->GetClass(); }
+   return fgIsA;
+}
+
+//______________________________________________________________________________
 atomic_TClass_ptr TFRSCalibrProc::fgIsA(0);  // static to hold class pointer
 
 //______________________________________________________________________________
@@ -1630,39 +1630,6 @@ namespace ROOT {
 } // end of namespace ROOT for class ::TFRSBasicProc
 
 //______________________________________________________________________________
-void TFRSCalibrEvent::Streamer(TBuffer &R__b)
-{
-   // Stream an object of class TFRSCalibrEvent.
-
-   if (R__b.IsReading()) {
-      R__b.ReadClassBuffer(TFRSCalibrEvent::Class(),this);
-   } else {
-      R__b.WriteClassBuffer(TFRSCalibrEvent::Class(),this);
-   }
-}
-
-namespace ROOT {
-   // Wrappers around operator new
-   static void *new_TFRSCalibrEvent(void *p) {
-      return  p ? new(p) ::TFRSCalibrEvent : new ::TFRSCalibrEvent;
-   }
-   static void *newArray_TFRSCalibrEvent(Long_t nElements, void *p) {
-      return p ? new(p) ::TFRSCalibrEvent[nElements] : new ::TFRSCalibrEvent[nElements];
-   }
-   // Wrapper around operator delete
-   static void delete_TFRSCalibrEvent(void *p) {
-      delete ((::TFRSCalibrEvent*)p);
-   }
-   static void deleteArray_TFRSCalibrEvent(void *p) {
-      delete [] ((::TFRSCalibrEvent*)p);
-   }
-   static void destruct_TFRSCalibrEvent(void *p) {
-      typedef ::TFRSCalibrEvent current_t;
-      ((current_t*)p)->~current_t();
-   }
-} // end of namespace ROOT for class ::TFRSCalibrEvent
-
-//______________________________________________________________________________
 void TFRSParameter::Streamer(TBuffer &R__b)
 {
    // Stream an object of class TFRSParameter.
@@ -2024,6 +1991,39 @@ namespace ROOT {
       ((current_t*)p)->~current_t();
    }
 } // end of namespace ROOT for class ::TRangeParameter
+
+//______________________________________________________________________________
+void TFRSCalibrEvent::Streamer(TBuffer &R__b)
+{
+   // Stream an object of class TFRSCalibrEvent.
+
+   if (R__b.IsReading()) {
+      R__b.ReadClassBuffer(TFRSCalibrEvent::Class(),this);
+   } else {
+      R__b.WriteClassBuffer(TFRSCalibrEvent::Class(),this);
+   }
+}
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_TFRSCalibrEvent(void *p) {
+      return  p ? new(p) ::TFRSCalibrEvent : new ::TFRSCalibrEvent;
+   }
+   static void *newArray_TFRSCalibrEvent(Long_t nElements, void *p) {
+      return p ? new(p) ::TFRSCalibrEvent[nElements] : new ::TFRSCalibrEvent[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_TFRSCalibrEvent(void *p) {
+      delete ((::TFRSCalibrEvent*)p);
+   }
+   static void deleteArray_TFRSCalibrEvent(void *p) {
+      delete [] ((::TFRSCalibrEvent*)p);
+   }
+   static void destruct_TFRSCalibrEvent(void *p) {
+      typedef ::TFRSCalibrEvent current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class ::TFRSCalibrEvent
 
 //______________________________________________________________________________
 void TFRSCalibrProc::Streamer(TBuffer &R__b)
@@ -2424,6 +2424,7 @@ namespace {
   void TriggerDictionaryInitialization_libGo4UserAnalysis_Impl() {
     static const char* headers[] = {
 "TFRSBasicProc.h",
+"TFRSParameter.h",
 "TFRSVftxSetting.h",
 "TFRSCalibrProc.h",
 "TFRSUserProc.h",
@@ -2434,7 +2435,6 @@ namespace {
 "TFRSAnalysis.h",
 "TFRSAnlEvent.h",
 "TFRSSortEvent.h",
-"TFRSParameter.h",
 "TFRSCalibrEvent.h",
 "TFRSUnpackProc.h",
 0
@@ -2453,18 +2453,18 @@ namespace {
 #pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
 extern int __Cling_AutoLoading_Map;
 class __attribute__((annotate("$clingAutoload$TFRSBasicProc.h")))  TFRSBasicProc;
+class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  TFRSParameter;
+class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  Map1;
+class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  TMWParameter;
+class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  TTPCParameter;
+class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  TMUSICParameter;
+class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  TLABRParameter;
+class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  TSCIParameter;
+class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  TIDParameter;
+class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  TSIParameter;
+class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  TMRTOFMSParameter;
+class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  TRangeParameter;
 class __attribute__((annotate("$clingAutoload$TFRSCalibrEvent.h")))  __attribute__((annotate("$clingAutoload$TFRSCalibrProc.h")))  TFRSCalibrEvent;
-class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  __attribute__((annotate("$clingAutoload$TFRSCalibrProc.h")))  TFRSParameter;
-class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  __attribute__((annotate("$clingAutoload$TFRSCalibrProc.h")))  Map1;
-class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  __attribute__((annotate("$clingAutoload$TFRSCalibrProc.h")))  TMWParameter;
-class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  __attribute__((annotate("$clingAutoload$TFRSCalibrProc.h")))  TTPCParameter;
-class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  __attribute__((annotate("$clingAutoload$TFRSCalibrProc.h")))  TMUSICParameter;
-class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  __attribute__((annotate("$clingAutoload$TFRSCalibrProc.h")))  TLABRParameter;
-class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  __attribute__((annotate("$clingAutoload$TFRSCalibrProc.h")))  TSCIParameter;
-class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  __attribute__((annotate("$clingAutoload$TFRSCalibrProc.h")))  TIDParameter;
-class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  __attribute__((annotate("$clingAutoload$TFRSCalibrProc.h")))  TSIParameter;
-class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  __attribute__((annotate("$clingAutoload$TFRSCalibrProc.h")))  TMRTOFMSParameter;
-class __attribute__((annotate("$clingAutoload$TFRSParameter.h")))  __attribute__((annotate("$clingAutoload$TFRSCalibrProc.h")))  TRangeParameter;
 class __attribute__((annotate("$clingAutoload$TFRSCalibrProc.h")))  TFRSCalibrProc;
 class __attribute__((annotate("$clingAutoload$TFRSAnlEvent.h")))  __attribute__((annotate("$clingAutoload$TFRSUserProc.h")))  TFRSAnlEvent;
 class __attribute__((annotate("$clingAutoload$TFRSUserProc.h")))  TFRSUserProc;
@@ -2486,6 +2486,7 @@ class __attribute__((annotate("$clingAutoload$TFRSUnpackProc.h")))  TFRSUnpackPr
 #define _BACKWARD_BACKWARD_WARNING_H
 // Inline headers
 #include "TFRSBasicProc.h"
+#include "TFRSParameter.h"
 #include "TFRSVftxSetting.h"
 #include "TFRSCalibrProc.h"
 #include "TFRSUserProc.h"
@@ -2496,7 +2497,6 @@ class __attribute__((annotate("$clingAutoload$TFRSUnpackProc.h")))  TFRSUnpackPr
 #include "TFRSAnalysis.h"
 #include "TFRSAnlEvent.h"
 #include "TFRSSortEvent.h"
-#include "TFRSParameter.h"
 #include "TFRSCalibrEvent.h"
 #include "TFRSUnpackProc.h"
 

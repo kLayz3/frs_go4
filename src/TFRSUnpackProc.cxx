@@ -1738,6 +1738,86 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			}// end of V1190
 		}
 		break;
+
+		//================
+		case 40:	// --- vftx at S2 ---
+		{
+		// skip triva and vetar information
+			for(int ii=0; ii<8;ii++){
+				pdata++; len++;
+			}
+			// VFTX
+			{
+			  if(getbits(*pdata,2,1,16) != 62720){ std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
+			  else{Int_t words = getbits(*pdata,1,1,16);
+			    //std::cout<< "Number of words of this modul: "<< words << std::endl;
+			    pdata++; len++;
+			    event_out->ClearVftx();
+			    pdata++; len++; // skipp header
+			    int channel;
+			    int word;
+			    int module=0;
+			    for(word=0; word<words-1;word++) {
+			      channel = getbits(*pdata,2,10,5);
+			      //cout << " channel = " << channel << "\tchannel%2 = "  << channel%2 << "\tchannel/2 = "  << channel/2 << endl;
+			      bool trailing = channel%2;
+			      channel /= 2;
+
+			      //printf("4: 0x%x  %d  \n",*pdata,channel);
+			      //printf("in UNPACK TDC/VFTX_%02d,  %02d: %02d \n",module,channel, event_out->vftx_mult[module][channel]);
+			      float r = (double)rand.Rndm() - 0.5 ;
+			      int cc = (uint16_t)((*pdata & 0x00fff800)>>11);
+			      int ft = (uint16_t)(*pdata & 0x07ff);
+			      Double_t ti = VFTX_GetTraw_ps(module,channel,cc,ft,r);
+			      pdata++; len++;
+	
+				if(event_out->vftx_lead_mult[module][channel]<VFTX_MAX_HITS && !trailing){
+				  //printf("vftx_lead_mult: %d \n",event_out->vftx_lead_mult[module][channel]);
+				  event_out->vftx_leading_cc[module][channel][event_out->vftx_mult[module][channel]] = cc;
+				  event_out->vftx_leading_ft[module][channel][event_out->vftx_mult[module][channel]] = ft;
+				  event_out->vftx_leading_time[module][channel][event_out->vftx_mult[module][channel]] = ti;
+	    
+				  //printf("vftx leading: ch=%d  ct=%d  ft=%d ti=%.4f\n",channel,event_out->vftx_leading_cc[module][channel][event_out->vftx_mult[module][channel]],event_out->vftx_leading_ft[module][channel][event_out->vftx_mult[module][channel]],event_out->vftx_leading_time[module][channel][event_out->vftx_mult[module][channel]]);
+				  event_out->vftx_lead_mult[module][channel]++;
+				}
+				if(event_out->vftx_trail_mult[module][channel]<VFTX_MAX_HITS && trailing){
+				  //printf("vftx_trail_mult: %d \n",event_out->vftx_trail_mult[module][channel]);
+				  event_out->vftx_trailing_cc[module][channel][event_out->vftx_mult[module][channel]] = cc;
+				  event_out->vftx_trailing_ft[module][channel][event_out->vftx_mult[module][channel]] = ft;
+				  event_out->vftx_trailing_time[module][channel][event_out->vftx_mult[module][channel]] = ti;
+				  //printf("vftx trailing: ch=%d  ct=%d  ft=%d  ti=%.4f\n",channel,event_out->vftx_trailing_cc[module][channel][event_out->vftx_mult[module][channel]],event_out->vftx_trailing_ft[module][channel][event_out->vftx_mult[module][channel]],event_out->vftx_trailing_time[module][channel][event_out->vftx_mult[module][channel]]);
+				  event_out->vftx_trail_mult[module][channel]++;
+				}
+			    }//words left
+			  }
+			}
+			
+			// next modul
+			{
+			  if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
+			  else{Int_t words = getbits(*pdata,1,1,16);
+			    //std::cout<< "Number of words of this modul: "<< words << std::endl;
+			    pdata++; len++;
+			    for(int ii=0; ii<words;ii++){
+			      pdata++; len++;
+			    }
+			  }
+			}
+			
+			// next modul
+			{
+			  if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
+			  else{Int_t words = getbits(*pdata,1,1,16);
+			    //std::cout<< "Number of words of this modul: "<< words << std::endl;
+			    pdata++; len++;
+			    for(int ii=0; ii<words;ii++){
+			      pdata++; len++;
+			    }
+			  }
+			}
+			
+		}
+		break;
 	} // end switch prodID
 	return kTRUE;
 }
@@ -1753,7 +1833,7 @@ void TFRSUnpackProc::VFTX_Readout(TFRSUnpackEvent* unp, Int_t **pdata, int modul
   marker  = (uint32_t)(p32_tmp & 0xff000000);
   cnt     = (uint16_t)((p32_tmp & 0x0003fe00)>>9);
 
-  //printf("1: 0x%x    %d \n",p32_tmp, cnt);
+  printf("1: 0x%x    %d \n",p32_tmp, cnt);
   if(cnt<1){(*pdata)++;
     return;}
   else{

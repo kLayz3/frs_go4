@@ -116,6 +116,8 @@ public:
   Int_t vftx_trailing_ft[VFTX_N][VFTX_MAX_CHN][VFTX_MAX_HITS];
   Double_t vftx_trailing_time[VFTX_N][VFTX_MAX_CHN][VFTX_MAX_HITS];
   Int_t vftx_mult[VFTX_N][VFTX_MAX_CHN];
+  Int_t vftx_lead_mult[VFTX_N][VFTX_MAX_CHN];
+  Int_t vftx_trail_mult[VFTX_N][VFTX_MAX_CHN];
 
 private:
   //      TFRSUnpackProc *fxProc;     //! This is processor
