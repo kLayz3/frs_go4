@@ -5,3 +5,5 @@ src/*.d
 # In case of hanging swap files ... *wink*
 src/*.swp
 *.lmd
+lmd/*
+MainUserAnalysis

@@ -31,7 +31,9 @@ clean: clean-$(MODULE_NAME)
 	rm -f ../exec/loadUserTrees.C
 	rm -f ../exec/setup.C
 	rm -f ../exec/libGo4UserAnalysis*
-#	rm -f ../exec/MainUserAnalysis
+	rm -f ../exec/MainUserAnalysis
+	rm -f libGo4UserAnalysis*
+	rm -f MainUserAnalysis
 
 ifdef DOMAP
 ifeq ($(wildcard $(GO4MAP)),)
