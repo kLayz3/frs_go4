@@ -1,6 +1,6 @@
 #general make file for any Go4 module
 
-include $(GO4SYS)/Makefile.config
+-include $(GO4SYS)/Makefile.config
 
 # for compile example under cygwin, 
 # relative path to GO4SYS directory should be specified
@@ -13,8 +13,8 @@ DOOPTIMIZATION = false
 
 all: build
 
-include Module.mk
-#CXXFLAGS += -std=c++14
+-include Module.mk
+CXXFLAGS += -std=c++17
 
 build: all-$(MODULE_NAME)
 

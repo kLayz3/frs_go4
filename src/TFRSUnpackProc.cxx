@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <bitset>
+#include "debug_fcns.cpp"
 //#include  <stdio.h>
 
 //#define DEBUG
@@ -1658,7 +1659,8 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			//----  CAEN V1190 ---
 			{
 				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 20 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
-				else{Int_t words = getbits(*pdata,1,1,16);
+				else {
+					Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
 					if(*pdata == 0xffffffff) {
@@ -1733,6 +1735,8 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 					}
 					else {
 						std::cout<<"E> ProcID 20 MTDC global header not found :" <<vme_type<< " ; data field: " << std::hex << std::setprecision(8) << *(pdata-1) << " " << *pdata << std::dec<<std::endl;
+						print_curr_module(pdata, len, lenMax);
+						printf("\n\n");
 					}
 				}
 			}// end of V1190
