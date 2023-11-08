@@ -183,7 +183,12 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
 
   }
 
+	// S2: MTDC-32
+	h2_S2_MTDC32_trg0 = MakeH2I("Unpack/S2_MTDC", "h2_S2_MTDC_trg0", 32,0,32, 0xffff>>5,0,0xffff, "Chnls", "TDC chnls", 1);
+	h2_S2_MTDC32_trg1 = MakeH2I("Unpack/S2_MTDC", "h2_S2_MTDC_trg1", 32,0,32, 0xffff>>5,0,0xffff, "Chnls", "TDC chnls", 1);
 
+	// S2: MQDC-32
+	h2_S2_MQDC32 = MakeH2I("Unpack/S2_MQDC", "h2_S2_MQDC", 32,0,32, 0xfff>>4,0,0xfff, "Chnls", "QDC chnls", 1);
 }
 
 TFRSUnpackProc::~TFRSUnpackProc()
@@ -1796,29 +1801,83 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			  }
 			}
 			
-			// next modul
+			// Divyang: MTDC
+			// Note: current data structure is VFTX --> MTDC --> MQDC
+			//       so if the structure is changed, please change this part as well
+
+			// to add:
+			// 1. add check if it is a data or header.
+			//    if header skip it.
 			{
-			  if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
-			  else{Int_t words = getbits(*pdata,1,1,16);
-			    //std::cout<< "Number of words of this modul: "<< words << std::endl;
-			    pdata++; len++;
-			    for(int ii=0; ii<words;ii++){
-			      pdata++; len++;
-			    }
-			  }
-			}
+				if ((*pdata & 0xffff0000) >> 16)
+				{
+					// std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl;
+
+					event_out->Clear_MTDC_32();
+					Int_t no_words = *pdata & 0x0000ffff;
+					
+					for (int i_wrd=0; i_wrd<no_words; i_wrd++)
+					{
+						pdata++; len++;
+
+						// skip header and trailer
+						// also check if the first 10 bits of the word are 0b0000010000
+						if ((i_wrd != 0) && (i_wrd != (no_words-1)) && ((*pdata >> 22) == 0b0000010000))
+						{
+							// std::cout << "Data: " << std::hex << *pdata <<std::dec << std::endl;
+							
+							int MTDC_trig_flg = (*pdata >> 21) & 0x1;
+							int MTDC_chnl_num = (*pdata >> 16) & 0x1f;
+							int MTDC_time_dif = *pdata & 0xffff;
+							// cout << MTDC_trig_flg << " | " << MTDC_chnl_num << " | " << MTDC_time_dif << endl;
+						
+							if (MTDC_trig_flg == 0)
+							{
+								event_out->mtdc32_dt_trg0_raw[MTDC_chnl_num] = MTDC_time_dif;
+							}
+							else if (MTDC_trig_flg == 1)
+							{
+								event_out->mtdc32_dt_trg1_raw[MTDC_chnl_num] = MTDC_time_dif;
+							}
+						}
+					}
+
+					// jump to next word for next module
+					pdata++; len++;
+				}
+			} // end of MTDC-32
+
 			
-			// next modul
+			// Divyang: MQDC
+			// Note: current data structure is VFTX --> MTDC --> MQDC
+			//       so if the structure is changed, please change this part as well
 			{
-			  if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
-			  else{Int_t words = getbits(*pdata,1,1,16);
-			    //std::cout<< "Number of words of this modul: "<< words << std::endl;
-			    pdata++; len++;
-			    for(int ii=0; ii<words;ii++){
-			      pdata++; len++;
-			    }
-			  }
-			}
+				if ((*pdata & 0xffff0000) >> 16)
+				{
+					event_out->Clear_MQDC_32();
+					Int_t no_words = *pdata & 0x0000ffff;
+					
+					for (int i_wrd=0; i_wrd<no_words; i_wrd++)
+					{
+						pdata++; len++;
+
+						// skip header and trailer
+						// also check if the first 10 bits of the word are 0b00000100000
+						if ((i_wrd != 0) && (i_wrd != (no_words-1)) && ((*pdata >> 21) == 0b00000100000))
+						{
+							// std::cout << "Data: " << std::hex << *pdata <<std::dec << std::endl;
+
+							int MQDC_chnl_num = (*pdata >> 16) & 0x1f;
+							int MQDC_ampltd   = *pdata & 0xfff;
+							// cout << MQDC_chnl_num << " | " << MQDC_ampltd << endl;
+						
+							event_out->mqdc32_raw[MQDC_chnl_num] = MQDC_ampltd;
+						}
+					}
+
+					// no module after this. Hence no jump.
+				}
+			} // end of MQDC-32
 			
 		}
 		break;
@@ -1939,6 +1998,22 @@ Bool_t TFRSUnpackProc::FillHistograms(TFRSUnpackEvent* event)
 	  }//channels
 	  h2_vftx_leading_time04[module]->Fill(event->vftx_leading_time[module][0][0],event->vftx_leading_time[module][4][0]);
 	}//vftx modules
+
+
+	// S2: MTDC-32
+	for (int i_chnl=0; i_chnl<32; i_chnl++)
+	{
+		h2_S2_MTDC32_trg0 ->Fill(i_chnl, event->mtdc32_dt_trg0_raw[i_chnl]);
+		h2_S2_MTDC32_trg1->Fill(i_chnl, event->mtdc32_dt_trg1_raw[i_chnl]);
+	}
+
+	// S2: MQDC-32
+	for (int i_chnl=0; i_chnl<32; i_chnl++)
+	{
+		h2_S2_MQDC32->Fill(i_chnl, event->mqdc32_raw[i_chnl]);
+	}
+
+
   for(int i=0;i<32;i++)
 	{
 	  if(hVME_MAIN_4[i])  hVME_MAIN_4[i]->Fill(event->vme_main[4][i] & 0xfff);

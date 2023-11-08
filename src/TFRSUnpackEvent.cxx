@@ -64,6 +64,24 @@ void TFRSUnpackEvent::ClearVftx()
 
 }
 
+void TFRSUnpackEvent::Clear_MTDC_32()
+{
+  for (int i=0; i<32; i++)
+  {
+    mtdc32_dt_trg0_raw[i] = -9999;
+    mtdc32_dt_trg1_raw[i] = -9999;
+  }
+}
+
+void TFRSUnpackEvent::Clear_MQDC_32()
+{
+  for (int i=0; i<32; i++)
+  {
+    mqdc32_raw[i] = -9999;
+  }
+}
+
+
 void TFRSUnpackEvent::Clear(Option_t *t)
 {
 

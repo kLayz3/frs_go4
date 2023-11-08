@@ -33,6 +33,12 @@ public:
    */
   virtual void ClearVftx();
 
+  // Clear MTDC-32
+  virtual void Clear_MTDC_32();
+
+  // Clear MQDC-32
+  virtual void Clear_MQDC_32();
+
   virtual Int_t Init();
 
 //  Int_t EventFlag;
@@ -118,6 +124,21 @@ public:
   Int_t vftx_mult[VFTX_N][VFTX_MAX_CHN];
   Int_t vftx_lead_mult[VFTX_N][VFTX_MAX_CHN];
   Int_t vftx_trail_mult[VFTX_N][VFTX_MAX_CHN];
+
+  //-----------------------------------------------------
+  // MTDC
+  //-----------------------------------------------------
+
+  Int_t mtdc32_dt_trg0_raw[32];
+  Int_t mtdc32_dt_trg1_raw[32];
+
+
+  //-----------------------------------------------------
+  // MQDC
+  //-----------------------------------------------------
+
+  Int_t mqdc32_raw[32];
+
 
 private:
   //      TFRSUnpackProc *fxProc;     //! This is processor
