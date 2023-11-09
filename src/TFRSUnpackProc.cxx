@@ -1663,7 +1663,8 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 					Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
-					if(*pdata == 0xffffffff) {
+					uint32_t some_mask = 0x0000ffff;
+					if(*pdata == 0xffffffff || *(pdata+1) == 0xffffffff || (*pdata & some_mask) == some_mask) {
 						//printf("Found 0xffffff, next word: %8x\n", *(pdata+1));
 						pdata += 2;
 						words -= 2;
