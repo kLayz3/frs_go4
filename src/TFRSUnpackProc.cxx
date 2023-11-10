@@ -1810,18 +1810,15 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			// 1. add check if it is a data or header.
 			//    if header skip it.
 			{
+			if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
 				if ((*pdata & 0xffff0000) >> 16)
-				{
-					// std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl;
-
-					event_out->Clear_MTDC_32();
+				{	event_out->Clear_MTDC_32();
 					Int_t no_words = *pdata & 0x0000ffff;
-					
-					for (int i_wrd=0; i_wrd<no_words; i_wrd++)
+					pdata++; len++;
+					if( getbits(*pdata,2,15,2)== 1){// check if the first word is the header
+					  pdata++; len++;
+					for (int i_wrd=0; i_wrd<no_words-1; i_wrd++)
 					{
-						pdata++; len++;
-
-						// skip header and trailer
 						// also check if the first 10 bits of the word are 0b0000010000
 						if ((i_wrd != 0) && (i_wrd != (no_words-1)) && ((*pdata >> 22) == 0b0000010000))
 						{
@@ -1841,10 +1838,13 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 								event_out->mtdc32_dt_trg1_raw[MTDC_chnl_num] = MTDC_time_dif;
 							}
 						}
+						pdata++; len++;
+				      
 					}
+					}else{ std::cout<<"E> ProcID 10 : MTDC header  missed! " << std::hex << *pdata <<std::dec << std::endl; }
 
 					// jump to next word for next module
-					pdata++; len++;
+					//pdata++; len++;
 				}
 			} // end of MTDC-32
 
@@ -1853,6 +1853,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			// Note: current data structure is VFTX --> MTDC --> MQDC
 			//       so if the structure is changed, please change this part as well
 			{
+			  if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
 				if ((*pdata & 0xffff0000) >> 16)
 				{
 					event_out->Clear_MQDC_32();
