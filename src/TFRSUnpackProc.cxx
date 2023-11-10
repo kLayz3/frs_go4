@@ -1575,6 +1575,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 								if(LeadingOrTrailing == 0){
 									if (value > 0){
 										event_out->leading_v1290_main[vme_chn][multihit] = value;
+										hVME_MAIN_TDC_V1290[vme_chn]->Fill(value); 
 									}
 									//printf("leading_v1290_main[%d][%d] = %d\n",vme_chn,multihit,value);
 								}
