@@ -523,15 +523,15 @@ Bool_t TFRSSortProc::BuildEvent(TGo4EventElement* output)
    //---MUSIC configuration. 2x TUM-MUSIC from FRS crate and 1 TRavel-MUsic from TRMU crate (2020/Jan/23, YT)
    for(int i=0;i<8;i++)
      {
-      tgt->music_e1[i] = (src->vme_frs[3][i]) & 0xfff;   //
-      tgt->music_e2[i] = (src->vme_frs[3][8+i]) & 0xfff; //
+      tgt->music_e1[i] = (src->vme_frs[11][i]) & 0xfff;   //
+      tgt->music_e2[i] = (src->vme_frs[11][8+i]) & 0xfff; //
       tgt->music_e3[i] = (src->vme_trmu_adc[i])        ; // Travel-MUSIC (from special VME crate)
 
       tgt->music_t1[i] = src->leading_v1290_main[16+i][0]; //TUM-MUSIC, modified by JZ 17-04-2021
       tgt->music_t2[i] = src->leading_v1290_main[24+i][0]; //TUM-MUSIC
       //tgt->music_t1[i] = src->leading_v1290_main[16+i][0] & 0xfff; //TUM-MUSIC
       //tgt->music_t2[i] = src->leading_v1290_main[24+i][0] & 0xfff; //TUM-MUSIC
-      tgt->music_t3[i] = (src->vme_trmu_tdc[i]);                   //Travel-MUSIC (from special VME crate)
+      tgt->music_t3[i] = (src->vme_trmu_tdc[i]);                   //Travel-MUSIC (frAnalysis/Histograms/MUSIC/MUSIC(2)/E/MUSIC2_E(5)om special VME crate)
 
     }
 

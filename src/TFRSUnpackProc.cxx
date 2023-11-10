@@ -57,31 +57,31 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
   bool remove_histos = (frs!=nullptr) && (!frs->fill_raw_histos);
 
   for(int n=0;n<32;n++){
-      hVME_MAIN_11[n]         = MakeH1ISeries("Unpack/VME_MAIN", 11, 0, n, remove_histos);
-      hVME_MAIN_4[n]         = MakeH1ISeries("Unpack/VME_MAIN", 4, 0, n, remove_histos);
+      hVME_MAIN_11[n]         = MakeH1ISeries("Unpack/VME_MAIN", 11, 94, n, remove_histos);
+      hVME_MAIN_4[n]         = MakeH1ISeries("Unpack/VME_MAIN", 4, 94, n, remove_histos);
       
-      hVME_MAIN_TDC_V1290[n]  = MakeH1ISeriesV1290raw("Unpack/VME_MAIN/TDC_V1290_MUSIC41_42_and_Sci", 0, 0, n, remove_histos);
-      hVME_MAIN_TDC_V1290_Multip[n]  = MakeH1ISeriesV1290multip("Unpack/VME_MAIN/TDC_V1290_MUSIC41_42_and_Sci", 0, 0, n, remove_histos);
+      hVME_MAIN_TDC_V1290[n]  = MakeH1ISeriesV1290raw("Unpack/VME_MAIN/TDC_V1290_MUSIC41_42_and_Sci", 0, 94, n, remove_histos);
+      hVME_MAIN_TDC_V1290_Multip[n]  = MakeH1ISeriesV1290multip("Unpack/VME_MAIN/TDC_V1290_MUSIC41_42_and_Sci", 0, 94, n, remove_histos);
       //hVME_MAIN_TDC_V1290[n]  = MakeH1ISeriesLabel("Unpack/VME_MAIN/TDC_V1290_MUSIC41_42_and_Sci", "TDC_V1290", 0, n, remove_histos);
       //hVME_MAIN_TDC_V1290_Multip[n]  = MakeH1ISeriesLabel("Unpack/VME_MAIN/TDC_V1290_MUSIC41_42_and_Sci", "TDC_V1290_multip", 0, n, remove_histos);
       
-      hVME_MRTOF_TDC_V1190[n]  = MakeH1ISeriesV1190raw("Unpack/VME_MRTOF/TDC_V1190", 0, 5, n, remove_histos); // crate number must be different from others. otherwise, this will produce same histoname as v1290-main, and cause random crash !!! 
+      hVME_MRTOF_TDC_V1190[n]  = MakeH1ISeriesV1190raw("Unpack/VME_MRTOF/TDC_V1190", 0, 1, n, remove_histos); // crate number must be different from others. otherwise, this will produce same histoname as v1290-main, and cause random crash !!! 
       /*
       hVME_USER_8[n]  = MakeH1ISeries("Unpack/VME_USER",  8, 1, n, remove_histos);
       hVME_USER_9[n]  = MakeH1ISeries("Unpack/VME_USER",  9, 1, n, remove_histos);
       hVME_USER_11[n]  = MakeH1ISeries("Unpack/VME_USER",  3, 1, n, remove_histos); 
       hVME_USER_12[n] = MakeH1ISeries("Unpack/VME_USER", 12, 1, n, remove_histos);
       */
-      hVME_USER_8[n]  = MakeH1ISeriesLabel("Unpack/VME_USER",  8, "TDC_MWPC", 1, n, remove_histos);//"LaszloSuraj"
-      hVME_USER_9[n]  = MakeH1ISeriesLabel("Unpack/VME_USER",  9, "TDC_MWPC", 1, n, remove_histos);
-      hVME_USER_11[n]  = MakeH1ISeriesLabel("Unpack/VME_USER",  3, "ADC_MUSIC41_and_42", 1, n, remove_histos);
-      hVME_USER_12[n] = MakeH1ISeriesLabel("Unpack/VME_USER", 12, "ADC_TOF_TAC", 1, n, remove_histos);
+      hVME_USER_8[n]  = MakeH1ISeriesLabel("Unpack/VME_USER",  8, "TDC_MWPC", 36, n, remove_histos);//"LaszloSuraj"
+      hVME_USER_9[n]  = MakeH1ISeriesLabel("Unpack/VME_USER",  9, "TDC_MWPC", 36, n, remove_histos);
+      hVME_USER_11[n]  = MakeH1ISeriesLabel("Unpack/VME_USER",  11, "ADC_MUSIC41_and_42", 36, n, remove_histos);
+      hVME_USER_12[n] = MakeH1ISeriesLabel("Unpack/VME_USER", 12, "ADC_TOF_TAC", 36, n, remove_histos);
       
-      hVME_USER_2[n]  = MakeH1ISeries("Unpack/VME_USER",  2, 1, n, remove_histos);// should be different number from others. change from 3 to 2 in the second input
-      hVME_TOF_11[n] = MakeH1ISeries("Unpack/VME_TOF", 11, 1, n, remove_histos);
-      hVME_TOF_16[n] = MakeH1ISeries("Unpack/VME_TOF", 16, 1, n, remove_histos);
-      hVME_TPCS2_8[n]   = MakeH1ISeries("Unpack/VME_TPCS2", 8,  2, n, remove_histos);
-      hVME_TPCS2_12[n]  = MakeH1ISeries("Unpack/VME_TPCS2", 12, 2, n, remove_histos);
+      hVME_USER_2[n]  = MakeH1ISeries("Unpack/VME_USER",  2, 36, n, remove_histos);// should be different number from others. change from 3 to 2 in the second input
+      hVME_TOF_11[n] = MakeH1ISeries("Unpack/VME_TOF", 11, 12, n, remove_histos); //S2 crate
+      hVME_TOF_16[n] = MakeH1ISeries("Unpack/VME_TOF", 16, 12, n, remove_histos);
+      hVME_TPCS2_8[n]   = MakeH1ISeries("Unpack/VME_TPCS2", 8,  5, n, remove_histos);
+      hVME_TPCS2_12[n]  = MakeH1ISeries("Unpack/VME_TPCS2", 12, 5, n, remove_histos);
       //hVME_TPCS4_0[n]   = MakeH1ISeries("Unpack/VME_TPCS4", 0,  3, n, remove_histos);
       //hVME_TPCS4_1[n]   = MakeH1ISeries("Unpack/VME_TPCS4", 1,  3, n, remove_histos);
       hVME_ACTSTOP_10[n] = MakeH1ISeries("Unpack/VME_ACTSTOP_10", 10, 4, n, remove_histos);
@@ -126,7 +126,7 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
   hVME_MAIN_4All = MakeH2I("Unpack/VME_MAIN","VME_MAIN_4_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_USER_8All  = MakeH2I("Unpack/VME_USER","VME_USER_08_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_USER_9All  = MakeH2I("Unpack/VME_USER","VME_USER_09_AllCh",32,0,32,512,0,4096,"#Ch","",1);
-  hVME_USER_11All  = MakeH2I("Unpack/VME_USER","VME_USER_03_AllCh",32,0,32,512,0,4096,"#Ch","",1);
+  hVME_USER_11All  = MakeH2I("Unpack/VME_USER","VME_USER_11_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_USER_12All = MakeH2I("Unpack/VME_USER","VME_USER_12_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_TOF_11All = MakeH2I("Unpack/VME_TOF","VME_FRS_11_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_TOF_16All = MakeH2I("Unpack/VME_TOF","VME_FRS_16_AllCh",32,0,32,512,0,4096,"#Ch","",1);
@@ -1466,8 +1466,8 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 								vme_geo = getbits(*pdata,2,12,5);
 								vme_type = getbits(*pdata,2,9,3);
 								vme_chn = getbits(*pdata,2,1,5);
-								event_out->vme_frs[vme_geo][vme_chn] = getbits(*pdata,1,1,16);
-								// printf("vme_frs[geo=%d][ch=%d] = %d\n",vme_geo,vme_chn,getbits(*pdata,1,1,16));
+								event_out->vme_frs[vme_geo][vme_chn] = getbits(*pdata,1,1,12);
+								//printf("vme_frs[geo=%d][ch=%d] = %d\n",vme_geo,vme_chn,getbits(*pdata,1,1,12));
 								pdata++; len++; i_word++;
 							}
 						}
@@ -1663,8 +1663,8 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 					Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
-					uint32_t some_mask = 0x0000ffff;
-					if(*pdata == 0xffffffff || *(pdata+1) == 0xffffffff || (*pdata & some_mask) == some_mask) {
+//					uint32_t some_mask = 0x0000ffff;
+					if(*pdata == 0xffffffff || *(pdata+1) == 0xffffffff) {
 						//printf("Found 0xffffff, next word: %8x\n", *(pdata+1));
 						pdata += 2;
 						words -= 2;
@@ -1952,11 +1952,11 @@ Bool_t TFRSUnpackProc::FillHistograms(TFRSUnpackEvent* event)
 	{
 	  if(hVME_USER_8[i])  hVME_USER_8[i]->Fill(event->vme_frs[8][i] & 0xfff);
 	  if(hVME_USER_9[i])  hVME_USER_9[i]->Fill(event->vme_frs[9][i] & 0xfff);
-	  if(hVME_USER_11[i])  hVME_USER_11[i]->Fill(event->vme_frs[3][i] & 0xfff);
+	  if(hVME_USER_11[i])  hVME_USER_11[i]->Fill(event->vme_frs[11][i] & 0xfff);
 	  if(hVME_USER_12[i]) hVME_USER_12[i]->Fill(event->vme_frs[12][i] & 0xfff);
 	  if(hVME_USER_8All)  hVME_USER_8All->Fill(i,event->vme_frs[8][i] & 0xfff);
 	  if(hVME_USER_9All)  hVME_USER_9All->Fill(i,event->vme_frs[9][i] & 0xfff);
-	  if(hVME_USER_11All)  hVME_USER_11All->Fill(i,event->vme_frs[3][i] & 0xfff);
+	  if(hVME_USER_11All)  hVME_USER_11All->Fill(i,event->vme_frs[11][i] & 0xfff);
 	  if(hVME_USER_12All) hVME_USER_12All->Fill(i,event->vme_frs[12][i] & 0xfff);
 
 	  //	  if(5==i)  printf("UnpackProc tof2ll = %d\n",event->vme_frs[12][i]);fflush(stdout);//AAAAA
