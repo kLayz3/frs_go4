@@ -1806,47 +1806,61 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			// Divyang: MTDC
 			// Note: current data structure is VFTX --> MTDC --> MQDC
 			//       so if the structure is changed, please change this part as well
-
-			// to add:
-			// 1. add check if it is a data or header.
-			//    if header skip it.
 			{
-			if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
-				if ((*pdata & 0xffff0000) >> 16)
-				{	event_out->Clear_MTDC_32();
-					Int_t no_words = *pdata & 0x0000ffff;
-					pdata++; len++;
-					if( getbits(*pdata,2,15,2)== 1){// check if the first word is the header
-					  pdata++; len++;
-					for (int i_wrd=0; i_wrd<no_words-1; i_wrd++)
-					{
-						// also check if the first 10 bits of the word are 0b0000010000
-						if ((i_wrd != 0) && (i_wrd != (no_words-1)) && ((*pdata >> 22) == 0b0000010000))
-						{
-							// std::cout << "Data: " << std::hex << *pdata <<std::dec << std::endl;
-							
-							int MTDC_trig_flg = (*pdata >> 21) & 0x1;
-							int MTDC_chnl_num = (*pdata >> 16) & 0x1f;
-							int MTDC_time_dif = *pdata & 0xffff;
-							// cout << MTDC_trig_flg << " | " << MTDC_chnl_num << " | " << MTDC_time_dif << endl;
-						
-							if (MTDC_trig_flg == 0)
-							{
-								event_out->mtdc32_dt_trg0_raw[MTDC_chnl_num] = MTDC_time_dif;
-							}
-							else if (MTDC_trig_flg == 1)
-							{
-								event_out->mtdc32_dt_trg1_raw[MTDC_chnl_num] = MTDC_time_dif;
-							}
-						}
-						pdata++; len++;
-				      
-					}
-					}else{ std::cout<<"E> ProcID 10 : MTDC header  missed! " << std::hex << *pdata <<std::dec << std::endl; }
-
-					// jump to next word for next module
-					//pdata++; len++;
+				// MVLC header
+				if(((*pdata & 0xffff0000) >> 16) == 0xf520)
+				{
+					// std::cout << "VLC header for MTDC-32: " << std::hex << *pdata <<std::dec << std::endl;
+					pdata++; len++; // Barrier detected. Good to go ahead
 				}
+				else {std::cout<<"E> ProcID 40: Barrier missed! " << std::hex << *pdata <<std::dec << std::endl;}
+
+				// No. of words from MTDC-32 header. NOT from MVLC header.
+				// For me, MTDC-32 manual is easy and quick to follow.
+				Int_t no_of_words;
+
+
+				// MTDC-32 Header
+				if (((*pdata & 0xff000000)>>24) == 0b01000000) // check if the first MTDC-32 word is header
+				{
+					// std::cout << "MTDC-32 header: " << std::hex << *pdata <<std::dec << std::endl;
+
+					no_of_words = *pdata & 0x00000fff; // number of words from MTDC-32 header
+					pdata++; len++; // go ahead
+				}
+				else { std::cout<<"E> ProcID 40: MTDC-32 header missed! " << std::hex << *pdata <<std::dec << std::endl; }
+
+
+				// data starts
+				if (((*pdata & 0xffc00000) >> 22) == 0b0000010000) // first 10 bits of data word are 0b0000010000
+				{
+					event_out->Clear_MTDC_32(); // initialize MTDC-32 variabls
+
+					for (int i_wrd=0; i_wrd<no_of_words-1; i_wrd++)
+					{
+						// std::cout << "MTDC-32 data: " << std::hex << *pdata <<std::dec << std::endl;
+						
+						int MTDC_trig_flg = (*pdata >> 21) & 0x1;
+						int MTDC_chnl_num = (*pdata >> 16) & 0x1f;
+						int MTDC_time_dif = *pdata & 0xffff;
+						// cout << MTDC_trig_flg << " | " << MTDC_chnl_num << " | " << MTDC_time_dif << endl;
+					
+						if      (MTDC_trig_flg == 0) { event_out->mtdc32_dt_trg0_raw[MTDC_chnl_num] = MTDC_time_dif; }
+						else if (MTDC_trig_flg == 1) { event_out->mtdc32_dt_trg1_raw[MTDC_chnl_num] = MTDC_time_dif; }
+
+						pdata++; len++;
+					}
+				}
+
+
+				// ender
+				if (((*pdata & 0xc0000000) >> 30) == 0b11) 
+				{
+					// std::cout << "MTDC-32 ender: " << std::hex << *pdata <<std::dec << std::endl; 
+					pdata++; len++; // go ahead
+				}
+				else { std::cout<<"E> ProcID 40 : MTDC-32 ender missed! " << std::hex << *pdata <<std::dec << std::endl; }
+
 			} // end of MTDC-32
 
 			
@@ -1854,32 +1868,58 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			// Note: current data structure is VFTX --> MTDC --> MQDC
 			//       so if the structure is changed, please change this part as well
 			{
-			  if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
-				if ((*pdata & 0xffff0000) >> 16)
+				// MVLC header
+				if(((*pdata & 0xffff0000) >> 16) == 0xf520)
+				{
+					// std::cout << "VLC header for MQDC-32: " << std::hex << *pdata <<std::dec << std::endl;
+					pdata++; len++; // Barrier detected. Good to go ahead
+				}
+				else {std::cout<<"E> ProcID 40: Barrier missed! " << std::hex << *pdata <<std::dec << std::endl;}
+
+				// No. of words from MQDC-32 header. NOT from MVLC header.
+				// For me, MQDC-32 manual is easy and quick to follow.
+				Int_t no_of_words;
+
+
+				// MQDC-32 Header
+				if (((*pdata & 0xff000000) >> 24) == 0b01000000)
+				{
+					// std::cout << "MQDC-32 header: " << std::hex << *pdata <<std::dec << std::endl;
+
+					no_of_words = *pdata & 0x00000fff;
+					pdata++; len++; // go ahead
+				}
+				else { std::cout<<"E> ProcID 40 : MQDC-32 header missed! " << std::hex << *pdata <<std::dec << std::endl; }
+
+
+				// data starts
+				if (((*pdata & 0xffe00000) >> 21) == 0b00000100000) // first 11 bits of data word are 0b00000100000
 				{
 					event_out->Clear_MQDC_32();
-					Int_t no_words = *pdata & 0x0000ffff;
-					
-					for (int i_wrd=0; i_wrd<no_words; i_wrd++)
+
+					for (int i_wrd=0; i_wrd<no_of_words-1; i_wrd++)
 					{
+						// std::cout << "MQDC-32 data: " << std::hex << *pdata <<std::dec << std::endl;
+
+						int MQDC_chnl_num = (*pdata >> 16) & 0x1f;
+						int MQDC_ampltd   = *pdata & 0xfff;
+						// cout << MQDC_chnl_num << " | " << MQDC_ampltd << endl;
+					
+						event_out->mqdc32_raw[MQDC_chnl_num] = MQDC_ampltd;
+
 						pdata++; len++;
-
-						// skip header and trailer
-						// also check if the first 10 bits of the word are 0b00000100000
-						if ((i_wrd != 0) && (i_wrd != (no_words-1)) && ((*pdata >> 21) == 0b00000100000))
-						{
-							// std::cout << "Data: " << std::hex << *pdata <<std::dec << std::endl;
-
-							int MQDC_chnl_num = (*pdata >> 16) & 0x1f;
-							int MQDC_ampltd   = *pdata & 0xfff;
-							// cout << MQDC_chnl_num << " | " << MQDC_ampltd << endl;
-						
-							event_out->mqdc32_raw[MQDC_chnl_num] = MQDC_ampltd;
-						}
 					}
-
-					// no module after this. Hence no jump.
 				}
+
+
+				// ender
+				if (((*pdata & 0xc0000000) >> 30) == 0b11) 
+				{
+					// std::cout << "MQDC-32 ender: " << std::hex << *pdata <<std::dec << std::endl; 
+					pdata++; len++; // go ahead
+				}
+				else { std::cout<<"E> ProcID 40: MQDC-32 ender missed! " << std::hex << *pdata <<std::dec << std::endl; }
+
 			} // end of MQDC-32
 			
 		}
