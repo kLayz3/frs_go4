@@ -152,6 +152,16 @@ private:
   // maybe not needed, just event counter
   UInt_t Vftx_Stat[VFTX_N][VFTX_MAX_CHN];
 
+
+  // S2: MTDC-32
+  TH2I *h2_S2_MTDC32_trg0;
+  TH2I *h2_S2_MTDC32_trg1;
+
+
+  // S2: MQDC
+  TH2I *h2_S2_MQDC32;
+
+
   ClassDef(TFRSUnpackProc,1)
 };
 
