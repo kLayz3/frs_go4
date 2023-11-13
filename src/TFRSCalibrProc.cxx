@@ -579,7 +579,7 @@ void TFRSCalibrProc::Create_SI_Hist()
   hdssd_ymaxenergy_dec = MakeH1I("DSSD","Y dssd max energy (decay)",5000,0,10000);
   hdssd_ymaxindex_dec = MakeH1I("DSSD","Y max energy index (decay)",16,-0.5,15.5);
   hdssd_xymaxindex_dec = MakeH2I("DSSD","XY_maxindex (decay)",16,-0.5,15.5,16,-0.5,15.5,"X max energy index (decay)","y max energy index",2);
-  */
+   */
 
   hsi_e1 = MakeH1I("Si/e1","Si_1 DU energy [keV]",5000,0,10000);
   hsi_e2 = MakeH1I("Si/e2","Si_2 DU energy [keV]",5000,0,10000);
@@ -615,8 +615,9 @@ void TFRSCalibrProc::Process_Scaler_Analysis(const TFRSSortEvent& src, TFRSCalib
 	//printf("ts_id = %d \n",src.ts_id);
   // currently those scalers fill only for FRS data, not MR tof data
  //if (src.ts_id != 1) return ; // EH 02.05.2022
- if (src.ts_id != 1 && src.ts_id != 2) return ; // EH 02.05.2022 purpose ts_id is equal 2 because of veter module in s2 crate  
-//	printf("scaler 39 = 0x%08x \n",src.sc_long[scaler_ch_1kHz]);
+ //if (src.ts_id != 1 && src.ts_id != 2) return ; // EH 02.05.2022 purpose ts_id is equal 2 because of veter module in s2 crate  
+  // CH 23/11/13 no unpacker for time stamps
+  //	printf("scaler 39 = 0x%08x \n",src.sc_long[scaler_ch_1kHz]);
 
   if(13 == src.trigger || 12 == src.trigger || 10 == src.trigger || 11 ==src.trigger) return; // skip spill trigger
 //printf("scaler 39 = 0x%08x \n",src.sc_long[scaler_ch_1kHz]);

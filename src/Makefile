@@ -14,7 +14,6 @@ DOOPTIMIZATION = false
 all: build
 
 -include Module.mk
-#CXXFLAGS += -std=c++17
 
 build: all-$(MODULE_NAME)
 

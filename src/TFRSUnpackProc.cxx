@@ -1442,8 +1442,8 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 					if(vme_type!=4){   std::cout<<"E> Scaler type missed match ! GEO"<<vme_geo<<" "<<" type 4 =/="<<vme_type<<std::endl; }
 					pdata++; len++;
 					for(int i_ch=0; i_ch<vme_nlw; i_ch++){
-						event_out->scaler_main[i_ch] = *pdata;
-						//printf("scaler_main[ch=%d] = %d\n",i_ch,*pdata);
+						event_out->scaler_frs[i_ch] = *pdata;
+						//printf("scaler_frs[ch=%d] = %d\n",i_ch,*pdata);
 						pdata++; len++;	
 					}
 					pdata++; len++;	//skipp trailer
