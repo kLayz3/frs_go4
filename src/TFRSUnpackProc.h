@@ -50,8 +50,8 @@ private:
 
   TH1I* hVME_MAIN_11[32];      //!
   TH2I* hVME_MAIN_11All;  //!
-  TH1I* hVME_MAIN_4[32];      //!
-  TH2I* hVME_MAIN_4All;  //!
+  TH1I* hVME_MAIN_14[32];      //!
+  TH2I* hVME_MAIN_14All;  //!
   TH1I* hVME_MAIN_TDC_V1290[32];      //!
   TH1I* hVME_MAIN_TDC_V1290_Multip[32];      //!
   TH1I* hVME_MRTOF_TDC_V1190[32];      //
