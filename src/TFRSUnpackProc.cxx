@@ -1808,9 +1808,13 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			// Note: current data structure is VFTX --> MTDC --> MQDC
 			//       so if the structure is changed, please change this part as well
 			{
+				int num_data_words_from_MVLC = 0;
+
 				// MVLC header
 				if(((*pdata & 0xffff0000) >> 16) == 0xf520)
 				{
+					num_data_words_from_MVLC = *pdata & 0xfff;
+
 					// std::cout << "VLC header for MTDC-32: " << std::hex << *pdata <<std::dec << std::endl;
 					pdata++; len++; // Barrier detected. Good to go ahead
 				}
@@ -1829,7 +1833,11 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 					no_of_words = *pdata & 0x00000fff; // number of words from MTDC-32 header
 					pdata++; len++; // go ahead
 				}
-				else { std::cout<<"E> ProcID 40: MTDC-32 header missed! " << std::hex << *pdata <<std::dec << std::endl; }
+				else
+				{
+					// if there is no data, don't show this message
+					if (num_data_words_from_MVLC != 0) {std::cout<<"E> ProcID 40: MTDC-32 header missed! " << std::hex << *pdata <<std::dec << std::endl;}
+				}
 
 
 				// data starts
@@ -1860,7 +1868,11 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 					// std::cout << "MTDC-32 ender: " << std::hex << *pdata <<std::dec << std::endl; 
 					pdata++; len++; // go ahead
 				}
-				else { std::cout<<"E> ProcID 40 : MTDC-32 ender missed! " << std::hex << *pdata <<std::dec << std::endl; }
+				else
+				{
+					// if there is no data, don't show this message
+					if (num_data_words_from_MVLC != 0) {std::cout<<"E> ProcID 40 : MTDC-32 ender missed! " << std::hex << *pdata <<std::dec << std::endl;}
+				}
 
 			} // end of MTDC-32
 
@@ -1869,9 +1881,13 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			// Note: current data structure is VFTX --> MTDC --> MQDC
 			//       so if the structure is changed, please change this part as well
 			{
+				int num_data_words_from_MVLC = 0;
+
 				// MVLC header
 				if(((*pdata & 0xffff0000) >> 16) == 0xf520)
 				{
+					num_data_words_from_MVLC = *pdata & 0xfff;
+
 					// std::cout << "VLC header for MQDC-32: " << std::hex << *pdata <<std::dec << std::endl;
 					pdata++; len++; // Barrier detected. Good to go ahead
 				}
@@ -1890,7 +1906,11 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 					no_of_words = *pdata & 0x00000fff;
 					pdata++; len++; // go ahead
 				}
-				else { std::cout<<"E> ProcID 40 : MQDC-32 header missed! " << std::hex << *pdata <<std::dec << std::endl; }
+				else
+				{
+					// if there is no data, don't show this message
+					if (num_data_words_from_MVLC != 0) {std::cout<<"E> ProcID 40 : MQDC-32 header missed! " << std::hex << *pdata <<std::dec << std::endl;}
+				}
 
 
 				// data starts
@@ -1919,7 +1939,11 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 					// std::cout << "MQDC-32 ender: " << std::hex << *pdata <<std::dec << std::endl; 
 					pdata++; len++; // go ahead
 				}
-				else { std::cout<<"E> ProcID 40: MQDC-32 ender missed! " << std::hex << *pdata <<std::dec << std::endl; }
+				else
+				{
+					// if there is no data, don't show this message
+					if (num_data_words_from_MVLC != 0) {std::cout<<"E> ProcID 40: MQDC-32 ender missed! " << std::hex << *pdata <<std::dec << std::endl;}
+				}
 
 			} // end of MQDC-32
 			
