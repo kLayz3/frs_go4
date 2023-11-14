@@ -303,27 +303,27 @@ Bool_t TFRSSortProc::BuildEvent(TGo4EventElement* output)
 
 
   /* ### SCI dE:  */
-  tgt->de_41l = src->vme_main[4][13] & 0xfff; //src->vme_main[11][0] & 0xfff;
-  tgt->de_41r = src->vme_main[4][1] & 0xfff;
-  tgt->de_21l = src->vme_main[4][2] & 0xfff;
-  tgt->de_21r = src->vme_main[4][3] & 0xfff;
-  tgt->de_42l = src->vme_main[4][4] & 0xfff;
-  tgt->de_42r = src->vme_main[4][5] & 0xfff;
+  tgt->de_41l = src->vme_main[14][13] & 0xfff; //src->vme_main[11][0] & 0xfff;
+  tgt->de_41r = src->vme_main[14][1] & 0xfff;
+  tgt->de_21l = src->vme_main[14][2] & 0xfff;
+  tgt->de_21r = src->vme_main[14][3] & 0xfff;
+  tgt->de_42l = src->vme_main[14][4] & 0xfff;
+  tgt->de_42r = src->vme_main[14][5] & 0xfff;
 
-  tgt->de_31l = src->vme_main[4][9] & 0xfff;
-  tgt->de_31r = src->vme_main[4][7] & 0xfff;
-  tgt->de_43l = src->vme_main[4][11] & 0xfff;
-  tgt->de_43r = src->vme_main[4][12] & 0xfff;
+  tgt->de_31l = src->vme_main[14][9] & 0xfff;
+  tgt->de_31r = src->vme_main[14][7] & 0xfff;
+  tgt->de_43l = src->vme_main[14][11] & 0xfff;
+  tgt->de_43r = src->vme_main[14][12] & 0xfff;
   //  tgt->de_81l = src->vme_main[11][13] & 0xfff; // changed on 21/Feb/2020 23:00
   //  tgt->de_81l = src->vme_main[4][15] & 0xfff; // changed on 21/Feb/2020 23:00
-  tgt->de_81l = src->vme_main[4][6] & 0xfff; // changed on 16.03.21 19:30
-  tgt->de_81r = src->vme_main[4][14] & 0xfff;
+  tgt->de_81l = src->vme_main[14][6] & 0xfff; // changed on 16.03.21 19:30
+  tgt->de_81r = src->vme_main[14][14] & 0xfff;
   
   //  tgt->de_22l = src->vme_main[4][0] & 0xfff; // changed on 17/Feb/2021
-  tgt->de_22l = src->vme_main[4][15] & 0xfff; // changed on 17 Feb 2021, ch0 QDC seems to have a problem
-  tgt->de_22r = src->vme_main[4][8] & 0xfff;
-  tgt->de_M01l = src->vme_main[4][17] & 0xfff;
-  tgt->de_M01r = src->vme_main[4][18] & 0xfff;
+  tgt->de_22l = src->vme_main[14][15] & 0xfff; // changed on 17 Feb 2021, ch0 QDC seems to have a problem
+  tgt->de_22r = src->vme_main[14][8] & 0xfff;
+  tgt->de_M01l = src->vme_main[14][17] & 0xfff;
+  tgt->de_M01r = src->vme_main[14][18] & 0xfff;
 
 
   /* ### SCI times:  */
