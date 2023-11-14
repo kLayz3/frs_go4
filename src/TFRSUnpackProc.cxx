@@ -1703,6 +1703,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 										event_out->nhit_v1190_tpcs2[vme_chn]++;
 									}
 									//printf("leading_v1190_tpcs2[%d][%d] = %d\n",vme_chn,multihit,value);
+									hVME_TPCS2_V1190All->Fill(vme_chn,value);
 								}
 								else{
 									if (value > 0){
