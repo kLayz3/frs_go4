@@ -194,7 +194,10 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
 TFRSUnpackProc::~TFRSUnpackProc()
 { }
 
-
+Int_t get_bits(int value, uint32_t lo, uint32_t hi) {
+	uint32_t mask = (1 << (hi-lo+1)) - 1;
+	return (value >> lo) & mask;
+}
 
 Int_t getbits(Int_t value, int nword, int start, int length)
 {
@@ -1690,9 +1693,11 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 							}
 							if(vme_type == 0 && in_event == 1){// this indicates a TDC measurement
 
-								Int_t vme_chn = getbits(*pdata,2,6,5);
+								//Int_t vme_chn = getbits(*pdata,2,6,5);
+								Int_t vme_chn = get_bits(*pdata,19,25);
 								Int_t LeadingOrTrailing = getbits(*pdata,2,11,1);
-								Int_t value = getbits(*pdata,1,1,21);
+//								Int_t value = getbits(*pdata,1,1,21);
+								Int_t value = get_bits(*pdata,0,18);
 
 								//multihit = event_out->nhit_v1190_tpcs2[vme_chn][LeadingOrTrailing];  
 																
