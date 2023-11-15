@@ -331,7 +331,7 @@ void setup_s450_012_2022()
   mw->x_factor[6] = 0.25; // MW81
   mw->x_factor[7] = 0.125; // MW82
 
-  mw->x_offset[0] = 5.0; // MW11 Feb 2014
+  mw->x_offset[0] = 20.87; // MW11 Feb 2014
   mw->x_offset[1] = -2.0; // MW21 Feb 2014
   mw->x_offset[2] = -1.5; // MW22 Feb 2014
   mw->x_offset[3] = 5.0; // MW31 like MW11 15.11.19
@@ -349,7 +349,7 @@ void setup_s450_012_2022()
   mw->y_factor[6] = 0.25; // MW81
   mw->y_factor[7] = 0.125; // MW82  [mm/ns] 11.05.06  CN 4ns/mm delay line
 
-  mw->y_offset[0] = -14.0;  // MW11 27-MAY-2007 TESTED VALUE WITH SLITS, ok Feb 2014
+  mw->y_offset[0] = 20.82;  // MW11 27-MAY-2007 TESTED VALUE WITH SLITS, ok Feb 2014
   mw->y_offset[1] = 21.0;   // Feb 2014
   mw->y_offset[2] = -1.0;   // MW22 27-MAY-2007 TESTED VALUE WITH SLITS, ok Feb 2014
   mw->y_offset[3] = -14.0;    // MW31 like in MW11 15.11.19

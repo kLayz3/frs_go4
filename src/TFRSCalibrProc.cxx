@@ -738,12 +738,13 @@ void TFRSCalibrProc::Process_MW_Analysis(const TFRSSortEvent& src, TFRSCalibrEve
 
       /* better test first existence of xl, xr, an before filling of xsum */
 
-      if(src.mw_an[i] && src.mw_xl[i] && src.mw_xr[i])
+      //if(src.mw_an[i] && src.mw_xl[i] && src.mw_xr[i])
+      if(src.mw_xl[i] && src.mw_xr[i])
 	{
 	  // if(src.mw_xl[i]&&src.mw_xr[i]) {
-	  tgt.mw_xsum[i] = 1000+(src.mw_xl[i] - src.mw_an[i]) + (src.mw_xr[i] - src.mw_an[i]);
+	  //tgt.mw_xsum[i] = 1000+(src.mw_xl[i] - src.mw_an[i]) + (src.mw_xr[i] - src.mw_an[i]);
 
-	  // tgt.mw_xsum[i] = (src.mw_xl[i]) + (src.mw_xr[i]); //when an doesn't work
+	  tgt.mw_xsum[i] = (src.mw_xl[i]) + (src.mw_xr[i]); //when an doesn't work
 	  hMW_XSUM[i]->Fill(tgt.mw_xsum[i]);
 	}
 
@@ -752,13 +753,14 @@ void TFRSCalibrProc::Process_MW_Analysis(const TFRSSortEvent& src, TFRSCalibrEve
 
       /* better test first existence of yu, yd, an before filling of ysum */
 
-      if(src.mw_an[i] && src.mw_yu[i] && src.mw_yd[i])
+      //if(src.mw_an[i] && src.mw_yu[i] && src.mw_yd[i])
+      if(src.mw_yu[i] && src.mw_yd[i])
 	{
 
 	  //if(src.mw_yu[i]&&src.mw_yd[i]) {
-	  tgt.mw_ysum[i] = 1000+(src.mw_yu[i] - src.mw_an[i]) + (src.mw_yd[i] - src.mw_an[i]);
+	  //tgt.mw_ysum[i] = 1000+(src.mw_yu[i] - src.mw_an[i]) + (src.mw_yd[i] - src.mw_an[i]);
 
-	  //tgt.mw_ysum[i] = (src.mw_yu[i]) + (src.mw_yd[i]); //when an doesn't work
+	  tgt.mw_ysum[i] = (src.mw_yu[i]) + (src.mw_yd[i]); //when an doesn't work
 	  hMW_YSUM[i]->Fill(tgt.mw_ysum[i]);
 	}
 

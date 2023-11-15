@@ -194,8 +194,12 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
 TFRSUnpackProc::~TFRSUnpackProc()
 { }
 
+/* Use this fcn to get a slice [lo,hi], 0 <= lo <= hi < 32
+ * where `lo` is low-bit, and `hi` is high-bit of the slice
+ * of a 32-bit word passed as first parameter. To get one specific bit,
+ * call it with lo==hi */
 Int_t get_bits(int value, uint32_t lo, uint32_t hi) {
-	uint32_t mask = (1 << (hi-lo+1)) - 1;
+	uint32_t mask = (uint32_t)(1ull << (hi-lo+1)) - 1;
 	return (value >> lo) & mask;
 }
 

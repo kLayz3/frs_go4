@@ -12,3 +12,4 @@ MainUserAnalysis
 martin*
 *.so
 *.pcm
+src/G__*
