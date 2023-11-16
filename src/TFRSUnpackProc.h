@@ -150,7 +150,8 @@ private:
   TH2 * h2_vftx_leading_time04[VFTX_N];
   TH1 * h1_vftx_trailing_cc[VFTX_N][VFTX_MAX_CHN];
   TH1 * h1_vftx_trailing_ft[VFTX_N][VFTX_MAX_CHN];
-  TH1 * h1_vftx_mult[VFTX_N][VFTX_MAX_CHN];
+  TH1 * h1_vftx_lead_mult[VFTX_N][VFTX_MAX_CHN];
+  TH1 * h1_vftx_trail_mult[VFTX_N][VFTX_MAX_CHN];
 
   // maybe not needed, just event counter
   UInt_t Vftx_Stat[VFTX_N][VFTX_MAX_CHN];

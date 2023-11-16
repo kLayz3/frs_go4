@@ -173,7 +173,8 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
   // --- vftx ---
   for (int module=0; module<VFTX_N; module++) {
     for(int channel=0; channel<VFTX_MAX_CHN; channel++){
-      h1_vftx_mult[module][channel] = (TH1*) MakeTH1('I', Form("Unpack/VFTX_%i/Mult/VFTX%i_Mult_ch%02d",module,module,channel),Form("VFTX_%i_Mult_ch%02d",module,channel),50,0.,50.,Form("VFTX %i multiplicity",module));
+      h1_vftx_lead_mult[module][channel] = (TH1*) MakeTH1('I', Form("Unpack/VFTX_%i/Mult/VFTX%i_Lead_Mult_ch%02d",module,module,channel),Form("VFTX_%i_Lead_Mult_ch%02d",module,channel),50,0.,50.,Form("VFTX %i multiplicity (leading)",module));
+      h1_vftx_trail_mult[module][channel] = (TH1*) MakeTH1('I', Form("Unpack/VFTX_%i/Mult/VFTX%i_Trail_Mult_ch%02d",module,module,channel),Form("VFTX_%i_Trail_Mult_ch%02d",module,channel),50,0.,50.,Form("VFTX %i multiplicity (trailing)",module));
       h1_vftx_leading_ft[module][channel] = (TH1*) MakeTH1('I', Form("Unpack/VFTX_%i/FineTime/Leading/VFTX%i_FineTime_leading_ch%02d",module,module,channel),Form("VFTX%i_FineTime_leading_ch%02d",module,channel),1000,0.,1000.,"channels");
       h1_vftx_leading_cc[module][channel] = (TH1*) MakeTH1('I', Form("Unpack/VFTX_%i/Clock/Leading/VFTX%i_Clock_leading_ch%02d",module,module,channel),Form("VFTX%i_Clock_leading_ch%02d",module,channel),9000,0.,9000.,"channels");
       h1_vftx_leading_time[module][channel] = (TH1*) MakeTH1('I', Form("Unpack/VFTX_%i/Time_ps/Leading/VFTX%i_Time_leading_ch%02d",module,module,channel),Form("VFTX%i_Time_leading_ch%02d",module,channel),1000,0.,1000.,"channels");
@@ -2088,9 +2089,10 @@ Bool_t TFRSUnpackProc::FillHistograms(TFRSUnpackEvent* event)
 	int module, channel;
 	for(module=0; module<VFTX_N; module++){
 	  for(channel=0; channel<VFTX_MAX_CHN; channel++) {
-	    h1_vftx_mult[module][channel]->Fill(event->vftx_mult[module][channel]);
-	    //std::cout<<channel<< " "<<event->vftx_mult[module][channel]<< " "<< event->vftx_leading_ft[module][channel][0]<< " "<< event->vftx_trailing_ft[module][channel][0]<<std::endl;
-	    if(event->vftx_mult[module][channel]>=1){
+	    h1_vftx_lead_mult[module][channel]->Fill(event->vftx_lead_mult[module][channel]);
+	    h1_vftx_trail_mult[module][channel]->Fill(event->vftx_trail_mult[module][channel]);
+	    //std::cout<<channel<< " "<<event->vftx_lead_mult[module][channel]<< "  "<<event->vftx_trail_mult[module][channel]<< ""<< event->vftx_leading_ft[module][channel][0]<< " "<< event->vftx_trailing_ft[module][channel][0]<<std::endl;
+	    if(event->vftx_lead_mult[module][channel]>=1 || event->vftx_trail_mult[module][channel]>=1){
 	      h1_vftx_leading_cc[module][channel]->Fill(event->vftx_leading_cc[module][channel][0]);
 	      h1_vftx_leading_ft[module][channel]->Fill(event->vftx_leading_ft[module][channel][0]);
 	      h1_vftx_trailing_cc[module][channel]->Fill(event->vftx_trailing_cc[module][channel][0]);
