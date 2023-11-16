@@ -523,8 +523,8 @@ Bool_t TFRSSortProc::BuildEvent(TGo4EventElement* output)
    //---MUSIC configuration. 2x TUM-MUSIC from FRS crate and 1 TRavel-MUsic from TRMU crate (2020/Jan/23, YT)
    for(int i=0;i<8;i++)
      {
-      tgt->music_e1[i] = (src->vme_frs[11][i]) & 0xfff;   //
-      tgt->music_e2[i] = (src->vme_frs[11][8+i]) & 0xfff; //
+      tgt->music_e1[i] = (src->vme_frs[10][i]) & 0xfff;   //
+      tgt->music_e2[i] = (src->vme_frs[10][8+i]) & 0xfff; //
       tgt->music_e3[i] = (src->vme_trmu_adc[i])        ; // Travel-MUSIC (from special VME crate)
 
       tgt->music_t1[i] = src->leading_v1290_main[16+i][0]; //TUM-MUSIC, modified by JZ 17-04-2021
