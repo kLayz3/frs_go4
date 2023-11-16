@@ -14,7 +14,9 @@
 #include "debug_fcns.cpp"
 //#include  <stdio.h>
 
-//#define DEBUG
+#if 0
+#define DEBUG
+#endif
 
 
 
@@ -74,7 +76,8 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
       */
       hVME_USER_8[n]  = MakeH1ISeriesLabel("Unpack/VME_USER",  8, "TDC_MWPC", 36, n, remove_histos);//"LaszloSuraj"
       hVME_USER_9[n]  = MakeH1ISeriesLabel("Unpack/VME_USER",  9, "TDC_MWPC", 36, n, remove_histos);
-      hVME_USER_11[n]  = MakeH1ISeriesLabel("Unpack/VME_USER",  11, "ADC_MUSIC41_and_42", 36, n, remove_histos);
+      hVME_USER_10[n]  = MakeH1ISeriesLabel("Unpack/VME_USER",  10, "ADC_MUSIC41_and_42", 36, n, remove_histos);
+      //hVME_USER_11[n]  = MakeH1ISeriesLabel("Unpack/VME_USER",  11, "ADC_MUSIC41_and_42", 36, n, remove_histos);
       hVME_USER_12[n] = MakeH1ISeriesLabel("Unpack/VME_USER", 12, "ADC_TOF_TAC", 36, n, remove_histos);
       
       hVME_USER_2[n]  = MakeH1ISeries("Unpack/VME_USER",  2, 36, n, remove_histos);// should be different number from others. change from 3 to 2 in the second input
@@ -126,7 +129,8 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
   hVME_MAIN_14All = MakeH2I("Unpack/VME_MAIN","VME_MAIN_14_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_USER_8All  = MakeH2I("Unpack/VME_USER","VME_USER_08_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_USER_9All  = MakeH2I("Unpack/VME_USER","VME_USER_09_AllCh",32,0,32,512,0,4096,"#Ch","",1);
-  hVME_USER_11All  = MakeH2I("Unpack/VME_USER","VME_USER_11_AllCh",32,0,32,512,0,4096,"#Ch","",1);
+  hVME_USER_10All  = MakeH2I("Unpack/VME_USER","VME_USER_10_AllCh",32,0,32,512,0,4096,"#Ch","",1);
+  //hVME_USER_11All  = MakeH2I("Unpack/VME_USER","VME_USER_11_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_USER_12All = MakeH2I("Unpack/VME_USER","VME_USER_12_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_TOF_11All = MakeH2I("Unpack/VME_TOF","VME_FRS_11_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_TOF_16All = MakeH2I("Unpack/VME_TOF","VME_FRS_16_AllCh",32,0,32,512,0,4096,"#Ch","",1);
@@ -518,6 +522,34 @@ void TFRSUnpackProc::TimeStampExtract(TFRSUnpackEvent* event_out, TGo4MbsSubEven
   
 }
 
+bool TFRSUnpackProc::TimeStampExtract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int)
+{
+/*
+  Int_t *pdata = psubevt->GetDataField();
+  Int_t len = 0;
+  Int_t lenMax = (psubevt->GetDlen()-2)/2;
+  if(lenMax <=
+  int hexwrid ; 
+  hex_wrid = get_bits(*pdata, 0,11);
+  event_out->wrid = hex_wrid;
+
+  // Possible error flag:
+  uint8_t err_flag = (uint8_t)get_bits(*pdata,16,16);
+  if(err_flag == 1) {
+  	cerr << __PRETTY_FUNCTION__ << " :: error bit flag raised. Ignoring for now ..." << endl;
+  }
+  pdata++; len++;
+  
+  // Extract TS data
+  uint16_t flag = 0x03e1;
+  for(int ii=0; ii<4; ++ii) {
+ 	 	if(get_bits(*pdata, 16,31) != flag)
+  }
+*/
+
+  return false;
+}
+
 Bool_t TFRSUnpackProc::Event_Extract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int){
   Int_t *pdata = psubevt->GetDataField();
   Int_t len = 0;
@@ -596,8 +628,8 @@ Bool_t TFRSUnpackProc::Event_Extract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent
 	      vme_geo = getbits(*pdata,2,12,5);
 	      vme_type = getbits(*pdata,2,9,3);
 	      vme_chn = getbits(*pdata,2,1,5);
-	      event_out->vme_frs[vme_geo][vme_chn] = getbits(*pdata,1,1,16);
-	      //// printf("vme_frs[geo=%d][ch=%d] = %d\n",vme_geo,vme_chn,getbits(*pdata,1,1,16));
+	      event_out->vme_frs[vme_geo][vme_chn] = getbits(*pdata,1,1,12);
+	      printf("vme_frs[geo=%d][ch=%d] = %d\n",vme_geo,vme_chn,getbits(*pdata,1,1,12));
 	      pdata++; len++;
 	    }
 	  }
@@ -1431,6 +1463,9 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 	Int_t len = 0;
 	  Int_t lenMax = (psubevt->GetDlen()-2)/2;
 	
+#ifdef DEBUG
+	cout << __PRETTY_FUNCTION__ << " :: entered here...\n";
+	#endif
 	switch(psubevt->GetProcid())
 	{
 		//===========
@@ -1460,26 +1495,25 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			while (len < lenMax){
 				//----  CAEN V775 and V785---
 				{ 
-					if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 30 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
-					else{Int_t words = getbits(*pdata,1,1,16);
+					if(get_bits(*pdata,16,31) != 0xf520){ std::cout<<"E> ProcID 30 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
+					else{Int_t words = get_bits(*pdata,0,15);
 						//std::cout<< "Number of words of this modul: "<< words << std::endl;
 						pdata++; len++;
 						int i_word = 0;
 						// read the header longword and extract slot, type & length 
 						Int_t vme_chn = 0;
-						Int_t vme_geo = getbits(*pdata,2,12,5);
-						Int_t vme_type = getbits(*pdata,2,9,3);
-						Int_t vme_nlw =  getbits(*pdata,1,9,6);
+						Int_t vme_geo = get_bits(*pdata,27,31);
+						Int_t vme_type = get_bits(*pdata,24,26);
+						Int_t vme_nlw =  get_bits(*pdata,8,13);
 						//std::cout << "vme_geo, vme_type, vme_nlw ="<< vme_geo << ", " <<  vme_type << ", " << vme_nlw <<std::endl ;
 						pdata++; len++; i_word++;
 						// read the data 
 						if ((vme_nlw > 0 && 2 == vme_type )) {
 							for(int i=0;i<vme_nlw;i++) {
-								vme_geo = getbits(*pdata,2,12,5);
-								vme_type = getbits(*pdata,2,9,3);
-								vme_chn = getbits(*pdata,2,1,5);
-								event_out->vme_frs[vme_geo][vme_chn] = getbits(*pdata,1,1,12);
-								//printf("vme_frs[geo=%d][ch=%d] = %d\n",vme_geo,vme_chn,getbits(*pdata,1,1,12));
+								vme_geo = get_bits(*pdata,27,31);
+								vme_type = get_bits(*pdata,24,26);
+								vme_chn = get_bits(*pdata,16,20);
+								event_out->vme_frs[vme_geo][vme_chn] = get_bits(*pdata,0,11);
 								pdata++; len++; i_word++;
 							}
 						}
@@ -1502,7 +1536,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 		//================
 		case 10:	// Main crate
 		{
-			// skip triva and vetar information
+			// TS Extractor
 			for(int ii=0; ii<5;ii++){
 				pdata++; len++;
 			}
@@ -1650,8 +1684,8 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 								vme_geo = getbits(*pdata,2,12,5);
 								vme_type = getbits(*pdata,2,9,3);
 								vme_chn = getbits(*pdata,2,1,5);
-								event_out->vme_frs[vme_geo][vme_chn] = getbits(*pdata,1,1,16);
-								//printf("vme_frs[geo=%d][ch=%d] = %d\n",vme_geo,vme_chn,getbits(*pdata,1,1,16));
+				//				event_out->vme_frs[vme_geo][vme_chn] = getbits(*pdata,1,1,12);
+				//				printf("vme_frs[geo=%d][ch=%d] = %d\n",vme_geo,vme_chn,getbits(*pdata,1,1,12));
 								pdata++; len++; i_word++;
 							}
 						}
@@ -2103,11 +2137,13 @@ Bool_t TFRSUnpackProc::FillHistograms(TFRSUnpackEvent* event)
 	{
 	  if(hVME_USER_8[i])  hVME_USER_8[i]->Fill(event->vme_frs[8][i] & 0xfff);
 	  if(hVME_USER_9[i])  hVME_USER_9[i]->Fill(event->vme_frs[9][i] & 0xfff);
-	  if(hVME_USER_11[i])  hVME_USER_11[i]->Fill(event->vme_frs[11][i] & 0xfff);
+	  if(hVME_USER_10[i])  hVME_USER_10[i]->Fill(event->vme_frs[10][i] & 0xfff);
+	  //if(hVME_USER_11[i])  hVME_USER_11[i]->Fill(event->vme_frs[11][i] & 0xfff);
 	  if(hVME_USER_12[i]) hVME_USER_12[i]->Fill(event->vme_frs[12][i] & 0xfff);
 	  if(hVME_USER_8All)  hVME_USER_8All->Fill(i,event->vme_frs[8][i] & 0xfff);
 	  if(hVME_USER_9All)  hVME_USER_9All->Fill(i,event->vme_frs[9][i] & 0xfff);
-	  if(hVME_USER_11All)  hVME_USER_11All->Fill(i,event->vme_frs[11][i] & 0xfff);
+	  if(hVME_USER_10All)  hVME_USER_10All->Fill(i,event->vme_frs[10][i] & 0xfff);
+	  //if(hVME_USER_11All)  hVME_USER_11All->Fill(i,event->vme_frs[11][i] & 0xfff);
 	  if(hVME_USER_12All) hVME_USER_12All->Fill(i,event->vme_frs[12][i] & 0xfff);
 
 	  //	  if(5==i)  printf("UnpackProc tof2ll = %d\n",event->vme_frs[12][i]);fflush(stdout);//AAAAA

@@ -28,6 +28,7 @@ private:
   // KW this function returns nothing, and should be void
   //Bool_t TimeStampExtract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   void TimeStampExtract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
+  bool TimeStampExtract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   Bool_t Event_Extract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   Bool_t Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   
@@ -59,11 +60,13 @@ private:
   TH1I* hVME_USER_8[32];      //! FRS crate
   TH1I* hVME_USER_9[32];      //!
   TH1I* hVME_USER_2[32];     //!
-  TH1I* hVME_USER_11[32];     //!
+  TH1I* hVME_USER_10[32];     //!
+ // TH1I* hVME_USER_11[32];     //!
   TH1I* hVME_USER_12[32];     //!
   TH2I* hVME_USER_8All ;  //!
   TH2I* hVME_USER_9All ;  //!
-  TH2I* hVME_USER_11All;  //!
+  TH2I* hVME_USER_10All;  //!
+  //TH2I* hVME_USER_11All;  //!
   TH2I* hVME_USER_12All;  //!
 
   TH1I* hVME_TOF_11[32];     //! TOF crate
