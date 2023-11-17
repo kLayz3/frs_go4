@@ -1799,9 +1799,10 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 		case 40:	// --- vftx at S2 ---
 		{
 		// skip triva and vetar information
-			for(int ii=0; ii<8;ii++){
-				pdata++; len++;
-			}
+			// EDIT: VETAR s2 removed for now: 17.11.2023 --Martin 
+			//for(int ii=0; ii<8;ii++){
+			//	pdata++; len++;
+			//}
 			// VFTX
 			{
 			  if(getbits(*pdata,2,1,16) != 62720){ std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
