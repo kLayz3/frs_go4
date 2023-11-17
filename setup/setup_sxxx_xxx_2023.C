@@ -910,7 +910,7 @@ void setup_sxxx_xxx_2023()
   sci->mhtdc_offset_43_21  =  0.0; //ns
   sci->mhtdc_offset_31_21  =  0.0; //ns
   sci->mhtdc_offset_81_21  =  -400.0 + 165.214; //ns
-  sci->mhtdc_offset_41_22  =  203.3 //ns //s526 107Ag it was 253.3ns
+  sci->mhtdc_offset_41_22  =  203.3; //ns //s526 107Ag it was 253.3ns
   sci->mhtdc_offset_M01_21  =  -543.38095 + (681.88795 - 628.5) - 7.552; //ns 08.09.2021
   sci->mhtdc_offset_M01_22  =  0.0; //ns
 

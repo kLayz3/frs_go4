@@ -1,0 +1,2 @@
+17.11: Removed vetar from S2; what are mhtdc_offset files??? --Martin
+17.11: Bugfixed procID 40; unpacks VFTX correctly now --Martin
