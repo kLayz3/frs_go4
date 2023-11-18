@@ -1,2 +1,4 @@
 17.11: Removed vetar from S2; what are mhtdc_offset files??? --Martin
 17.11: Bugfixed procID 40; unpacks VFTX correctly now --Martin
+
+17.11: Fixed unpacking of V785 in TPC crate (set now to 'real' geo=13), changes in setup file

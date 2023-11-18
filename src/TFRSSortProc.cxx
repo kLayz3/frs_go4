@@ -311,7 +311,7 @@ Bool_t TFRSSortProc::BuildEvent(TGo4EventElement* output)
   tgt->de_42r = src->vme_main[14][5] & 0xfff;
 
   tgt->de_31l = src->vme_main[14][9] & 0xfff;
-  tgt->de_31r = src->vme_main[14][7] & 0xfff;
+  tgt->de_31r = src->vme_main[14][10] & 0xfff;
   tgt->de_43l = src->vme_main[14][11] & 0xfff;
   tgt->de_43r = src->vme_main[14][12] & 0xfff;
   //  tgt->de_81l = src->vme_main[11][13] & 0xfff; // changed on 21/Feb/2020 23:00
