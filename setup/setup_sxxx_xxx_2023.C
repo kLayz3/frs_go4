@@ -89,16 +89,16 @@ void setup_sxxx_xxx_2023()
   
   //=============distances=============//
   //S2
-  frs->dist_focS2 = 2012.5; //not correct.  need measured numbers !!
-  frs->dist_MW21  =  604.0; //not used
-  frs->dist_MW22  = 1782.5; //not used
-  frs->dist_TPC21 =  604.0; // not used
-  frs->dist_TPC22 = 1782.5; //not used
-  frs->dist_TPC23 = 1533.0; //from S450 FRS logbbok p39
-  frs->dist_TPC24 = 3794.0; //from S450 FRS logbbok p39
-  frs->dist_SC21  = 1704.0; //from S450 FRS logbbok p39
-  frs->dist_SC22  = 4010.0; //from S450 FRS logbbok p39
-  frs->dist_S2target = 1287.0; // S2 Xslit from S450 FRS logbbok p39
+  frs->dist_focS2 = 2012.5; //s2 disk eng-run 2023-11-16
+  frs->dist_MW21  =  604.0; //eng-run 2023-11-16
+  frs->dist_MW22  = 1782.5; //eng-run 2023-11-16
+  frs->dist_TPC21 =  604.0; // eng-run 2023-11-16
+  frs->dist_TPC22 = 1782.5; //eng-run 2023-11-16
+  frs->dist_TPC23 = 4560.0-1670.0; //eng-run 2023-11-16
+  frs->dist_TPC24 = 4560.0-578.5; //eng-run 2023-11-16
+  frs->dist_SC21  = 1554.5; //eng-run 2023-11-16
+  frs->dist_SC22  = 4560.0-1814.5; //eng-run 2023-11-16
+  frs->dist_S2target = 1228.0; // S2 Xslit from eng-run 2023-11-16
 
   //S4
   frs->dist_SC41    = 2156.0+125.0; // eng-run 2023-11-16
@@ -119,7 +119,7 @@ void setup_sxxx_xxx_2023()
   frs->dist_SC81 = 0;
   
   //=============switches=============//
-  id->x_s2_select   = 2; //1=tpc,2=sc21,3=sc22
+  id->x_s2_select   = 1; //1=tpc,2=sc21,3=sc22
   id->tof_s4_select = 1; //1=sc21-41, 2=sc21-42, 3=sc22-41 used for TAC and MHTDC
   id->tof_s8_select = 1; //1=sc21-81, 2=sc22-81
   
@@ -127,19 +127,19 @@ void setup_sxxx_xxx_2023()
   id->Z_HTM_select = 3; //1=sc21, 2=sc22, 3=scM01
   
   //=============primary Z and plot ranges=============//
-  frs->primary_z = 82.;   
-  id->min_aoq_plot = 1.8;
-  id->max_aoq_plot = 2.8;
-  id->min_z_plot   = 40;
-  id->max_z_plot   = 90;
+  frs->primary_z = 7.;   
+  id->min_aoq_plot = 1.5;
+  id->max_aoq_plot = 2.5;
+  id->min_z_plot   = 0;
+  id->max_z_plot   = 20;
    
   // bfield (Tm) for new control system. (we put rho = 1)
-  frs->bfield[0] = 13.3486;    // 208Pb, E=1000 MeV/u  Please do NOT comment-out old brho and add new brho. Please make a NEW setup file. 
-  frs->bfield[1] = 13.3486;    //  Please do NOT comment-out old brho and add new brho. Please make a NEW setup file. 
-  frs->bfield[2] = 9.7927;//202Os 25 mm shifted //  Please do NOT comment-out old brho and add new brho. Please make a NEW setup file. preparing for S450
-  frs->bfield[3] = 9.7927;//202Os 25 mm shifted //  Please do NOT comment-out old brho and add new brho. Please make a NEW setup file. preparing for S450
-  frs->bfield[4] = 4.8347; // D5 (to ESR) not used
-  frs->bfield[5] = 4.8347; // D6 (to S8)
+  frs->bfield[0] = 8.9310;    // 14N, 700 MeV/u, eng run  
+  frs->bfield[1] = 8.9310;    // 14N, 700 MeV/u, eng run 
+  frs->bfield[2] = 8.8540;   //  14N, 700 MeV/u, eng run 
+  frs->bfield[3] = 8.8540;   //  14N, 700 MeV/u, eng run 
+  frs->bfield[4] = 4.8347;   //  D5 (to ESR) not used
+  frs->bfield[5] = 4.8347;  //   D6 (to S8)
 
 
   // From here VFTXMulti-HitTDC analysis

@@ -74,11 +74,11 @@ private:
   TH2I* hVME_TOF_11All;  //!
   TH2I* hVME_TOF_16All;  //!
         	
-  TH1I* hVME_TPCS2_8[32];     //! TPCS2 crate
+  TH1I* hVME_TPCS2_13[32];     //! TPCS2 crate
   TH1I* hVME_TPCS2_12[32];    //!
   TH1I* hVME_TPCS4_0[32];     //! TPCS4 crate
   TH1I* hVME_TPCS4_1[32];     //!
-  TH2I* hVME_TPCS2_8All;  //!
+  TH2I* hVME_TPCS2_13All;  //!
   TH2I* hVME_TPCS2_12All;  //!
   TH2I* hVME_TPCS4_0All;  //!
   TH2I* hVME_TPCS4_1All;  //!

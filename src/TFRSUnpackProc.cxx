@@ -83,7 +83,7 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
       hVME_USER_2[n]  = MakeH1ISeries("Unpack/VME_USER",  2, 36, n, remove_histos);// should be different number from others. change from 3 to 2 in the second input
       hVME_TOF_11[n] = MakeH1ISeries("Unpack/VME_TOF", 11, 12, n, remove_histos); //S2 crate
       hVME_TOF_16[n] = MakeH1ISeries("Unpack/VME_TOF", 16, 12, n, remove_histos);
-      hVME_TPCS2_8[n]   = MakeH1ISeries("Unpack/VME_TPCS2", 8,  5, n, remove_histos);
+      hVME_TPCS2_13[n]   = MakeH1ISeries("Unpack/VME_TPCS2", 13,  5, n, remove_histos);
       hVME_TPCS2_12[n]  = MakeH1ISeries("Unpack/VME_TPCS2", 12, 5, n, remove_histos);
       //hVME_TPCS4_0[n]   = MakeH1ISeries("Unpack/VME_TPCS4", 0,  3, n, remove_histos);
       //hVME_TPCS4_1[n]   = MakeH1ISeries("Unpack/VME_TPCS4", 1,  3, n, remove_histos);
@@ -134,7 +134,7 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
   hVME_USER_12All = MakeH2I("Unpack/VME_USER","VME_USER_12_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_TOF_11All = MakeH2I("Unpack/VME_TOF","VME_FRS_11_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_TOF_16All = MakeH2I("Unpack/VME_TOF","VME_FRS_16_AllCh",32,0,32,512,0,4096,"#Ch","",1);
-  hVME_TPCS2_8All  = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_08_AllCh",32,0,32,512,0,4096,"#Ch","",1);
+  hVME_TPCS2_13All  = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_13_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_TPCS2_12All = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_12_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_TPCS2_V1190All = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_V1190_AllCh",128,0,128,400,0,60000,"#Ch","TDC val",1);
 //  hVME_TPCS4_0All  = MakeH2I("Unpack/VME_TPCS4","VME_TPCS4_00_AllCh",32,0,32,512,0,4096,"#Ch","",1);
@@ -1685,7 +1685,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 								vme_geo = getbits(*pdata,2,12,5);
 								vme_type = getbits(*pdata,2,9,3);
 								vme_chn = getbits(*pdata,2,1,5);
-				//				event_out->vme_frs[vme_geo][vme_chn] = getbits(*pdata,1,1,12);
+								event_out->vme_tpcs2[vme_geo][vme_chn] = getbits(*pdata,1,1,12);
 				//				printf("vme_frs[geo=%d][ch=%d] = %d\n",vme_geo,vme_chn,getbits(*pdata,1,1,12));
 								pdata++; len++; i_word++;
 							}
@@ -2169,11 +2169,11 @@ Bool_t TFRSUnpackProc::FillHistograms(TFRSUnpackEvent* event)
      
       for(int i=0;i<32;i++)
 	{
-	  if (hVME_TPCS2_8[i] ) hVME_TPCS2_8[i] ->Fill(event->vme_tpcs2[8][i] & 0xfff);
+	  if (hVME_TPCS2_13[i] ) hVME_TPCS2_13[i] ->Fill(event->vme_tpcs2[13][i] & 0xfff);
 	  if (hVME_TPCS2_12[i]) hVME_TPCS2_12[i]->Fill(event->vme_tpcs2[12][i] & 0xfff);
 	  //if (hVME_TPCS4_0[i] ) hVME_TPCS4_0[i] ->Fill(event->vme_tpcs4[0][i] & 0xfff);
 	  //if (hVME_TPCS4_1[i] ) hVME_TPCS4_1[i] ->Fill(event->vme_tpcs4[1][i] & 0xfff);
-	  if (hVME_TPCS2_8All ) hVME_TPCS2_8All ->Fill(i,event->vme_tpcs2[8][i] & 0xfff);
+	  if (hVME_TPCS2_13All ) hVME_TPCS2_13All ->Fill(i,event->vme_tpcs2[13][i] & 0xfff);
 	  if (hVME_TPCS2_12All) hVME_TPCS2_12All->Fill(i,event->vme_tpcs2[12][i] & 0xfff);
 	  //if (hVME_TPCS4_0All ) hVME_TPCS4_0All ->Fill(i,event->vme_tpcs4[0][i] & 0xfff);
 	  //if (hVME_TPCS4_1All ) hVME_TPCS4_1All ->Fill(i,event->vme_tpcs4[1][i] & 0xfff);
