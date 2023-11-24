@@ -64,6 +64,7 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
       
       hVME_MAIN_TDC_V1290[n]  = MakeH1ISeriesV1290raw("Unpack/VME_MAIN/TDC_V1290_MUSIC41_42_and_Sci", 0, 94, n, remove_histos);
       hVME_MAIN_TDC_V1290_Multip[n]  = MakeH1ISeriesV1290multip("Unpack/VME_MAIN/TDC_V1290_MUSIC41_42_and_Sci", 0, 94, n, remove_histos);
+      hVME_MAIN_TDC_V1290_hit[n] = MakeH1I("Unpack/VME_MAIN/TDC_V1290_MUSIC41_42_and_Sci/00", Form("newHit_v1290_%d",n), 10, 0, 10, "hits", 2, 3, "");   // multi-hit of v1290
       //hVME_MAIN_TDC_V1290[n]  = MakeH1ISeriesLabel("Unpack/VME_MAIN/TDC_V1290_MUSIC41_42_and_Sci", "TDC_V1290", 0, n, remove_histos);
       //hVME_MAIN_TDC_V1290_Multip[n]  = MakeH1ISeriesLabel("Unpack/VME_MAIN/TDC_V1290_MUSIC41_42_and_Sci", "TDC_V1290_multip", 0, n, remove_histos);
       
@@ -1602,6 +1603,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 					Int_t multihit = 0;					
 					if(vme_type == 8){ // Global header
 						bool in_event = 0;
+						Int_t vme_chn = 0;
 						for(int i_word=2; i_word<= words;i_word++){
 							vme_type = getbits(*pdata,2,12,5);
 							//printf("ProcID 10, geo %d, type %d, word %d\n", vme_geo, vme_type,i_word);
@@ -1610,7 +1612,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 							}
 							if(vme_type == 0 && in_event == 1){// this indicates a TDC measurement
 
-								Int_t vme_chn = getbits(*pdata,2,6,5);
+								vme_chn = getbits(*pdata,2,6,5);
 								Int_t LeadingOrTrailing = getbits(*pdata,2,11,1);
 								Int_t value = getbits(*pdata,1,1,21);
 
@@ -1618,7 +1620,8 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 								if(LeadingOrTrailing == 0){
 									if (value > 0){
 										event_out->leading_v1290_main[vme_chn][multihit] = value;
-										hVME_MAIN_TDC_V1290[vme_chn]->Fill(value); 
+										hVME_MAIN_TDC_V1290_Multip[vme_chn]->Fill(value);
+										if(multihit == 0) hVME_MAIN_TDC_V1290[vme_chn]->Fill(value); 
 									}
 									//printf("leading_v1290_main[%d][%d] = %d\n",vme_chn,multihit,value);
 								}
@@ -1636,8 +1639,9 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 							if(vme_type == 3 && in_event != 1){	
 								std::cout<<"E> ProcID 10 MTDC type 3 without header (word " << i_word << " of "<< words <<"):"<< std::hex << *pdata << std::dec<<std::endl;
 							}							
-							if(vme_type==3 && in_event == 1){ // TDC trailer						
-								in_event = 0;
+							if(vme_type==3 && in_event == 1){ // TDC trailer
+							  hVME_MAIN_TDC_V1290_hit[vme_chn]->Fill(multihit);
+							  in_event = 0;
 							}
 							if(vme_type==4){ // Error status
 								std::cout<<"E> ProcID 10 MTDC error data found (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;

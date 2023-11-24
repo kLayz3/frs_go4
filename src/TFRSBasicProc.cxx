@@ -179,13 +179,13 @@ TH1I* TFRSBasicProc::MakeH1ISeriesLabel(const char* foldername, Int_t seriesnumb
 TH1I* TFRSBasicProc::MakeH1ISeriesV1290raw(const char* foldername, Int_t seriesnumber, Int_t crate, Int_t number, Bool_t remove)
 {
   char fullfoldername[100];                                    
-  sprintf(fullfoldername,"%s/%02d", foldername, seriesnumber);
+  sprintf(fullfoldername,"%s/%02d/first_hit", foldername, seriesnumber);
   char histoname[50];
   sprintf(histoname,"newVME%02d_%02d_%02d", crate, seriesnumber, number); 
   if (remove)
     {
       char fullname[200]; 
-      sprintf(fullname,"%s/%s",fullfoldername,histoname);
+      sprintf(fullname,"%s/%s/first_hit",fullfoldername,histoname);
       RemoveHistogram(fullname); 
       return 0;   
     }
@@ -195,17 +195,17 @@ TH1I* TFRSBasicProc::MakeH1ISeriesV1290raw(const char* foldername, Int_t seriesn
 TH1I* TFRSBasicProc::MakeH1ISeriesV1290multip(const char* foldername, Int_t seriesnumber, Int_t crate, Int_t number, Bool_t remove)
 {
   char fullfoldername[100];                                    
-  sprintf(fullfoldername,"%s/%02d", foldername, seriesnumber);
+  sprintf(fullfoldername,"%s/%02d/multihit", foldername, seriesnumber);
   char histoname[50];
   sprintf(histoname,"Multip%02d_%02d_%02d", crate, seriesnumber, number); 
   if (remove)
     {
       char fullname[200]; 
-      sprintf(fullname,"%s/%s",fullfoldername,histoname);
+      sprintf(fullname,"%s/%s/multihit",fullfoldername,histoname);
       RemoveHistogram(fullname); 
       return 0;   
     }
-  return MakeH1I(fullfoldername, histoname, 20, 0, 20);
+  return MakeH1I(fullfoldername, histoname, 4000, 0, 200000);
 }
 
 TH1I* TFRSBasicProc::MakeH1ISeriesV1190raw(const char* foldername, Int_t seriesnumber, Int_t crate, Int_t number, Bool_t remove)

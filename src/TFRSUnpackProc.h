@@ -55,6 +55,7 @@ private:
   TH2I* hVME_MAIN_14All;  //!
   TH1I* hVME_MAIN_TDC_V1290[32];      //!
   TH1I* hVME_MAIN_TDC_V1290_Multip[32];      //!
+  TH1I* hVME_MAIN_TDC_V1290_hit[32];
   TH1I* hVME_MRTOF_TDC_V1190[32];      //
 
   TH1I* hVME_USER_8[32];      //! FRS crate
