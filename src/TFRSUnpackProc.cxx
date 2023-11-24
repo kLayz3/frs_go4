@@ -224,6 +224,7 @@ Int_t get2bits(Int_t value, int nword, int start, int length)
   return buf;
 }
 
+int myevent;
 Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 {
 
@@ -246,7 +247,7 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
   //std::cout << "Event Nr = " << tgt->qevent_nr << std::endl;
 
   // KW these variables were never used
-  //int myevent ; myevent = tgt->qevent_nr ;
+  myevent = tgt->qevent_nr ;
   //int strange ; strange =0 ; 
 
 
@@ -283,7 +284,7 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 	  psubevt->PrintEvent();
 
 #endif
-
+	  //std::cout << "Event Nr = " << tgt->qevent_nr << std::endl;
 	  // print data in a similar style as type ev -v
 	  if(0){
 	    int temp_procid = psubevt->GetProcid();
@@ -1474,7 +1475,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 		{
 			//----  CAEN V820 ---
 			{ 
-				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed !" << *pdata  << std::endl; }
+				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 30 : Barrier missed !" << *pdata  << std::endl; }
 				else{//Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
@@ -1496,7 +1497,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			while (len < lenMax){
 				//----  CAEN V775 and V785---
 				{ 
-					if(get_bits(*pdata,16,31) != 0xf520){ std::cout<<"E> ProcID 30 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
+					if(get_bits(*pdata,16,31) != 0xf520){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 30 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
 					else{Int_t words = get_bits(*pdata,0,15);
 						//std::cout<< "Number of words of this modul: "<< words << std::endl;
 						pdata++; len++;
@@ -1543,7 +1544,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			}
 			//----  CAEN V820 ---
 			{ 
-				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
+				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
 				else{//Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
@@ -1564,7 +1565,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			
 			//----  CAEN V792 ---
 			{
-				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
+				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
 				else{//Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
@@ -1590,7 +1591,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			
 			//----  CAEN V1290 ---
 			{
-				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
+				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
 				else{Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
@@ -1667,7 +1668,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			for (int ii=0; ii < 2;ii++){ // read out 2 of them
 				//----  CAEN V775 and V785---
 				{ 
-					if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 20 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
+					if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 20 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
 					else{Int_t words = getbits(*pdata,1,1,16);
 						//std::cout<< "Number of words of this modul: "<< words << std::endl;
 						pdata++; len++;
@@ -1686,7 +1687,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 								vme_type = getbits(*pdata,2,9,3);
 								vme_chn = getbits(*pdata,2,1,5);
 								event_out->vme_tpcs2[vme_geo][vme_chn] = getbits(*pdata,1,1,12);
-				//				printf("vme_frs[geo=%d][ch=%d] = %d\n",vme_geo,vme_chn,getbits(*pdata,1,1,12));
+								//printf("vme_tpcs2[geo=%d][ch=%d] = %d\n",vme_geo,vme_chn,getbits(*pdata,1,1,12));
 								pdata++; len++; i_word++;
 							}
 						}
@@ -1706,7 +1707,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			
 			//----  CAEN V1190 ---
 			{
-				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> ProcID 20 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
+			  if(getbits(*pdata,2,1,16) != 62752 && getbits(*pdata,2,1,16) != 62848){std::cout<<"E> Event Nr: "<< myevent <<",  ProcID 20 : Barrier V1190 missed! " << std::hex << *pdata <<std::dec << std::endl; }
 				else {
 					Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
@@ -1806,8 +1807,8 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			// VFTX
 				  {
 							 // first 4 bits are reserved for ID: in S2 case, it's 0 //
-							 if(get_bits(*pdata,4,31) != 0xab00000){ std::cout<<"E> ProcID 40 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
-							 else if(get_bits(*pdata,0,4) != 0) { std::cout<<"E> ProcID 40 : VFTX ID should be 0, is: " << std::hex << get_bits(*pdata,0,4) <<std::dec << std::endl; }
+							 if(get_bits(*pdata,4,31) != 0xab00000){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 40 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
+							 else if(get_bits(*pdata,0,4) != 0) { std::cout<<"E> Event Nr: "<< myevent <<", ProcID 40 : VFTX ID should be 0, is: " << std::hex << get_bits(*pdata,0,4) <<std::dec << std::endl; }
 							 else{ // is good
 										// skip next two words: which are always trigger window register and status register
 										pdata+=3;
@@ -1866,7 +1867,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 					// std::cout << "VLC header for MTDC-32: " << std::hex << *pdata <<std::dec << std::endl;
 					pdata++; len++; // Barrier detected. Good to go ahead
 				}
-				else {std::cout<<"E> ProcID 40: Barrier missed! " << std::hex << *pdata <<std::dec << std::endl;}
+				else {std::cout<<"E> Event Nr: "<< myevent <<", ProcID 40: Barrier missed! " << std::hex << *pdata <<std::dec << std::endl;}
 
 				// No. of words from MTDC-32 header. NOT from MVLC header.
 				// For me, MTDC-32 manual is easy and quick to follow.
@@ -1939,7 +1940,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 					// std::cout << "VLC header for MQDC-32: " << std::hex << *pdata <<std::dec << std::endl;
 					pdata++; len++; // Barrier detected. Good to go ahead
 				}
-				else {std::cout<<"E> ProcID 40: Barrier missed! " << std::hex << *pdata <<std::dec << std::endl;}
+				else {std::cout<<"E> Event Nr: "<< myevent <<", ProcID 40: Barrier missed! " << std::hex << *pdata <<std::dec << std::endl;}
 
 				// No. of words from MQDC-32 header. NOT from MVLC header.
 				// For me, MQDC-32 manual is easy and quick to follow.
@@ -2177,6 +2178,7 @@ Bool_t TFRSUnpackProc::FillHistograms(TFRSUnpackEvent* event)
 	  if (hVME_TPCS2_12All) hVME_TPCS2_12All->Fill(i,event->vme_tpcs2[12][i] & 0xfff);
 	  //if (hVME_TPCS4_0All ) hVME_TPCS4_0All ->Fill(i,event->vme_tpcs4[0][i] & 0xfff);
 	  //if (hVME_TPCS4_1All ) hVME_TPCS4_1All ->Fill(i,event->vme_tpcs4[1][i] & 0xfff);
+	  //printf("UnpackProc vme_tpcs2 = %d\n",event->vme_tpcs2[13][i]);fflush(stdout);//AAAAA
 	}
 
     for (int i=0;i<32;i++)

@@ -222,34 +222,34 @@ Bool_t TFRSSortProc::BuildEvent(TGo4EventElement* output)
   tgt->tpc_r[3][1]=src->vme_tpcs2[12][31] & 0xfff;
 
   //TPC 5  at S4 (TPC 41) in air
-  tgt->tpc_a[4][0]=src->vme_tpcs2[2][0] & 0xfff;
-  tgt->tpc_a[4][1]=src->vme_tpcs2[2][1] & 0xfff;
-  tgt->tpc_a[4][2]=src->vme_tpcs2[2][2] & 0xfff;
-  tgt->tpc_a[4][3]=src->vme_tpcs2[2][3] & 0xfff;
-  tgt->tpc_l[4][0]=src->vme_tpcs2[2][4] & 0xfff;
-  tgt->tpc_r[4][0]=src->vme_tpcs2[2][5] & 0xfff;
-  tgt->tpc_l[4][1]=src->vme_tpcs2[2][6] & 0xfff;
-  tgt->tpc_r[4][1]=src->vme_tpcs2[2][7] & 0xfff;
+  tgt->tpc_a[4][0]=src->vme_tpcs2[13][0] & 0xfff;
+  tgt->tpc_a[4][1]=src->vme_tpcs2[13][1] & 0xfff;
+  tgt->tpc_a[4][2]=src->vme_tpcs2[13][2] & 0xfff;
+  tgt->tpc_a[4][3]=src->vme_tpcs2[13][3] & 0xfff;
+  tgt->tpc_l[4][0]=src->vme_tpcs2[13][4] & 0xfff;
+  tgt->tpc_r[4][0]=src->vme_tpcs2[13][5] & 0xfff;
+  tgt->tpc_l[4][1]=src->vme_tpcs2[13][6] & 0xfff;
+  tgt->tpc_r[4][1]=src->vme_tpcs2[13][7] & 0xfff;
 
   //TPC 6 at S4 (TPC 42) in air
-  tgt->tpc_a[5][0]=src->vme_tpcs2[2][8] & 0xfff;
-  tgt->tpc_a[5][1]=src->vme_tpcs2[2][9] & 0xfff;
-  tgt->tpc_a[5][2]=src->vme_tpcs2[2][10] & 0xfff;
-  tgt->tpc_a[5][3]=src->vme_tpcs2[2][11] & 0xfff;
-  tgt->tpc_l[5][0]=src->vme_tpcs2[2][12] & 0xfff;
-  tgt->tpc_r[5][0]=src->vme_tpcs2[2][13] & 0xfff;
-  tgt->tpc_l[5][1]=src->vme_tpcs2[2][14] & 0xfff;
-  tgt->tpc_r[5][1]=src->vme_tpcs2[2][15] & 0xfff;
+  tgt->tpc_a[5][0]=src->vme_tpcs2[13][8] & 0xfff;
+  tgt->tpc_a[5][1]=src->vme_tpcs2[13][9] & 0xfff;
+  tgt->tpc_a[5][2]=src->vme_tpcs2[13][10] & 0xfff;
+  tgt->tpc_a[5][3]=src->vme_tpcs2[13][11] & 0xfff;
+  tgt->tpc_l[5][0]=src->vme_tpcs2[13][12] & 0xfff;
+  tgt->tpc_r[5][0]=src->vme_tpcs2[13][13] & 0xfff;
+  tgt->tpc_l[5][1]=src->vme_tpcs2[13][14] & 0xfff;
+  tgt->tpc_r[5][1]=src->vme_tpcs2[13][15] & 0xfff;
 
   //TPC at S3 (TPC 31) (checkSB)
-  tgt->tpc_a[6][0]=src->vme_tpcs2[2][16] & 0xfff;
-  tgt->tpc_a[6][1]=src->vme_tpcs2[2][17] & 0xfff;
-  tgt->tpc_a[6][2]=src->vme_tpcs2[2][18] & 0xfff;
-  tgt->tpc_a[6][3]=src->vme_tpcs2[2][19] & 0xfff;
-  tgt->tpc_l[6][0]=src->vme_tpcs2[2][20] & 0xfff;
-  tgt->tpc_r[6][0]=src->vme_tpcs2[2][21] & 0xfff;
-  tgt->tpc_l[6][1]=src->vme_tpcs2[2][22] & 0xfff;
-  tgt->tpc_r[6][1]=src->vme_tpcs2[2][23] & 0xfff;
+  tgt->tpc_a[6][0]=src->vme_tpcs2[13][16] & 0xfff;
+  tgt->tpc_a[6][1]=src->vme_tpcs2[13][17] & 0xfff;
+  tgt->tpc_a[6][2]=src->vme_tpcs2[13][18] & 0xfff;
+  tgt->tpc_a[6][3]=src->vme_tpcs2[13][19] & 0xfff;
+  tgt->tpc_l[6][0]=src->vme_tpcs2[13][20] & 0xfff;
+  tgt->tpc_r[6][0]=src->vme_tpcs2[13][21] & 0xfff;
+  tgt->tpc_l[6][1]=src->vme_tpcs2[13][22] & 0xfff;
+  tgt->tpc_r[6][1]=src->vme_tpcs2[13][23] & 0xfff;
 
 
   //TDC
