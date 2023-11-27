@@ -472,7 +472,7 @@ void setup_sxxx_xxx_2023()
   //  tpc->lim_timeref[1][0] = 1000.0; tpc->lim_timeref[1][1] = 48500.0;//time ref (sc21)
   tpc->lim_timeref[1][0] = 21000.0; tpc->lim_timeref[1][1] = 24000.0;//time ref (sc21) changed to narrow gate, 15:00 2022-May-12
   tpc->lim_timeref[2][0] = 1000.0; tpc->lim_timeref[2][1] = 48500.0;//time ref (sc22)
-  tpc->lim_timeref[3][0] = 1000.0; tpc->lim_timeref[3][1] = 48000.0;//time ref (sc31)
+  tpc->lim_timeref[3][0] = 1000.0; tpc->lim_timeref[3][1] = 50000.0;//time ref (sc31)
   tpc->lim_timeref[4][0] = 1000.0; tpc->lim_timeref[4][1] = 48000.0;//time ref (sc41)
   tpc->lim_timeref[5][0] = 2000.0; tpc->lim_timeref[5][1] = 48000.0;//time ref (---)
   tpc->lim_timeref[6][0] = 2000.0; tpc->lim_timeref[6][1] = 48000.0;//time ref (---)
@@ -699,10 +699,10 @@ void setup_sxxx_xxx_2023()
   tpc->lim_dt[6][1][0] = 2000.;  tpc->lim_dt[6][1][1] = 48000.0; //A12 drift time TDC cut
   tpc->lim_dt[6][2][0] = 2000.;  tpc->lim_dt[6][2][1] = 48000.0; //A21 drift time TDC cut
   tpc->lim_dt[6][3][0] = 2000.;  tpc->lim_dt[6][3][1] = 48000.0; //A22 drift time TDC cut
-  tpc->lim_lt[6][0][0] = 2000.;  tpc->lim_lt[6][0][1] = 48000.0; //DL1 time TDC cut
-  tpc->lim_rt[6][0][0] = 2000.;  tpc->lim_rt[6][0][1] = 48000.0; //DR1 time TDC cut
-  tpc->lim_lt[6][1][0] = 2000.;  tpc->lim_lt[6][1][1] = 48000.0; //DL2 time TDC cut
-  tpc->lim_rt[6][1][0] = 2000.;  tpc->lim_rt[6][1][1] = 48000.0; //DL2 time TDC cut
+  tpc->lim_lt[6][0][0] = 2000.;  tpc->lim_lt[6][0][1] = 50000.0; //DL1 time TDC cut
+  tpc->lim_rt[6][0][0] = 2000.;  tpc->lim_rt[6][0][1] = 50000.0; //DR1 time TDC cut
+  tpc->lim_lt[6][1][0] = 2000.;  tpc->lim_lt[6][1][1] = 50000.0; //DL2 time TDC cut
+  tpc->lim_rt[6][1][0] = 2000.;  tpc->lim_rt[6][1][1] = 50000.0; //DL2 time TDC cut
   tpc->lim_csum1[6][0] = 11500.0;    tpc->lim_csum1[6][1] = 14500.0;
   tpc->lim_csum2[6][0] = 11000.0;    tpc->lim_csum2[6][1] = 14000.0;
   tpc->lim_csum3[6][0] = 12500.0;    tpc->lim_csum3[6][1] = 14200.0;
@@ -781,6 +781,17 @@ void setup_sxxx_xxx_2023()
   sci->x_a[6][3] =  0.000000;  //
   sci->le_a[0][3] = 0.0;
   sci->re_a[0][3] = 0.0;
+
+  //index 4 for Sc31
+  sci->x_a[0][4] =  600.0;  // SC31 calibration ch->mm
+  sci->x_a[1][4] =  -0.29;  //
+  sci->x_a[2][4] =  0.000000;  // 
+  sci->x_a[3][4] =  0.000000;  // 
+  sci->x_a[4][4] =  0.000000;  //
+  sci->x_a[5][4] =  0.000000;  //
+  sci->x_a[6][4] =  0.000000;  //
+  sci->le_a[0][4] = 0.0;
+  sci->re_a[0][4] = 0.0;
 
   // index 5 for Sc41
   sci->x_a[0][5] = 641.56;  //  quickly done for s452 on 08.03.2021 (from online)
@@ -901,14 +912,14 @@ void setup_sxxx_xxx_2023()
   sci->mhtdc_offset_41l_41r  =  584.927;          sci->mhtdc_factor_41l_41r = 69.4128; // pos = offset + factor*dt
   sci->mhtdc_offset_42l_42r  =  0.0;              sci->mhtdc_factor_42l_42r = 60.0; // pos = offset + factor*dt
   sci->mhtdc_offset_43l_43r  =  0.0;              sci->mhtdc_factor_43l_43r = 60.0; // pos = offset + factor*dt
-  sci->mhtdc_offset_31l_31r  =  0.0;              sci->mhtdc_factor_31l_31r = 60.0; // pos = offset + factor*dt
+  sci->mhtdc_offset_31l_31r  =  910.7;             sci->mhtdc_factor_31l_31r = 60.0; // pos = offset + factor*dt
   sci->mhtdc_offset_81l_81r  =  -410.411;         sci->mhtdc_factor_81l_81r = 43.691; // pos = offset + factor*dt
   sci->mhtdc_offset_22l_22r  =  -39.6625+20.0;    sci->mhtdc_factor_22l_22r = 62.5341;  // pos = offset + factor*dt
   sci->mhtdc_offset_M01l_M01r  =  338.677 + 650 + 14.0;    sci->mhtdc_factor_M01l_M01r = 52.6692; //rough guess with scattered particles
   sci->mhtdc_offset_41_21  =  171.4 ; //ns //s450 208Pb
   sci->mhtdc_offset_42_21  =  171.5; //ns // s452 Pb 210311
   sci->mhtdc_offset_43_21  =  0.0; //ns
-  sci->mhtdc_offset_31_21  =  0.0; //ns
+  sci->mhtdc_offset_31_21  =  85.0; //ns
   sci->mhtdc_offset_81_21  =  -400.0 + 165.214; //ns
   sci->mhtdc_offset_41_22  =  203.3; //ns //s526 107Ag it was 253.3ns
   sci->mhtdc_offset_M01_21  =  -543.38095 + (681.88795 - 628.5) - 7.552; //ns 08.09.2021
