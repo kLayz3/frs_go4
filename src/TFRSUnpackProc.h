@@ -83,6 +83,7 @@ private:
   TH2I* hVME_TPCS2_12All;  //!
   TH2I* hVME_TPCS4_0All;  //!
   TH2I* hVME_TPCS4_1All;  //!
+  TH2I* hVME_TPCS2_V1190All_firsthit;
   TH2I* hVME_TPCS2_V1190All;
 
   TH1I* hVME_ACTSTOP_10[32]; //!

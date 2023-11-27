@@ -137,6 +137,7 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
   hVME_TOF_16All = MakeH2I("Unpack/VME_TOF","VME_FRS_16_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_TPCS2_13All  = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_13_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_TPCS2_12All = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_12_AllCh",32,0,32,512,0,4096,"#Ch","",1);
+  hVME_TPCS2_V1190All_firsthit = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_V1190_AllCh_firsthit",128,0,128,400,0,60000,"#Ch","TDC val",1);
   hVME_TPCS2_V1190All = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_V1190_AllCh",128,0,128,400,0,60000,"#Ch","TDC val",1);
 //  hVME_TPCS4_0All  = MakeH2I("Unpack/VME_TPCS4","VME_TPCS4_00_AllCh",32,0,32,512,0,4096,"#Ch","",1);
 //  hVME_TPCS4_1All  = MakeH2I("Unpack/VME_TPCS4","VME_TPCS4_01_AllCh",32,0,32,512,0,4096,"#Ch","",1);
@@ -1755,6 +1756,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 										event_out->nhit_v1190_tpcs2[vme_chn]++;
 									}
 									//printf("leading_v1190_tpcs2[%d][%d] = %d\n",vme_chn,multihit,value);
+									if(multihit==0){hVME_TPCS2_V1190All_firsthit->Fill(vme_chn,value);}
 									hVME_TPCS2_V1190All->Fill(vme_chn,value);
 								}
 								else{
