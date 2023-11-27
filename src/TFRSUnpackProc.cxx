@@ -1711,7 +1711,10 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			
 			//----  CAEN V1190 ---
 			{
-			  if(getbits(*pdata,2,1,16) != 62752 && getbits(*pdata,2,1,16) != 62848){std::cout<<"E> Event Nr: "<< myevent <<",  ProcID 20 : Barrier V1190 missed! " << std::hex << *pdata <<std::dec << std::endl; }
+			  if(getbits(*pdata,2,1,16) != 62752){
+			    if(getbits(*pdata,2,1,16) == 62848){std::cout<<"E> Event Nr: "<< myevent <<",  ProcID 20 : Strange event! " << std::hex << *pdata <<std::dec << std::endl;}
+			    else{std::cout<<"E> Event Nr: "<< myevent <<",  ProcID 20 : Barrier V1190 missed! " << std::hex << *pdata <<std::dec << std::endl;}
+			  }
 				else {
 					Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
