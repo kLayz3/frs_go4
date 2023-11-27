@@ -2002,6 +2002,62 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			
 		}
 		break;
+		//================
+		case 35:	// --- travelling MUSIC crate ---
+		{
+		  if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 30 : Barrier missed !" << *pdata  << std::endl; }
+		  else{//-----MDPP module----- (do not remove this bracket)
+		    pdata++; len++;
+		    // header
+		    Int_t header = *pdata;
+		    Int_t nword_mdpp = (0x3FF & header);
+		    pdata++; len++ ;
+
+		    // main data (data or time information or end counter)
+		    for(int ii=0; ii<nword_mdpp; ii++){
+		      int tmp_data = *pdata;
+		      if( 1 == (0xF & (tmp_data>>28))   ){
+			int tmp_data = *pdata;
+			//printf("real data 0x%08x\n",tmp_data);
+			int ch = 0x1F & (tmp_data >> 16);
+			int trigger = 0x1 & (tmp_data >> 21);
+			// printf("ch = %2d, trigger = %2d\n",ch,trigger);
+			if(trigger == 0){
+			  if(0<=ch && ch<=15){
+			    int adc_data = 0xFFFF & tmp_data;
+			    //printf("ADC data !!! ch = %2d, ADC = %d \n",ch, adc_data);
+			    if( (event_out->vme_trmu_adc[ch]) <= 0 ){ //first-come-first-served, for detailed multi-hit analysis, investigation needed.
+			      event_out->vme_trmu_adc[ch] = adc_data;
+			      //  printf("event_out->vme_trmu_adc[%d] = 0x%08x; \n",ch,adc_data);
+			    }
+			  }else if(16<=ch && ch<=31){
+			    int tdc_data = 0xFFFF & tmp_data;
+			    //printf("TDC data !!! ch = %2d, TDC = %d \n",ch-16, tdc_data);
+			    if( (event_out->vme_trmu_tdc[ch-16]) <= 0 ){//first-come-first-served, for detailed multi-hit analysis, investigation needed.
+			      event_out->vme_trmu_tdc[ch-16] = tdc_data;
+			      //////        	 printf("event_out->vme_trmu_tdc[%d] = 0x%08x; \n",ch-16,tdc_data);
+			    }
+			  }
+			}else if (trigger == 1){
+			  int trigger_data = 0xFFFF & tmp_data;
+			  // printf("Trigger time stamp !!! ch = %2d, Tigger time stamp = %d \n",ch, trigger_data);
+			  event_out->vme_trmu_trigger[ch] = trigger_data;
+			  //  printf("event_out->vme_trmu_adc[%d] = 0x%08x; \n",ch,adc_data);
+			}
+		      }else if( 2 == (0xF & (tmp_data>>28))){
+			// printf("ext time stamp 0x%08x\n",tmp_data);
+		      }else if(0x0 == tmp_data ){
+			// printf("dummy 0x%08x\n",tmp_data);
+		      }else if( 3 == (0x3 & (tmp_data>>30))){
+			// printf("end counter 0x%08x\n",tmp_data);
+		      }else{
+			/// printf("unknown data0x%08x\n",tmp_data);
+		      }
+		      pdata++; len++ ;
+		    }
+		  }//---end of MDPP module ---
+		}
+		break;
 	} // end switch prodID
 	return kTRUE;
 }
