@@ -469,14 +469,13 @@ void setup_sxxx_xxx_2023()
   // After changing cut limits => Launch analysis again in Go4GUI
   // [Updated on 2021/Mar/21, YT, EH, IM] to catch all timeref signals.
   tpc->lim_timeref[0][0] = 1000.0; tpc->lim_timeref[0][1] = 48000.0;//time ref (accept trig)
-  //  tpc->lim_timeref[1][0] = 1000.0; tpc->lim_timeref[1][1] = 48500.0;//time ref (sc21)
-  tpc->lim_timeref[1][0] = 21000.0; tpc->lim_timeref[1][1] = 24000.0;//time ref (sc21) changed to narrow gate, 15:00 2022-May-12
+  tpc->lim_timeref[1][0] = 5000.0; tpc->lim_timeref[1][1] = 20000.0;//time ref (sc21) changed to narrow gate, 2023-Nov-28
   tpc->lim_timeref[2][0] = 1000.0; tpc->lim_timeref[2][1] = 48500.0;//time ref (sc22)
-  tpc->lim_timeref[3][0] = 1000.0; tpc->lim_timeref[3][1] = 50000.0;//time ref (sc31)
-  tpc->lim_timeref[4][0] = 1000.0; tpc->lim_timeref[4][1] = 48000.0;//time ref (sc41)
-  tpc->lim_timeref[5][0] = 2000.0; tpc->lim_timeref[5][1] = 48000.0;//time ref (---)
-  tpc->lim_timeref[6][0] = 2000.0; tpc->lim_timeref[6][1] = 48000.0;//time ref (---)
-  tpc->lim_timeref[7][0] = 2000.0; tpc->lim_timeref[7][1] = 48000.0;//time ref (---)
+  tpc->lim_timeref[3][0] = 5000.0; tpc->lim_timeref[3][1] = 20000.0;//time ref (sc31) changed to narrow gate, 2023-Nov-28
+  tpc->lim_timeref[4][0] = 5000.0; tpc->lim_timeref[4][1] = 20000.0;//time ref (sc41) changed to narrow gate, 2023-Nov-28
+  tpc->lim_timeref[5][0] = 1000.0; tpc->lim_timeref[5][1] = 48000.0;//time ref (---)
+  tpc->lim_timeref[6][0] = 1000.0; tpc->lim_timeref[6][1] = 48000.0;//time ref (---)
+  tpc->lim_timeref[7][0] = 1000.0; tpc->lim_timeref[7][1] = 48000.0;//time ref (---)
 
 
   //-------- TPC21 parameters (updated on // 19/June/2021, BARB june 2021) ---------
@@ -499,14 +498,14 @@ void setup_sxxx_xxx_2023()
   tpc->y_factor[0][3] = 0.003934;
   
   // TPC21 gate conditions:  After changing cut limits => Launch analysis again in Go4GUI
-  tpc->lim_dt[0][0][0] = 2000.;  tpc->lim_dt[0][0][1] = 48000.0; //A11 drift time TDC cut
-  tpc->lim_dt[0][1][0] = 2000.;  tpc->lim_dt[0][1][1] = 48000.0; //A12 drift time TDC cut
-  tpc->lim_dt[0][2][0] = 2000.;  tpc->lim_dt[0][2][1] = 48000.0; //A21 drift time TDC cut
-  tpc->lim_dt[0][3][0] = 2000.;  tpc->lim_dt[0][3][1] = 48000.0; //A22 drift time TDC cut
-  tpc->lim_lt[0][0][0] = 2000.;  tpc->lim_lt[0][0][1] = 48000.0; //DL1 time TDC cut`
-  tpc->lim_rt[0][0][0] = 2000.;  tpc->lim_rt[0][0][1] = 48000.0; //DR1 time TDC cut
-  tpc->lim_lt[0][1][0] = 2000.;  tpc->lim_lt[0][1][1] = 48000.0; //DL2 time TDC cut
-  tpc->lim_rt[0][1][0] = 2000.;  tpc->lim_rt[0][1][1] = 48000.0; //DL2 time TDC cut
+  tpc->lim_dt[0][0][0] = 13000.;  tpc->lim_dt[0][0][1] = 43000.0; //A11 drift time TDC cut
+  tpc->lim_dt[0][1][0] = 13000.;  tpc->lim_dt[0][1][1] = 43000.0; //A12 drift time TDC cut
+  tpc->lim_dt[0][2][0] = 13000.;  tpc->lim_dt[0][2][1] = 43000.0; //A21 drift time TDC cut
+  tpc->lim_dt[0][3][0] = 13000.;  tpc->lim_dt[0][3][1] = 43000.0; //A22 drift time TDC cut
+  tpc->lim_lt[0][0][0] = 20000.;  tpc->lim_lt[0][0][1] = 50000.0; //DL1 time TDC cut`
+  tpc->lim_rt[0][0][0] = 20000.;  tpc->lim_rt[0][0][1] = 50000.0; //DR1 time TDC cut
+  tpc->lim_lt[0][1][0] = 20000.;  tpc->lim_lt[0][1][1] = 50000.0; //DL2 time TDC cut
+  tpc->lim_rt[0][1][0] = 20000.;  tpc->lim_rt[0][1][1] = 50000.0; //DL2 time TDC cut
   tpc->lim_csum1[0][0] = 13700.0;  tpc->lim_csum1[0][1] = 14600.0;
   tpc->lim_csum2[0][0] = 13900.0;  tpc->lim_csum2[0][1] = 14600.0;
   tpc->lim_csum3[0][0] = 13500.0;  tpc->lim_csum3[0][1] = 14600.0; 
@@ -532,14 +531,14 @@ void setup_sxxx_xxx_2023()
   tpc->y_offset[1][3] = -56.691696 +1.4 -3.0;
   tpc->y_factor[1][3] = 0.004046;
   // TPC22 gate condition... After changing cut limits => Launch analysis again in Go4GUI
-  tpc->lim_dt[1][0][0] = 2000.;  tpc->lim_dt[1][0][1] = 48000.0; //A11 drift time TDC cut
-  tpc->lim_dt[1][1][0] = 2000.;  tpc->lim_dt[1][1][1] = 48000.0; //A12 drift time TDC cut
-  tpc->lim_dt[1][2][0] = 2000.;  tpc->lim_dt[1][2][1] = 48000.0; //A21 drift time TDC cut
-  tpc->lim_dt[1][3][0] = 2000.;  tpc->lim_dt[1][3][1] = 48000.0; //A22 drift time TDC cut
-  tpc->lim_lt[1][0][0] = 2000.;  tpc->lim_lt[1][0][1] = 48000.0; //DL1 time TDC cut
-  tpc->lim_rt[1][0][0] = 2000.;  tpc->lim_rt[1][0][1] = 48000.0; //DR1 time TDC cut
-  tpc->lim_lt[1][1][0] = 2000.;  tpc->lim_lt[1][1][1] = 48000.0; //DL2 time TDC cut
-  tpc->lim_rt[1][1][0] = 2000.;  tpc->lim_rt[1][1][1] = 48000.0; //DL2 time TDC cut
+  tpc->lim_dt[1][0][0] = 13000.;  tpc->lim_dt[1][0][1] = 43000.0; //A11 drift time TDC cut
+  tpc->lim_dt[1][1][0] = 13000.;  tpc->lim_dt[1][1][1] = 43000.0; //A12 drift time TDC cut
+  tpc->lim_dt[1][2][0] = 13000.;  tpc->lim_dt[1][2][1] = 43000.0; //A21 drift time TDC cut
+  tpc->lim_dt[1][3][0] = 13000.;  tpc->lim_dt[1][3][1] = 43000.0; //A22 drift time TDC cut
+  tpc->lim_lt[1][0][0] = 20000.;  tpc->lim_lt[1][0][1] = 50000.0; //DL1 time TDC cut
+  tpc->lim_rt[1][0][0] = 20000.;  tpc->lim_rt[1][0][1] = 50000.0; //DR1 time TDC cut
+  tpc->lim_lt[1][1][0] = 20000.;  tpc->lim_lt[1][1][1] = 50000.0; //DL2 time TDC cut
+  tpc->lim_rt[1][1][0] = 20000.;  tpc->lim_rt[1][1][1] = 50000.0; //DL2 time TDC cut
   tpc->lim_csum1[1][0] = 17000.0;    tpc->lim_csum1[1][1] =  19200.0;
   tpc->lim_csum2[1][0] = 17000.0;    tpc->lim_csum2[1][1] =  19200.0;
   tpc->lim_csum3[1][0] = 17000.0;    tpc->lim_csum3[1][1] =  19200.0;
@@ -566,15 +565,14 @@ void setup_sxxx_xxx_2023()
   tpc->y_factor[2][3] = -0.004220;
 
   // TPC23 gate conditions:  After changing cut limits => Launch analysis again in Go4GUI
-  // narrower gate, 15:00 2022-May-12
-  tpc->lim_dt[2][0][0] = 30000.;  tpc->lim_dt[2][0][1] = 44000.0; //A11 drift time TDC cut
-  tpc->lim_dt[2][1][0] = 30000.;  tpc->lim_dt[2][1][1] = 44000.0; //A12 drift time TDC cut
-  tpc->lim_dt[2][2][0] = 30000.;  tpc->lim_dt[2][2][1] = 44000.0; //A21 drift time TDC cut
-  tpc->lim_dt[2][3][0] = 30000.;  tpc->lim_dt[2][3][1] = 44000.0; //A22 drift time TDC cut
-  tpc->lim_lt[2][0][0] = 32000.;  tpc->lim_lt[2][0][1] = 54000.0; //DL1 time TDC cut
-  tpc->lim_rt[2][0][0] = 32000.;  tpc->lim_rt[2][0][1] = 54000.0; //DR1 time TDC cut
-  tpc->lim_lt[2][1][0] = 32000.;  tpc->lim_lt[2][1][1] = 54000.0; //DL2 time TDC cut
-  tpc->lim_rt[2][1][0] = 32000.;  tpc->lim_rt[2][1][1] = 54000.0; //DL2 time TDC cut
+  tpc->lim_dt[2][0][0] = 13000.;  tpc->lim_dt[2][0][1] = 43000.0; //A11 drift time TDC cut
+  tpc->lim_dt[2][1][0] = 13000.;  tpc->lim_dt[2][1][1] = 43000.0; //A12 drift time TDC cut
+  tpc->lim_dt[2][2][0] = 13000.;  tpc->lim_dt[2][2][1] = 43000.0; //A21 drift time TDC cut
+  tpc->lim_dt[2][3][0] = 13000.;  tpc->lim_dt[2][3][1] = 43000.0; //A22 drift time TDC cut
+  tpc->lim_lt[2][0][0] = 20000.;  tpc->lim_lt[2][0][1] = 50000.0; //DL1 time TDC cut
+  tpc->lim_rt[2][0][0] = 20000.;  tpc->lim_rt[2][0][1] = 50000.0; //DR1 time TDC cut
+  tpc->lim_lt[2][1][0] = 20000.;  tpc->lim_lt[2][1][1] = 50000.0; //DL2 time TDC cut
+  tpc->lim_rt[2][1][0] = 20000.;  tpc->lim_rt[2][1][1] = 50000.0; //DL2 time TDC cut
   tpc->lim_csum1[2][0] = 13800.0;   tpc->lim_csum1[2][1] = 14800.0; //, 15:00 2022-May-12
   tpc->lim_csum2[2][0] = 14000.0;   tpc->lim_csum2[2][1] = 14800.0;//, 15:00 2022-May-12
   tpc->lim_csum3[2][0] = 14000.0;   tpc->lim_csum3[2][1] = 14800.0;//, 15:00 2022-May-12
@@ -601,15 +599,14 @@ void setup_sxxx_xxx_2023()
   tpc->y_factor[3][3] = -0.004029;
 
   // TPC24 gate conditions:  After changing cut limits => Launch analysis again in Go4GUI
-  // 15:00 12-May-2022
-  tpc->lim_dt[3][0][0] = 30000.;  tpc->lim_dt[3][0][1] = 46000.0; //A11 drift time TDC cut
-  tpc->lim_dt[3][1][0] = 30000.;  tpc->lim_dt[3][1][1] = 46000.0; //A12 drift time TDC cut
-  tpc->lim_dt[3][2][0] = 30000.;  tpc->lim_dt[3][2][1] = 46000.0; //A21 drift time TDC cut
-  tpc->lim_dt[3][3][0] = 30000.;  tpc->lim_dt[3][3][1] = 46000.0; //A22 drift time TDC cut
-  tpc->lim_lt[3][0][0] = 35000.;  tpc->lim_lt[3][0][1] = 60000.0; //DL1 time TDC cut
-  tpc->lim_rt[3][0][0] = 35000.;  tpc->lim_rt[3][0][1] = 60000.0; //DR1 time TDC cut
-  tpc->lim_lt[3][1][0] = 35000.;  tpc->lim_lt[3][1][1] = 60000.0; //DL2 time TDC cut
-  tpc->lim_rt[3][1][0] = 35000.;  tpc->lim_rt[3][1][1] = 60000.0; //DL2 time TDC cut
+  tpc->lim_dt[3][0][0] = 13000.;  tpc->lim_dt[3][0][1] = 43000.0; //A11 drift time TDC cut
+  tpc->lim_dt[3][1][0] = 13000.;  tpc->lim_dt[3][1][1] = 43000.0; //A12 drift time TDC cut
+  tpc->lim_dt[3][2][0] = 13000.;  tpc->lim_dt[3][2][1] = 43000.0; //A21 drift time TDC cut
+  tpc->lim_dt[3][3][0] = 13000.;  tpc->lim_dt[3][3][1] = 43000.0; //A22 drift time TDC cut
+  tpc->lim_lt[3][0][0] = 20000.;  tpc->lim_lt[3][0][1] = 50000.0; //DL1 time TDC cut
+  tpc->lim_rt[3][0][0] = 20000.;  tpc->lim_rt[3][0][1] = 50000.0; //DR1 time TDC cut
+  tpc->lim_lt[3][1][0] = 20000.;  tpc->lim_lt[3][1][1] = 50000.0; //DL2 time TDC cut
+  tpc->lim_rt[3][1][0] = 20000.;  tpc->lim_rt[3][1][1] = 50000.0; //DL2 time TDC cut
   tpc->lim_csum1[3][0] = 18100.0 -200.;    tpc->lim_csum1[3][1] = 18800.0+200.; ////, 15:00 2022-May-12
   tpc->lim_csum2[3][0] = 17900.0 -200.;    tpc->lim_csum2[3][1] = 18700.0+200.; ////, 15:00 2022-May-12
   tpc->lim_csum3[3][0] = 18600.0 -200.;    tpc->lim_csum3[3][1] = 19400.0+200.; ////, 15:00 2022-May-12
@@ -639,10 +636,10 @@ void setup_sxxx_xxx_2023()
   tpc->lim_dt[4][1][0] = 26000.;  tpc->lim_dt[4][1][1] = 60000.0; //A12 drift time TDC cut
   tpc->lim_dt[4][2][0] = 26000.;  tpc->lim_dt[4][2][1] = 60000.0; //A21 drift time TDC cut
   tpc->lim_dt[4][3][0] = 26000.;  tpc->lim_dt[4][3][1] = 60000.0; //A22 drift time TDC cut
-  tpc->lim_lt[4][0][0] = 26000.;  tpc->lim_lt[4][0][1] = 60000.0; //DL1 time TDC cut
-  tpc->lim_rt[4][0][0] = 26000.;  tpc->lim_rt[4][0][1] = 60000.0; //DR1 time TDC cut
-  tpc->lim_lt[4][1][0] = 26000.;  tpc->lim_lt[4][1][1] = 60000.0; //DL2 time TDC cut
-  tpc->lim_rt[4][1][0] = 26000.;  tpc->lim_rt[4][1][1] = 60000.0; //DL2 time TDC cut
+  tpc->lim_lt[4][0][0] = 10000.;  tpc->lim_lt[4][0][1] = 50000.0; //DL1 time TDC cut
+  tpc->lim_rt[4][0][0] = 10000.;  tpc->lim_rt[4][0][1] = 50000.0; //DR1 time TDC cut
+  tpc->lim_lt[4][1][0] = 10000.;  tpc->lim_lt[4][1][1] = 50000.0; //DL2 time TDC cut
+  tpc->lim_rt[4][1][0] = 10000.;  tpc->lim_rt[4][1][1] = 50000.0; //DL2 time TDC cut
   tpc->lim_csum1[4][0] = 14000.0;    tpc->lim_csum1[4][1] = 14900.0;
   tpc->lim_csum2[4][0] = 14050.0;    tpc->lim_csum2[4][1] = 14650.0;
   tpc->lim_csum3[4][0] = 14100.0;    tpc->lim_csum3[4][1] = 14600.0;
@@ -667,14 +664,14 @@ void setup_sxxx_xxx_2023()
   tpc->y_offset[5][3] = 53.536067 +1.3 +0.5-0.8-1.1;// 19/June/2021
   tpc->y_factor[5][3] = -0.004036;
   // TPC42 gate conditions:  After changing cut limits => Launch analysis again in Go4GUI
-  tpc->lim_dt[5][0][0] = 26000.;  tpc->lim_dt[5][0][1] = 60000.0; //A11 drift time TDC cut
-  tpc->lim_dt[5][1][0] = 26000.;  tpc->lim_dt[5][1][1] = 60000.0; //A12 drift time TDC cut
-  tpc->lim_dt[5][2][0] = 26000.;  tpc->lim_dt[5][2][1] = 60000.0; //A21 drift time TDC cut
-  tpc->lim_dt[5][3][0] = 26000.;  tpc->lim_dt[5][3][1] = 60000.0; //A22 drift time TDC cut
-  tpc->lim_lt[5][0][0] = 26000.;  tpc->lim_lt[5][0][1] = 60000.0; //DL1 time TDC cut
-  tpc->lim_rt[5][0][0] = 26000.;  tpc->lim_rt[5][0][1] = 60000.0; //DR1 time TDC cut
-  tpc->lim_lt[5][1][0] = 26000.;  tpc->lim_lt[5][1][1] = 60000.0; //DL2 time TDC cut
-  tpc->lim_rt[5][1][0] = 26000.;  tpc->lim_rt[5][1][1] = 60000.0; //DL2 time TDC cut
+  tpc->lim_dt[5][0][0] = 10000.;  tpc->lim_dt[5][0][1] = 40000.0; //A11 drift time TDC cut
+  tpc->lim_dt[5][1][0] = 10000.;  tpc->lim_dt[5][1][1] = 40000.0; //A12 drift time TDC cut
+  tpc->lim_dt[5][2][0] = 10000.;  tpc->lim_dt[5][2][1] = 40000.0; //A21 drift time TDC cut
+  tpc->lim_dt[5][3][0] = 10000.;  tpc->lim_dt[5][3][1] = 40000.0; //A22 drift time TDC cut
+  tpc->lim_lt[5][0][0] = 20000.;  tpc->lim_lt[5][0][1] = 45000.0; //DL1 time TDC cut
+  tpc->lim_rt[5][0][0] = 20000.;  tpc->lim_rt[5][0][1] = 45000.0; //DR1 time TDC cut
+  tpc->lim_lt[5][1][0] = 20000.;  tpc->lim_lt[5][1][1] = 45000.0; //DL2 time TDC cut
+  tpc->lim_rt[5][1][0] = 20000.;  tpc->lim_rt[5][1][1] = 45000.0; //DL2 time TDC cut
   tpc->lim_csum1[5][0] = 14300.0;    tpc->lim_csum1[5][1] = 14900.0;
   tpc->lim_csum2[5][0] = 14100.0;    tpc->lim_csum2[5][1] = 14500.0;
   tpc->lim_csum3[5][0] = 13650.0;    tpc->lim_csum3[5][1] = 14050.0;
@@ -695,14 +692,14 @@ void setup_sxxx_xxx_2023()
   tpc->y_factor[6][1] = 0.004*45./44.;
   tpc->y_factor[6][2] = 0.004*45./44;
   tpc->y_factor[6][3] = 0.004*45./44;
-  tpc->lim_dt[6][0][0] = 2000.;  tpc->lim_dt[6][0][1] = 48000.0; //A11 drift time TDC cut
-  tpc->lim_dt[6][1][0] = 2000.;  tpc->lim_dt[6][1][1] = 48000.0; //A12 drift time TDC cut
-  tpc->lim_dt[6][2][0] = 2000.;  tpc->lim_dt[6][2][1] = 48000.0; //A21 drift time TDC cut
-  tpc->lim_dt[6][3][0] = 2000.;  tpc->lim_dt[6][3][1] = 48000.0; //A22 drift time TDC cut
-  tpc->lim_lt[6][0][0] = 2000.;  tpc->lim_lt[6][0][1] = 50000.0; //DL1 time TDC cut
-  tpc->lim_rt[6][0][0] = 2000.;  tpc->lim_rt[6][0][1] = 50000.0; //DR1 time TDC cut
-  tpc->lim_lt[6][1][0] = 2000.;  tpc->lim_lt[6][1][1] = 50000.0; //DL2 time TDC cut
-  tpc->lim_rt[6][1][0] = 2000.;  tpc->lim_rt[6][1][1] = 50000.0; //DL2 time TDC cut
+  tpc->lim_dt[6][0][0] = 10000.;  tpc->lim_dt[6][0][1] = 40000.0; //A11 drift time TDC cut
+  tpc->lim_dt[6][1][0] = 10000.;  tpc->lim_dt[6][1][1] = 40000.0; //A12 drift time TDC cut
+  tpc->lim_dt[6][2][0] = 10000.;  tpc->lim_dt[6][2][1] = 40000.0; //A21 drift time TDC cut
+  tpc->lim_dt[6][3][0] = 10000.;  tpc->lim_dt[6][3][1] = 40000.0; //A22 drift time TDC cut
+  tpc->lim_lt[6][0][0] = 20000.;  tpc->lim_lt[6][0][1] = 45000.0; //DL1 time TDC cut
+  tpc->lim_rt[6][0][0] = 20000.;  tpc->lim_rt[6][0][1] = 45000.0; //DR1 time TDC cut
+  tpc->lim_lt[6][1][0] = 20000.;  tpc->lim_lt[6][1][1] = 45000.0; //DL2 time TDC cut
+  tpc->lim_rt[6][1][0] = 20000.;  tpc->lim_rt[6][1][1] = 45000.0; //DL2 time TDC cut
   tpc->lim_csum1[6][0] = 11500.0;    tpc->lim_csum1[6][1] = 14500.0;
   tpc->lim_csum2[6][0] = 11000.0;    tpc->lim_csum2[6][1] = 14000.0;
   tpc->lim_csum3[6][0] = 12500.0;    tpc->lim_csum3[6][1] = 14200.0;
