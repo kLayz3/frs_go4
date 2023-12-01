@@ -259,6 +259,10 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
       //std::cout << "Trigger = " << fInput->GetTrigger() << ", event skipped" << std::endl;
       return kTRUE;
     }
+	 // AIDA sync trigger, we don't care about it.
+	 if(fInput->GetTrigger() == 2) {
+	 	return kTRUE;
+	 }
 
 
   // Special event
@@ -505,6 +509,7 @@ void TFRSUnpackProc::TimeStampExtract(TFRSUnpackEvent* event_out, TGo4MbsSubEven
     //std::cout <<"This is S2 crate in TimeStampExtract TFRSUnpackProc, wrid ID:" << event_out->wrid << std::endl ;//JZ 2022-05-04
    case 40:
    case 45:
+   case 50:
    case 120:
      break ; 
    case 10:	// Main crate     
@@ -518,7 +523,8 @@ void TFRSUnpackProc::TimeStampExtract(TFRSUnpackEvent* event_out, TGo4MbsSubEven
      //std::cout <<"TimeStampExtract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl ;//JZ 2022-05-04
 	   }
      //std::cout <<"This is Main crate in TimeStampExtract TFRSUnpackProc, wrid ID:" << event_out->wrid << std::endl ;//JZ 2022-05-04
-		break ; 
+		break ;
+
     default:
      std::cout <<"proc ID unknow in TimeStampExtract TFRSUnpackProc " << psubevt->GetProcid()<< std::endl ; 
      break ; 
@@ -1477,7 +1483,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 		{
 			//----  CAEN V820 ---
 			{ 
-				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 30 : Barrier missed !" << *pdata  << std::endl; }
+				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 30 : Barrier missed <V820>!" << *pdata  << std::endl; }
 				else{//Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
@@ -1496,10 +1502,11 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 				}
 			} //end of V830	
 			
-			while (len < lenMax){
+			for (int ii=0; ii < 4;ii++){ //process 2 V775 and 2 V785
+			//while (len < lenMax){
 				//----  CAEN V775 and V785---
 				{ 
-					if(get_bits(*pdata,16,31) != 0xf520){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 30 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
+					if(get_bits(*pdata,16,31) != 0xf520){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 30 : Barrier missed! <V775/85>" << std::hex << *pdata <<std::dec << std::endl; }
 					else{Int_t words = get_bits(*pdata,0,15);
 						//std::cout<< "Number of words of this modul: "<< words << std::endl;
 						pdata++; len++;
