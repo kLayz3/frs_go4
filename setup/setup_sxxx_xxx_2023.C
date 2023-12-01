@@ -106,12 +106,12 @@ void setup_sxxx_xxx_2023()
   frs->dist_SC43    = 4706.0+125.0; // not installed
   frs->dist_MUSIC41 = 600.0+125.0;  // eng-run 2023-11-16
   frs->dist_MUSIC42 = 1096.0+125.0; // eng-run 2023-11-16
-  frs->dist_MUSIC43 = 4895.0; // not installed
-  frs->dist_MUSIC44 = 4895.0; // not installed
+  frs->dist_MUSIC43 = 3500.0; // estimated
+  frs->dist_MUSIC44 = 5000.0; // estimated
   frs->dist_TPC41   =  220.0+125.0; // eng-run 2023-11-16
   frs->dist_TPC42   = 1457.0+125.0; // eng-run 2023-11-16
-  frs->dist_S4target= 3850.0; // AIDA-1 S450, 2022-May05
-  frs->dist_focS4   = 2445.0; // S450, 2022-May05
+  frs->dist_S4target= 5200.0; // FRS-IC beam window estimated
+  frs->dist_focS4   = 3300.0; // eng-run 2023-12-01
  
   //S8
   frs->dist_focS8 = 0;
@@ -128,17 +128,17 @@ void setup_sxxx_xxx_2023()
   id->Z_HTM_select = 3; //1=sc21, 2=sc22, 3=scM01
   
   //=============primary Z and plot ranges=============//
-  frs->primary_z = 7.;   
-  id->min_aoq_plot = 1.5;
-  id->max_aoq_plot = 2.5;
-  id->min_z_plot   = 0;
-  id->max_z_plot   = 20;
+  frs->primary_z = 92.;   
+  id->min_aoq_plot = 2.0;
+  id->max_aoq_plot = 3.0;
+  id->min_z_plot   = 70;
+  id->max_z_plot   = 100;
    
   // bfield (Tm) for new control system. (we put rho = 1)
-  frs->bfield[0] = 8.9310;    // 14N, 700 MeV/u, eng run  
-  frs->bfield[1] = 8.9310;    // 14N, 700 MeV/u, eng run 
-  frs->bfield[2] = 8.8540;   //  14N, 700 MeV/u, eng run 
-  frs->bfield[3] = 8.8540;   //  14N, 700 MeV/u, eng run 
+  frs->bfield[0] = 14.5368;    // 238U, 1000 MeV/u, eng run  
+  frs->bfield[1] = 14.5368;    // 238U, 1000 MeV/u, eng run
+  frs->bfield[2] = 13.9572;   //  238U, 1000 MeV/u, eng run 
+  frs->bfield[3] = 13.8315;   //  238U, 1000 MeV/u, eng run
   frs->bfield[4] = 4.8347;   //  D5 (to ESR) not used
   frs->bfield[5] = 4.8347;  //   D6 (to S8)
 
@@ -371,6 +371,10 @@ void setup_sxxx_xxx_2023()
     music->exclude_de4_adc_channel[ii] = kFALSE;
   }
   music->exclude_de1_adc_channel[5] = kTRUE; //added 01:50/May-12/2022 S450
+  music->exclude_de4_adc_channel[4] = kTRUE; //Prototype MUSIC used with only 4 anodes
+  music->exclude_de4_adc_channel[5] = kTRUE;
+  music->exclude_de4_adc_channel[6] = kTRUE;
+  music->exclude_de4_adc_channel[7] = kTRUE;
 
   //  
   music->dist_MUSICa1 = 52.5;  // do not change
@@ -686,14 +690,14 @@ void setup_sxxx_xxx_2023()
   tpc->y_offset[4][3] = 55.628042 -1.3 -0.5+0.8+0.8;// 19/June/2021
   tpc->y_factor[4][3] = -0.004074;
   // TPC41 gate conditions: After changing cut limits => Launch analysis again in Go4GUI
-  tpc->lim_dt[4][0][0] = 26000.;  tpc->lim_dt[4][0][1] = 60000.0; //A11 drift time TDC cut
-  tpc->lim_dt[4][1][0] = 26000.;  tpc->lim_dt[4][1][1] = 60000.0; //A12 drift time TDC cut
-  tpc->lim_dt[4][2][0] = 26000.;  tpc->lim_dt[4][2][1] = 60000.0; //A21 drift time TDC cut
-  tpc->lim_dt[4][3][0] = 26000.;  tpc->lim_dt[4][3][1] = 60000.0; //A22 drift time TDC cut
-  tpc->lim_lt[4][0][0] = 10000.;  tpc->lim_lt[4][0][1] = 50000.0; //DL1 time TDC cut
-  tpc->lim_rt[4][0][0] = 10000.;  tpc->lim_rt[4][0][1] = 50000.0; //DR1 time TDC cut
-  tpc->lim_lt[4][1][0] = 10000.;  tpc->lim_lt[4][1][1] = 50000.0; //DL2 time TDC cut
-  tpc->lim_rt[4][1][0] = 10000.;  tpc->lim_rt[4][1][1] = 50000.0; //DL2 time TDC cut
+  tpc->lim_dt[4][0][0] = 10000.;  tpc->lim_dt[4][0][1] = 40000.0; //A11 drift time TDC cut
+  tpc->lim_dt[4][1][0] = 10000.;  tpc->lim_dt[4][1][1] = 40000.0; //A12 drift time TDC cut
+  tpc->lim_dt[4][2][0] = 10000.;  tpc->lim_dt[4][2][1] = 40000.0; //A21 drift time TDC cut
+  tpc->lim_dt[4][3][0] = 10000.;  tpc->lim_dt[4][3][1] = 40000.0; //A22 drift time TDC cut
+  tpc->lim_lt[4][0][0] = 20000.;  tpc->lim_lt[4][0][1] = 45000.0; //DL1 time TDC cut
+  tpc->lim_rt[4][0][0] = 20000.;  tpc->lim_rt[4][0][1] = 45000.0; //DR1 time TDC cut
+  tpc->lim_lt[4][1][0] = 20000.;  tpc->lim_lt[4][1][1] = 45000.0; //DL2 time TDC cut
+  tpc->lim_rt[4][1][0] = 20000.;  tpc->lim_rt[4][1][1] = 45000.0; //DL2 time TDC cut
   tpc->lim_csum1[4][0] = 14000.0;    tpc->lim_csum1[4][1] = 14900.0;
   tpc->lim_csum2[4][0] = 14050.0;    tpc->lim_csum2[4][1] = 14650.0;
   tpc->lim_csum3[4][0] = 14100.0;    tpc->lim_csum3[4][1] = 14600.0;
