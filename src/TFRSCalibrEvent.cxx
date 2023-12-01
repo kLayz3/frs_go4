@@ -144,6 +144,8 @@ void TFRSCalibrEvent::Clear(Option_t *t)
   tpc_music42_y = -999.;      /* tracked MUSIC42 Y pos       */
   tpc_music43_x = -999.;      /* MUSIC43 x                     */
   tpc_music43_y = -999.;      /* tracked MUSIC43 Y pos       */
+  tpc_music44_x = -999.;      /* MUSIC44 x                     */
+  tpc_music44_y = -999.;      /* tracked MUSIC44 Y pos       */
   tpc_s4target_x = -999.;     /* S4 target */
   tpc_s4target_y = -999.;     /* S4 target */
   

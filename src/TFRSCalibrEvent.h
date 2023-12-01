@@ -165,6 +165,8 @@ public:
   Float_t       tpc_music42_y;      /* MUSIC42 y                    */
   Float_t       tpc_music43_x;      /* MUSIC43 x                    */
   Float_t       tpc_music43_y;      /* MUSIC43 y                    */
+  Float_t       tpc_music44_x;      /* MUSIC44 x                    */
+  Float_t       tpc_music44_y;      /* MUSIC44 y                    */
   Float_t       tpc_s4target_x;      /* S4 target x                    */
   Float_t       tpc_s4target_y;      /* S4 target y                    */
 

@@ -82,10 +82,20 @@ private:
   TH2I          *hMUSIC3_dECOR_x;
   //  TH1I          *hMUSIC3_E_s4gate_Z_AoQ[8][5]; //for range scan
 
+  TH1I          *hMUSIC4_E[8];
+  TH1I          *hMUSIC4_T[8];
+  TH1I          *hMUSIC4_dE;
+  TH2I          *hMUSIC4_dE_x;
+  TH1I          *hMUSIC4_dECOR;
+  TH2I          *hMUSIC4_dECOR_x;
+  
   // correlation between MUSICs
   TH2I          *hMUSIC_dE1dE2;
   TH2I          *hMUSIC_dE1dE3;
+  TH2I          *hMUSIC_dE1dE4;
   TH2I          *hMUSIC_dE2dE3;
+  TH2I          *hMUSIC_dE2dE4;
+  TH2I          *hMUSIC_dE3dE4;
 
   TGo4WinCond   *cMusic1_E[8];
   TGo4WinCond   *cMusic1_T[8];
@@ -93,6 +103,8 @@ private:
   TGo4WinCond   *cMusic2_T[8];
   TGo4WinCond   *cMusic3_T[8];
   TGo4WinCond   *cMusic3_E[8];
+  TGo4WinCond   *cMusic4_T[8];
+  TGo4WinCond   *cMusic4_E[8];
 
 
   // Multi-hit TDC SCI timing
@@ -472,6 +484,7 @@ private:
   TH1I          *hID_Z1;
   TH1I          *hID_Z2;
   TH1I          *hID_Z3;
+  TH1I          *hID_Z4;
   TH2I          *hID_DeltaBrho_AoQ;
   TH2I          *hID_x2AoQ;
   TH2I          *hID_Z1_AoQ;
@@ -482,7 +495,10 @@ private:
   TH2I          *hID_Z2_AoQcorr;
   TH2I          *hID_Z1_Z2;
   TH2I          *hID_Z1_Z3;
+  TH2I          *hID_Z1_Z4;
   TH2I          *hID_Z2_Z3;
+  TH2I          *hID_Z2_Z4;
+  TH2I          *hID_Z3_Z4;
   TH2I          *hID_x4AoQ;
   TH2I          *hID_x2z;
   TH2I          *hID_x4z;
@@ -537,6 +553,7 @@ private:
   TH1I *hMUSIC1_E_gate[8][15];
   TH1I *hMUSIC2_E_gate[8][15];
   TH1I *hMUSIC3_E_gate[8][15];
+  TH1I *hMUSIC4_E_gate[8][15];
   TH2I *total_range_vs_z_gate[15];
   TH2I *range_post_degrader_vs_z_gate[15];
   TH2I *total_range_corr_vs_z_gate[15];

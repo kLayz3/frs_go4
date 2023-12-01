@@ -224,13 +224,17 @@ public:
   Int_t         music_pres[3];   /* Music Druck              */
   Int_t         music_temp[3];   /* Music Temperatur         */
 
-  // Travelling MUSIC part
+  // MUSIC2 part
   Int_t         music_e2[8];     /* Raw energy signals       */
   Int_t         music_t2[8];     /* Raw drift time           */
 
   // MUSIC3 part
   Int_t         music_e3[8];     /* Raw energy signals       */
   Int_t         music_t3[8];     /* Raw drift times          */
+
+  // MUSIC4 part
+  Int_t         music_e4[8];     /* Raw energy signals       */
+  Int_t         music_t4[8];     /* Raw drift times          */
 
   // Single Anode
   Int_t SingleAnode_adc;

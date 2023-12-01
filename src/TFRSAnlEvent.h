@@ -27,21 +27,27 @@ public:
   Int_t         music1_anodes_cnt;
   Int_t         music2_anodes_cnt;
   Int_t         music3_anodes_cnt;
+  Int_t         music4_anodes_cnt;
   Bool_t        music_b_e1[8];
   Bool_t        music_b_t1[8];
   Bool_t        music_b_e2[8];
   Bool_t        music_b_t2[8];
   Bool_t        music_b_e3[8];
   Bool_t        music_b_t3[8];
+  Bool_t        music_b_e4[8];
+  Bool_t        music_b_t4[8];
   Bool_t        b_de1;
   Bool_t        b_de2;
   Bool_t        b_de3;
-  Float_t       de[3];
-  Float_t       de_cor[3];
+  Bool_t        b_de4;
+  Float_t       de[4];
+  Float_t       de_cor[4];
   Bool_t        b_dt3;
+  Bool_t        b_dt4;
   Float_t       music1_x_mean;
   Float_t       music2_x_mean;
   Float_t       music3_x_mean;
+  Float_t       music4_x_mean;
   Bool_t        b_decor;
 
   //SCI part
@@ -186,12 +192,14 @@ public:
   Float_t       id_AoQ_corr;
   Float_t       id_AoQ_s2s8;
   Float_t       id_v_cor;       /* Velocity correction  */
-  Float_t       id_v_cor2;      /* Velocity correction TUM 2 */
-  Float_t       id_v_cor3;      /* Velocity correction Old Music */
+  Float_t       id_v_cor2;      /* Velocity correction  */
+  Float_t       id_v_cor3;      /* Velocity correction  */
+  Float_t       id_v_cor4;      /* Velocity correction  */
 
   Float_t       id_z;
   Float_t       id_z2;
   Float_t       id_z3;
+  Float_t       id_z4;
 
   Float_t       id_de_s2tpc;
   Bool_t        id_b_de_s2tpc;
@@ -225,6 +233,7 @@ public:
   Bool_t        id_b_z;
   Bool_t        id_b_z2;
   Bool_t        id_b_z3;
+  Bool_t        id_b_z4;
   Bool_t        id_b_x2AoQ[5];
   Bool_t        id_b_x4AoQ[5];
   Bool_t        id_b_z_AoQ[5];

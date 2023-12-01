@@ -526,12 +526,14 @@ Bool_t TFRSSortProc::BuildEvent(TGo4EventElement* output)
       tgt->music_e1[i] = (src->vme_frs[10][i]) & 0xfff;   //
       tgt->music_e2[i] = (src->vme_frs[10][8+i]) & 0xfff; //
       tgt->music_e3[i] = (src->vme_trmu_adc[i])        ; // Travel-MUSIC (from special VME crate)
+      tgt->music_e4[i] = (src->vme_frs[10][i]) & 0xfff;   // fill with MUSIC1 as test 
 
       tgt->music_t1[i] = src->leading_v1290_main[16+i][0]; //TUM-MUSIC, modified by JZ 17-04-2021
       tgt->music_t2[i] = src->leading_v1290_main[24+i][0]; //TUM-MUSIC
       //tgt->music_t1[i] = src->leading_v1290_main[16+i][0] & 0xfff; //TUM-MUSIC
       //tgt->music_t2[i] = src->leading_v1290_main[24+i][0] & 0xfff; //TUM-MUSIC
       tgt->music_t3[i] = (src->vme_trmu_tdc[i]);                   //Travel-MUSIC (frAnalysis/Histograms/MUSIC/MUSIC(2)/E/MUSIC2_E(5)om special VME crate)
+      tgt->music_t4[i] = src->leading_v1290_main[16+i][0]; // fill with MUSIC1 as test 
 
     }
 

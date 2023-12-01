@@ -44,6 +44,7 @@ public:
   Float_t       dist_MUSIC41;     /*  MUSIC1               */
   Float_t       dist_MUSIC42;     /*  MUSIC2               */
   Float_t       dist_MUSIC43;     /*  MUSIC3               */
+  Float_t       dist_MUSIC44;     /*  MUSIC4               */
   Float_t       dist_S4target;
 
 
@@ -148,10 +149,13 @@ public:
   Float_t       e2_gain[8];      /* ADC gains                */
   Int_t         e3_off[8];       /* ADC offsets              */
   Float_t       e3_gain[8];      /* ADC gains                */
+  Int_t         e4_off[8];       /* ADC offsets              */
+  Float_t       e4_gain[8];      /* ADC gains                */
   Bool_t        b_selfcorr1;     /* 1 => Music1 x correction */
   Float_t       pos_a1[7];       /* pos. corr. de(i) ->  MUSIC41 */
   Float_t       pos_a2[7];       /* pos. corr. de(i) ->  MUSIC42 */
   Float_t       pos_a3[7];       /* pos. corr. de(i) ->  MUSIC43 */
+  Float_t       pos_a4[7];       /* pos. corr. de(i) ->  MUSIC43 */
   Float_t       dist_MUSICa1;    /*  MUSIC(window-anode1) */
   Float_t       dist_MUSICa2;    /*  MUSIC(window-anode2) */
   Float_t       dist_MUSICa3;    /*  MUSIC(window-anode3) */
@@ -162,13 +166,16 @@ public:
   int max_adc_music1;
   int max_adc_music2;
   int max_adc_music3;
+  int max_adc_music4;
   int max_tdc_music1;
   int max_tdc_music2;
   int max_tdc_music3;
+  int max_tdc_music4;
 
   bool exclude_de1_adc_channel[8];
   bool exclude_de2_adc_channel[8];
   bool exclude_de3_adc_channel[8];
+  bool exclude_de4_adc_channel[8];
   
   ClassDef(TMUSICParameter,1)
 };
@@ -326,6 +333,7 @@ public:
   Float_t       offset_z;
   Float_t       offset_z2;
   Float_t       offset_z3;
+  Float_t       offset_z4;
   Float_t       offset_z_sc81;
   Float_t       offset_z_s2tpc;
 
@@ -335,6 +343,7 @@ public:
   Float_t       vel_a[4];
   Float_t       vel_a2[4];
   Float_t       vel_a3[4];
+  Float_t       vel_a4[4];
   Float_t       vel_a_sc81[4];
   Float_t       vel_a_s2tpc[4];
 

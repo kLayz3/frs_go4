@@ -27,6 +27,7 @@ TFRSParameter::TFRSParameter() : TGo4Parameter("FRSParameter")
   dist_MUSIC41 = 0;
   dist_MUSIC42 = 0;
   dist_MUSIC43 = 0;
+  dist_MUSIC44 = 0;
   dist_TPC41 = 0;
   dist_TPC42 = 0;
   dist_S4target = 0;
@@ -71,6 +72,7 @@ TFRSParameter::TFRSParameter(const char* name) : TGo4Parameter(name) {
   dist_MUSIC41	    = 1251.2;        // !  HFSQT13 - MUSIC1              !
   dist_MUSIC42	    = 3030.0;        // !  HFSQT13 - MUSIC2              !
   dist_MUSIC43	    = 3030.0;        // !  HFSQT13 - MUSIC3              !
+  dist_MUSIC44	    = 3030.0;        // !  HFSQT13 - MUSIC3              !
     
   dist_focS8		= 3789.0;		 // !* Abstand TH4QD12 - Focus S8    !
   dist_MW81		= 1021.0;		 // !  Abstand TH4QD12 - MW81        !
@@ -711,28 +713,26 @@ TMUSICParameter::TMUSICParameter() : TGo4Parameter("TMUSICParameter") {
     e2_gain[i] = 1.;
     e3_off[i] = 0;
     e3_gain[i] = 1.;
+    e4_off[i] = 0;
+    e4_gain[i] = 1.;
 
     exclude_de1_adc_channel[i] = kFALSE;//true means exlude. 
     exclude_de2_adc_channel[i] = kFALSE;
     exclude_de3_adc_channel[i] = kFALSE;
+    exclude_de4_adc_channel[i] = kFALSE;
   }
 
   b_selfcorr1 = kFALSE;  
     
-  for(int i=0;i<7;i++)
+  for(int i=0;i<7;i++){
     pos_a1[i] = 0.;
+  pos_a2[i] = 0.;
+  pos_a3[i] = 0.;
+  pos_a4[i] = 0.;
+  }
 }
 
-TMUSICParameter::TMUSICParameter(const char* name) : TGo4Parameter(name) {
-  //   e1_off[0]  = 133;  //          ! ADC offset MUSIC1 A1       !
-  //   e1_off[1]  =  95;  //          ! ADC offset MUSIC1 A2       !
-  //   e1_off[2]  = 123;  //          ! ADC offset MUSIC1 A3       !
-  //   e1_off[3]  = 150;  //          ! ADC offset MUSIC1 A4       !
-  //   e1_off[4]  = 117;  //          ! ADC offset MUSIC1 A5       !
-  //   e1_off[5]  = 130;  //          ! ADC offset MUSIC1 A6       !
-  //   e1_off[6]  = 136;  //          ! ADC offset MUSIC1 A7       !
-  //   e1_off[7]  =  86;  //          ! ADC offset MUSIC1 A8       !
-   
+TMUSICParameter::TMUSICParameter(const char* name) : TGo4Parameter(name) {   
   e1_off[0]  = 0;  //          ! ADC offset MUSIC1 A1       !
   e1_off[1]  = 0;  //          ! ADC offset MUSIC1 A2       !
   e1_off[2]  = 0;  //          ! ADC offset MUSIC1 A3       !
@@ -742,52 +742,68 @@ TMUSICParameter::TMUSICParameter(const char* name) : TGo4Parameter(name) {
   e1_off[6]  = 0;  //          ! ADC offset MUSIC1 A7       !
   e1_off[7]  = 0;  //          ! ADC offset MUSIC1 A8       !
 
-  e1_gain[0]  = 1.0368;  //      ! ADC gain MUSIC1 A1       !
-  e1_gain[1]  = 1.0378;  //      ! ADC gain MUSIC1 A2       !
-  e1_gain[2]  = 1.0181;  //      ! ADC gain MUSIC1 A3       !
-  e1_gain[3]  = 1.0000;  //      ! ADC gain MUSIC1 A4       !
-  e1_gain[4]  = 1.0152;  //      ! ADC gain MUSIC1 A5       !
-  e1_gain[5]  = 1.0200;  //      ! ADC gain MUSIC1 A6       !
-  e1_gain[6]  = 1.0220;  //      ! ADC gain MUSIC1 A7       !
-  e1_gain[7]  = 1.0249;  //      ! ADC gain MUSIC1 A8       !
+  e1_gain[0]  = 1.;  //      ! ADC gain MUSIC1 A1       !
+  e1_gain[1]  = 1.;  //      ! ADC gain MUSIC1 A2       !
+  e1_gain[2]  = 1.;  //      ! ADC gain MUSIC1 A3       !
+  e1_gain[3]  = 1.;  //      ! ADC gain MUSIC1 A4       !
+  e1_gain[4]  = 1.;  //      ! ADC gain MUSIC1 A5       !
+  e1_gain[5]  = 1.;  //      ! ADC gain MUSIC1 A6       !
+  e1_gain[6]  = 1.;  //      ! ADC gain MUSIC1 A7       !
+  e1_gain[7]  = 1.;  //      ! ADC gain MUSIC1 A8       !
 
-  e3_off[0]  = 0;  //          ! ADC offset MUSIC2 A1       !
-  e3_off[1]  = 0;  //          ! ADC offset MUSIC2 A2       !
-  e3_off[2]  = 0;  //          ! ADC offset MUSIC2 A3       !
-  e3_off[3]  = 0;  //          ! ADC offset MUSIC2 A4       !
-  e3_off[4]  = 0;  //          ! ADC offset MUSIC2 A5       !
-  e3_off[5]  = 0;  //          ! ADC offset MUSIC2 A6       !
-  e3_off[6]  = 0;  //          ! ADC offset MUSIC2 A7       !
-  e3_off[7]  = 0;  //          ! ADC offset MUSIC2 A8       !
+  e2_off[0]  = 0;  //          ! ADC offset MUSIC2 A1       !
+  e2_off[1]  = 0;  //          ! ADC offset MUSIC2 A2       !
+  e2_off[2]  = 0;  //          ! ADC offset MUSIC2 A3       !
+  e2_off[3]  = 0;  //          ! ADC offset MUSIC2 A4       ! 
+  e2_off[4]  = 0;  //          ! ADC offset MUSIC2 A5       !
+  e2_off[5]  = 0;  //          ! ADC offset MUSIC2 A6       !
+  e2_off[6]  = 0;  //          ! ADC offset MUSIC2 A7       !
+  e2_off[7]  = 0;  //          ! ADC offset MUSIC2 A8       !
 
-  e3_gain[0]  = 1.0135;  //      ! ADC gain MUSIC2 A1       !
-  e3_gain[1]  = 1.5205;  //      ! ADC gain MUSIC2 A2       !
-  e3_gain[2]  = 1.1795;  //      ! ADC gain MUSIC2 A3       !
-  e3_gain[3]  = 1.1040;  //      ! ADC gain MUSIC2 A4       !
-  e3_gain[4]  = 1.0000;  //      ! ADC gain MUSIC2 A5       !
-  e3_gain[5]  = 1.0243;  //      ! ADC gain MUSIC2 A6       !
-  e3_gain[6]  = 1.0529;  //      ! ADC gain MUSIC2 A7       !
-  e3_gain[7]  = 1.2172;  //      ! ADC gain MUSIC2 A8       !
+  e2_gain[0]  = 1.;  //          ! ADC gain MUSIC2 A1       !
+  e2_gain[1]  = 1.;  //          ! ADC gain MUSIC2 A2       !
+  e2_gain[2]  = 1.;  //          ! ADC gain MUSIC2 A3       !
+  e2_gain[3]  = 1.;  //          ! ADC gain MUSIC2 A4       !
+  e2_gain[4]  = 1.;  //          ! ADC gain MUSIC2 A5       !
+  e2_gain[5]  = 1.;  //          ! ADC gain MUSIC2 A6       !
+  e2_gain[6]  = 1.;  //          ! ADC gain MUSIC2 A7       !
+  e2_gain[7]  = 1.;  //          ! ADC gain MUSIC2 A8       !
 
+  e3_off[0]  = 0;  //          ! ADC offset MUSIC3 A1       !
+  e3_off[1]  = 0;  //          ! ADC offset MUSIC3 A2       !
+  e3_off[2]  = 0;  //          ! ADC offset MUSIC3 A3       !
+  e3_off[3]  = 0;  //          ! ADC offset MUSIC3 A4       !
+  e3_off[4]  = 0;  //          ! ADC offset MUSIC3 A5       !
+  e3_off[5]  = 0;  //          ! ADC offset MUSIC3 A6       !
+  e3_off[6]  = 0;  //          ! ADC offset MUSIC3 A7       !
+  e3_off[7]  = 0;  //          ! ADC offset MUSIC3 A8       !
 
-  e2_off[0]  = 0;  //          ! ADC offset MUSIC3 A1       !
-  e2_off[1]  = 0;  //          ! ADC offset MUSIC3 A2       !
-  e2_off[2]  = 0;  //          ! ADC offset MUSIC3 A3       !
-  e2_off[3]  = 0;  //          ! ADC offset MUSIC3 A4       ! 
-  e2_off[4]  = 0;  //          ! ADC offset MUSIC3 A5       !
-  e2_off[5]  = 0;  //          ! ADC offset MUSIC3 A6       !
-  e2_off[6]  = 0;  //          ! ADC offset MUSIC3 A7       !
-  e2_off[7]  = 0;  //          ! ADC offset MUSIC3 A8       !
-  
+  e3_gain[0]  = 1.;  //      ! ADC gain MUSIC3 A1       !
+  e3_gain[1]  = 1.;  //      ! ADC gain MUSIC3 A2       !
+  e3_gain[2]  = 1.;  //      ! ADC gain MUSIC3 A3       !
+  e3_gain[3]  = 1.;  //      ! ADC gain MUSIC3 A4       !
+  e3_gain[4]  = 1.;  //      ! ADC gain MUSIC3 A5       !
+  e3_gain[5]  = 1.;  //      ! ADC gain MUSIC3 A6       !
+  e3_gain[6]  = 1.;  //      ! ADC gain MUSIC3 A7       !
+  e3_gain[7]  = 1.;  //      ! ADC gain MUSIC3 A8       !
 
-  e2_gain[0]  = 1.;  //          ! ADC gain MUSIC3 A1       !
-  e2_gain[1]  = 1.;  //          ! ADC gain MUSIC3 A2       !
-  e2_gain[2]  = 1.;  //          ! ADC gain MUSIC3 A3       !
-  e2_gain[3]  = 1.;  //          ! ADC gain MUSIC3 A4       !
-  e2_gain[4]  = 1.;  //          ! ADC gain MUSIC3 A5       !
-  e2_gain[5]  = 1.;  //          ! ADC gain MUSIC3 A6       !
-  e2_gain[6]  = 1.;  //          ! ADC gain MUSIC3 A7       !
-  e2_gain[7]  = 1.;  //          ! ADC gain MUSIC3 A8       !
+  e4_off[0]  = 0;  //          ! ADC offset MUSIC4 A1       !
+  e4_off[1]  = 0;  //          ! ADC offset MUSIC4 A2       !
+  e4_off[2]  = 0;  //          ! ADC offset MUSIC4 A3       !
+  e4_off[3]  = 0;  //          ! ADC offset MUSIC4 A4       !
+  e4_off[4]  = 0;  //          ! ADC offset MUSIC4 A5       !
+  e4_off[5]  = 0;  //          ! ADC offset MUSIC4 A6       !
+  e4_off[6]  = 0;  //          ! ADC offset MUSIC4 A7       !
+  e4_off[7]  = 0;  //          ! ADC offset MUSIC4 A8       !
+
+  e4_gain[0]  = 1.;  //      ! ADC gain MUSIC4 A1       !
+  e4_gain[1]  = 1.;  //      ! ADC gain MUSIC4 A2       !
+  e4_gain[2]  = 1.;  //      ! ADC gain MUSIC4 A3       !
+  e4_gain[3]  = 1.;  //      ! ADC gain MUSIC4 A4       !
+  e4_gain[4]  = 1.;  //      ! ADC gain MUSIC4 A5       !
+  e4_gain[5]  = 1.;  //      ! ADC gain MUSIC4 A6       !
+  e4_gain[6]  = 1.;  //      ! ADC gain MUSIC4 A7       !
+  e4_gain[7]  = 1.;  //      ! ADC gain MUSIC4 A8       !
 
   b_selfcorr1 = kFALSE;
 
@@ -800,6 +816,30 @@ TMUSICParameter::TMUSICParameter(const char* name) : TGo4Parameter(name) {
   pos_a1[4] = 0.0;          //   !
   pos_a1[5] = 0.0;          //   !
   pos_a1[6] = 0.0;          //   !
+
+  pos_a2[0] = 1.0;          //   !
+  pos_a2[1] = 0.0;          //   ! 
+  pos_a2[2] = 0.0;          //	  ! 
+  pos_a2[3] = 0.0;          //   !
+  pos_a2[4] = 0.0;          //   !
+  pos_a2[5] = 0.0;          //   !
+  pos_a2[6] = 0.0;          //   !
+
+  pos_a3[0] = 1.0;          //   !
+  pos_a3[1] = 0.0;          //   ! 
+  pos_a3[2] = 0.0;          //	  ! 
+  pos_a3[3] = 0.0;          //   !
+  pos_a3[4] = 0.0;          //   !
+  pos_a3[5] = 0.0;          //   !
+  pos_a3[6] = 0.0;          //   !
+
+  pos_a4[0] = 1.0;          //   !
+  pos_a4[1] = 0.0;          //   ! 
+  pos_a4[2] = 0.0;          //	  ! 
+  pos_a4[3] = 0.0;          //   !
+  pos_a4[4] = 0.0;          //   !
+  pos_a4[5] = 0.0;          //   !
+  pos_a4[6] = 0.0;          //   !
   std::cout << "set MUSIC parameters" << std::endl;
 
 } 
@@ -837,12 +877,18 @@ Bool_t TMUSICParameter::UpdateFrom(TGo4Parameter* par) {
     e2_gain[i] = from->e2_gain[i];
     e3_off[i] = from->e3_off[i];
     e3_gain[i] = from->e3_gain[i];
+    e4_off[i] = from->e4_off[i];
+    e4_gain[i] = from->e4_gain[i];
   }
   b_selfcorr1 = from->b_selfcorr1;
     
-  for (int i=0;i<7;i++)
+  for (int i=0;i<7;i++){
     pos_a1[i] = from->pos_a1[i];
-   
+  pos_a2[i] = from->pos_a2[i];
+  pos_a3[i] = from->pos_a2[i];
+  pos_a4[i] = from->pos_a4[i];
+  }
+  
   return kTRUE;
 }
 
@@ -1325,6 +1371,7 @@ TIDParameter::TIDParameter() : TGo4Parameter("TIDParameter") {
   offset_z = 0.;
   offset_z2 = 0.;
   offset_z3 = 0.;
+  offset_z4 = 0.;
   a2AoQCorr =0.;
   a4AoQCorr =0.;
   
@@ -1332,6 +1379,7 @@ TIDParameter::TIDParameter() : TGo4Parameter("TIDParameter") {
     vel_a[i] = 0.;
     vel_a2[i] = 0.;
     vel_a3[i] = 0.;
+    vel_a4[i] = 0.;
   }
 
 
@@ -1381,7 +1429,12 @@ TIDParameter::TIDParameter(const char* name) : TGo4Parameter(name) {
   id_path6 =   271850.0;    // Path/c (ps)
   id_tofcorr6 = 0.0;        // Correction for x8, 03.07.2018
 
-  
+  offset_z = 0.;
+  offset_z2 = 0.;
+  offset_z3 = 0.;
+  offset_z4 = 0.;
+  a2AoQCorr =0.;
+  a4AoQCorr =0.;
    
   vel_a[0] =  0.;   // 160310 calib
   vel_a[1] =  1.;   // 
@@ -1396,7 +1449,12 @@ TIDParameter::TIDParameter(const char* name) : TGo4Parameter(name) {
   vel_a3[0] =  0.;   // 160310 calib
   vel_a3[1] =  1.;   // 
   vel_a3[2] =  0.;   // 
-  vel_a3[3] =  0.;   // Used in ID part 
+  vel_a3[3] =  0.;   // Used in ID part
+
+  vel_a4[0] =  0.;   // 160310 calib
+  vel_a4[1] =  1.;   // 
+  vel_a4[2] =  0.;   // 
+  vel_a4[3] =  0.;   // Used in ID part 
         
   
   for(int i=0;i<5;++i)
@@ -1483,10 +1541,18 @@ Bool_t TIDParameter::UpdateFrom(TGo4Parameter* par) {
   id_path5 = from->id_path5;
   id_path6 = from->id_path6;
 
+  offset_z = from->offset_z;
+  offset_z2 = from->offset_z2;
+  offset_z3 = from->offset_z3;
+  offset_z4 = from->offset_z4;
+  a2AoQCorr = from->a2AoQCorr;
+  a4AoQCorr = from->a4AoQCorr;
+
   for (int i=0;i<4;i++){
     vel_a[i] = from->vel_a[i];
     vel_a2[i] = from->vel_a2[i];
     vel_a3[i] = from->vel_a3[i];
+    vel_a4[i] = from->vel_a4[i];
   }   
 
 

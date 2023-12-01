@@ -254,6 +254,8 @@ void TFRSSortEvent::Clear(Option_t *t)
       music_t2[i] = 0;
       music_e3[i] = 0;
       music_t3[i] = 0;
+      music_e4[i] = 0;
+      music_t4[i] = 0;
     }
 
   music_pres[0] = 0; music_pres[1] = 0;  music_pres[2] = 0;

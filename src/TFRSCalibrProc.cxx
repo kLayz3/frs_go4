@@ -1259,6 +1259,9 @@ void TFRSCalibrProc::Process_TPC_Analysis(const TFRSSortEvent& src, TFRSCalibrEv
        Float_t dist_MUSIC43_focS4 = frs->dist_MUSIC43 - frs->dist_focS4;
        tgt.tpc_music43_x = (tgt.tpc_angle_x_s4/1000.*dist_MUSIC43_focS4)+tgt.tpc_x_s4;
        tgt.tpc_music43_y = (tgt.tpc_angle_y_s4/1000.*dist_MUSIC43_focS4)+tgt.tpc_y_s4;
+       Float_t dist_MUSIC44_focS4 = frs->dist_MUSIC44 - frs->dist_focS4;
+       tgt.tpc_music44_x = (tgt.tpc_angle_x_s4/1000.*dist_MUSIC44_focS4)+tgt.tpc_x_s4;
+       tgt.tpc_music44_y = (tgt.tpc_angle_y_s4/1000.*dist_MUSIC44_focS4)+tgt.tpc_y_s4;
        Float_t dist_S4target_focS4 = frs->dist_S4target - frs->dist_focS4;
        tgt.tpc_s4target_x = (tgt.tpc_angle_x_s4/1000.* dist_S4target_focS4)+tgt.tpc_x_s4;
        tgt.tpc_s4target_y = (tgt.tpc_angle_y_s4/1000.* dist_S4target_focS4)+tgt.tpc_y_s4;

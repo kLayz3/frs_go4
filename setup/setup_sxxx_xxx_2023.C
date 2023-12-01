@@ -107,6 +107,7 @@ void setup_sxxx_xxx_2023()
   frs->dist_MUSIC41 = 600.0+125.0;  // eng-run 2023-11-16
   frs->dist_MUSIC42 = 1096.0+125.0; // eng-run 2023-11-16
   frs->dist_MUSIC43 = 4895.0; // not installed
+  frs->dist_MUSIC44 = 4895.0; // not installed
   frs->dist_TPC41   =  220.0+125.0; // eng-run 2023-11-16
   frs->dist_TPC42   = 1457.0+125.0; // eng-run 2023-11-16
   frs->dist_S4target= 3850.0; // AIDA-1 S450, 2022-May05
@@ -354,9 +355,11 @@ void setup_sxxx_xxx_2023()
   music->max_adc_music1 =    4096; //tum music
   music->max_adc_music2 =    4096; //tum music
   music->max_adc_music3 =  0x10000; //travel music
+  music->max_adc_music4 =    4096; //tum music
   music->max_tdc_music1 =    4096; //tum music
   music->max_tdc_music2 =    4096; //tum music
   music->max_tdc_music3 = 0x10000; //travel music
+  music->max_tdc_music4 =    4096; //tum music
 
   //MUSIC noisy channel to be excluded in dE calculation
   //TRUE means exclude.
@@ -365,6 +368,7 @@ void setup_sxxx_xxx_2023()
     music->exclude_de1_adc_channel[ii] = kFALSE;
     music->exclude_de2_adc_channel[ii] = kFALSE;
     music->exclude_de3_adc_channel[ii] = kFALSE;
+    music->exclude_de4_adc_channel[ii] = kFALSE;
   }
   music->exclude_de1_adc_channel[5] = kTRUE; //added 01:50/May-12/2022 S450
 
@@ -413,14 +417,14 @@ void setup_sxxx_xxx_2023()
   music->e2_gain[7]   = 1.;
 
   //MUSIC43
-  music->e3_off[0]   = 2.; //MUSIC3 offsets
-  music->e3_off[1]   = 1.;
-  music->e3_off[2]   = 1.;
-  music->e3_off[3]   = 1.;
-  music->e3_off[4]   = 1.;
-  music->e3_off[5]   = 1.;
-  music->e3_off[6]   = 1.;
-  music->e3_off[7]   = 1.;
+  music->e3_off[0]   = 0.; //MUSIC3 offsets
+  music->e3_off[1]   = 0.;
+  music->e3_off[2]   = 0.;
+  music->e3_off[3]   = 0.;
+  music->e3_off[4]   = 0.;
+  music->e3_off[5]   = 0.;
+  music->e3_off[6]   = 0.;
+  music->e3_off[7]   = 0.;
 
   music->e3_gain[0]   = 1.; // MUSIC3 gains
   music->e3_gain[1]   = 1.;
@@ -431,6 +435,25 @@ void setup_sxxx_xxx_2023()
   music->e3_gain[6]   = 1.;
   music->e3_gain[7]   = 1.;
 
+  //MUSIC44
+  music->e4_off[0]   = 0.; //MUSIC4 offsets
+  music->e4_off[1]   = 0.;
+  music->e4_off[2]   = 0.;
+  music->e4_off[3]   = 0.;
+  music->e4_off[4]   = 0.;
+  music->e4_off[5]   = 0.;
+  music->e4_off[6]   = 0.;
+  music->e4_off[7]   = 0.;
+
+  music->e4_gain[0]   = 1.; // MUSIC4 gains
+  music->e4_gain[1]   = 1.;
+  music->e4_gain[2]   = 1.;
+  music->e4_gain[3]   = 1.;
+  music->e4_gain[4]   = 1.;
+  music->e4_gain[5]   = 1.;
+  music->e4_gain[6]   = 1.;
+  music->e4_gain[7]   = 1.;
+
   music->pos_a1[0]   = 0.998;   // C0...Cn position correction not used
   music->pos_a1[1]   = -1.991e-5;
   music->pos_a1[2]   = 1.969e-6;
@@ -438,6 +461,30 @@ void setup_sxxx_xxx_2023()
   music->pos_a1[4]   = -3.841e-10;
   music->pos_a1[5]   = -2.950e-13;
   music->pos_a1[6]   = 0.0;
+
+  music->pos_a2[0]   = 0.998;   // C0...Cn position correction not used
+  music->pos_a2[1]   = -1.991e-5;
+  music->pos_a2[2]   = 1.969e-6;
+  music->pos_a2[3]   = 1.114e-8;
+  music->pos_a2[4]   = -3.841e-10;
+  music->pos_a2[5]   = -2.950e-13;
+  music->pos_a2[6]   = 0.0;
+
+  music->pos_a3[0]   = 0.998;   // C0...Cn position correction not used
+  music->pos_a3[1]   = -1.991e-5;
+  music->pos_a3[2]   = 1.969e-6;
+  music->pos_a3[3]   = 1.114e-8;
+  music->pos_a3[4]   = -3.841e-10;
+  music->pos_a3[5]   = -2.950e-13;
+  music->pos_a3[6]   = 0.0;
+
+  music->pos_a4[0]   = 0.998;   // C0...Cn position correction not used
+  music->pos_a4[1]   = -1.991e-5;
+  music->pos_a4[2]   = 1.969e-6;
+  music->pos_a4[3]   = 1.114e-8;
+  music->pos_a4[4]   = -3.841e-10;
+  music->pos_a4[5]   = -2.950e-13;
+  music->pos_a4[6]   = 0.0;
   
   //  MUSIC41 velocity 12.05.2022 208Pb, s450
   id->vel_a[0] =   11588.7; //  MUSIC41 velocity corr. 
@@ -455,11 +502,18 @@ void setup_sxxx_xxx_2023()
   id->vel_a3[0] =  13951.37; 
   id->vel_a3[1] = -38369.9;
   id->vel_a3[2] =  28396.46;
-  id->vel_a3[3] =  0.0; 
+  id->vel_a3[3] =  0.0;
+
+  //MUSIC44 velocity corr. (not determined)
+  id->vel_a4[0] =  11588.7; 
+  id->vel_a4[1] = -18321.8;
+  id->vel_a4[2] =  8528.11;
+  id->vel_a4[3] =  0.0; 
   
   id->offset_z   = 0.0;
   id->offset_z2  = 0.0;
   id->offset_z3  = 0.0;
+  id->offset_z4  = 0.0;
   
   //========= 
   //  TPCs

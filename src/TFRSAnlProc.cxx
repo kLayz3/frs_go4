@@ -144,6 +144,10 @@ void TFRSAnlProc::Create_MUSIC_Hist()
        sprintf(xtitle,"dE MUSIC3(%d)",i);
        hMUSIC3_E[i] = MakeH1I("MUSIC/MUSIC(3)/E",name,4096,0,4096,xtitle,2,6);
 
+       sprintf(name,"MUSIC4_E(%d)",i);
+       sprintf(xtitle,"dE MUSIC4(%d)",i);
+       hMUSIC4_E[i] = MakeH1I("MUSIC/MUSIC(4)/E",name,4096,0,4096,xtitle,2,6);
+
        sprintf(name,"MUSIC1_T(%d)",i);
        sprintf(xtitle,"dT MUSIC1(%d) ",i);
        hMUSIC1_T[i] = MakeH1I("MUSIC/MUSIC(1)/T",name,4096,0, 4096,xtitle,2,6);
@@ -155,6 +159,10 @@ void TFRSAnlProc::Create_MUSIC_Hist()
        sprintf(name,"MUSIC3_T(%d)",i);
        sprintf(xtitle,"dT MUSIC3(%d) ",i);
        hMUSIC3_T[i] = MakeH1I("MUSIC/MUSIC(3)/T",name,4096,0, 4096-10, xtitle,2,6);
+
+       sprintf(name,"MUSIC4_T(%d)",i);
+       sprintf(xtitle,"dT MUSIC4(%d) ",i);
+       hMUSIC4_T[i] = MakeH1I("MUSIC/MUSIC(4)/T",name,4096,0, 4096-10, xtitle,2,6);
 
        // basic cut conditions
        sprintf(name,"cMusic1_E(%d)",i);
@@ -174,23 +182,36 @@ void TFRSAnlProc::Create_MUSIC_Hist()
 
        sprintf(name,"cMusic3_T(%d)",i);
        cMusic3_T[i] = MakeWindowCond("MUSIC/MUSIC(3)/T",name, 10,4096-10, hMUSIC3_T[i]->GetName());
+       
+       sprintf(name,"cMusic4_E(%d)",i);
+       cMusic4_E[i] = MakeWindowCond("MUSIC/MUSIC(4)/E",name, 10, 4096-10, hMUSIC4_E[i]->GetName());
+
+       sprintf(name,"cMusic4_T(%d)",i);
+       cMusic4_T[i] = MakeWindowCond("MUSIC/MUSIC(4)/T",name, 10,4096-10, hMUSIC4_T[i]->GetName());
    }
 
    hMUSIC1_dE = MakeH1I("MUSIC/MUSIC(1)/E","MUSIC1_dE",4096,0.0,4096,"Average dE MUSIC41 (root)",2,6);
    hMUSIC2_dE = MakeH1I("MUSIC/MUSIC(2)/E","MUSIC2_dE",4096,0.0,4096,"Average dE MUSIC42 (root)",2,6);
    hMUSIC3_dE = MakeH1I("MUSIC/MUSIC(3)/E","MUSIC3_dE",4096,0.0,4096,"Average dE MUSIC43 (root)",2,6);
+   hMUSIC4_dE = MakeH1I("MUSIC/MUSIC(4)/E","MUSIC4_dE",4096,0.0,4096,"Average dE MUSIC44 (root)",2,6);
    hMUSIC_dE1dE2 = MakeH2I("MUSIC/Correlation","dE1_dE2",1024,0,4096,1024,0,4096,"dE MUSIC41","dE MUSIC42",2);
    hMUSIC_dE1dE3 = MakeH2I("MUSIC/Correlation","dE1_dE3",1024,0,4096,1024,0,4096,"dE MUSIC41","dE MUSIC43",2);
+   hMUSIC_dE1dE4 = MakeH2I("MUSIC/Correlation","dE1_dE4",1024,0,4096,1024,0,4096,"dE MUSIC41","dE MUSIC44",2);
    hMUSIC_dE2dE3 = MakeH2I("MUSIC/Correlation","dE2_dE3",1024,0,4096,1024,0,4096,"dE MUSIC42","dE MUSIC43",2);
+   hMUSIC_dE2dE4 = MakeH2I("MUSIC/Correlation","dE2_dE4",1024,0,4096,1024,0,4096,"dE MUSIC42","dE MUSIC44",2);
+   hMUSIC_dE3dE4 = MakeH2I("MUSIC/Correlation","dE3_dE4",1024,0,4096,1024,0,4096,"dE MUSIC43","dE MUSIC44",2);
    hMUSIC1_dE_x = MakeH2I("MUSIC/MUSIC(1)/E","MUSIC1_dE_x",100,-100,100,200,0,4096,"Average x position in MUSIC41","dE MUSIC41 [channels]",2);
    hMUSIC2_dE_x = MakeH2I("MUSIC/MUSIC(2)/E","MUSIC2_dE_x",100,-100,100,200,0,4096,"Average x position in MUSIC42","dE MUSIC42 [channels]",2);
    hMUSIC3_dE_x = MakeH2I("MUSIC/MUSIC(3)/E","MUSIC3_dE_x",100,-100,100,200,0,4096,"Average x position in MUSIC43","dE MUSIC43 [channels]",2);
+   hMUSIC4_dE_x = MakeH2I("MUSIC/MUSIC(4)/E","MUSIC4_dE_x",100,-100,100,200,0,4096,"Average x position in MUSIC44","dE MUSIC44 [channels]",2);
    hMUSIC1_dECOR   = MakeH1I("MUSIC/MUSIC(1)/E","MUSIC1_dECOR",4096,0,4096,"dE MUSIC41 corrected for position (ch)",2,6);
    hMUSIC2_dECOR   = MakeH1I("MUSIC/MUSIC(2)/E","MUSIC2_dECOR",4096,0,4096,"dE MUSIC42 corrected for position (ch)",2,6);
    hMUSIC3_dECOR   = MakeH1I("MUSIC/MUSIC(3)/E","MUSIC3_dECOR",4096,0,4096,"dE MUSIC43 corrected for position (ch)",2,6);
+   hMUSIC4_dECOR   = MakeH1I("MUSIC/MUSIC(4)/E","MUSIC4_dECOR",4096,0,4096,"dE MUSIC44 corrected for position (ch)",2,6);
    hMUSIC1_dECOR_x = MakeH2I("MUSIC/MUSIC(1)/E","MUSIC1_dECOR_x",100,-100,+100,200,0,4096,"Average x position in MUSIC41", "dE MUSIC41 corrected for position  (ch)", 2);
    hMUSIC2_dECOR_x = MakeH2I("MUSIC/MUSIC(2)/E","MUSIC2_dECOR_x",100,-100,+100,200,0,4096,"Average x position in MUSIC42", "dE MUSIC42 corrected for position  (ch)", 2);
    hMUSIC3_dECOR_x = MakeH2I("MUSIC/MUSIC(3)/E","MUSIC3_dECOR_x",100,-100,+100,200,0,4096,"Average x position in MUSIC43", "dE MUSIC43 corrected for position  (ch)", 2);
+   hMUSIC4_dECOR_x = MakeH2I("MUSIC/MUSIC(4)/E","MUSIC4_dECOR_x",100,-100,+100,200,0,4096,"Average x position in MUSIC44", "dE MUSIC44 corrected for position  (ch)", 2); 
 
    // for(int i=0;i<8;i++){
    //    for(int k=0;k<5;++k){
@@ -712,6 +733,7 @@ void TFRSAnlProc::Create_ID_Hist()
   hID_Z1        = MakeH1I("ID/ID_S4","ID_Z",1000,1,30,"Z from MUSIC41",2,6);
   hID_Z2        = MakeH1I("ID/ID_S4","ID_Z2",1000,1,30,"Z from MUSIC42",2,6);
   hID_Z3        = MakeH1I("ID/ID_S4","ID_Z3",1000,1,30,"Z from MUSIC43",2,6);
+  hID_Z4        = MakeH1I("ID/ID_S4","ID_Z4",1000,1,30,"Z from MUSIC44",2,6);
   hID_DeltaBrho_AoQ     = MakeH2I("ID/ID_S4","ID_DBrho_AoQ",300,1.3,2.8,500,0.,2.5,"A/Q s2-s4", "Brho(ta-s2) - Brho(s2-s4) [Tm]",2);
   hID_x2AoQ             = MakeH2I("ID/ID_S4","ID_x2AoQ", 300,1.8,2.8, 200,-100.,100.,"A/Q s2-s4", "X at S2 [mm]", 2);
   hID_Z1_AoQ            = MakeH2I("ID/ID_S4","ID_Z_AoQ", 300,1.3,8, 400,1,30,"A/Q s2-s4", "Z from MUSIC41", 2);
@@ -721,8 +743,11 @@ void TFRSAnlProc::Create_ID_Hist()
   hID_Z2_AoQ            = MakeH2I("ID/ID_S4","ID_Z2_AoQ", 300,1.3,2.8, 400,1,30,"A/Q s2-s4", "Z from MUSIC42", 2);
   hID_Z2_AoQcorr        = MakeH2I("ID/ID_S4","ID_Z2_AoQcorr", 300,1.3,2.8, 300,1,30,"A/Q s2-s4 with correction", "Z from MUSIC42", 2);
   hID_Z1_Z2 = MakeH2I("ID/ID_S4","ID_Z_Z2", 350,1,30, 350,1,30,"Z", "Z2", 2);
-  hID_Z1_Z3 = MakeH2I("ID/ID_S4","ID_Z_Z3", 250,1,30, 250,1,30,"Z", "Z3 'MUSIC'", 2);
-  hID_Z2_Z3 = MakeH2I("ID/ID_S4","ID_Z2_Z3", 250,1,30, 250,1,30,"Z", "Z3 'MUSIC'", 2);
+  hID_Z1_Z3 = MakeH2I("ID/ID_S4","ID_Z_Z3", 250,1,30, 250,1,30,"Z", "Z3", 2);
+  hID_Z1_Z4 = MakeH2I("ID/ID_S4","ID_Z_Z4", 250,1,30, 250,1,30,"Z", "Z4", 2);
+  hID_Z2_Z3 = MakeH2I("ID/ID_S4","ID_Z2_Z3", 250,1,30, 250,1,30,"Z2", "Z3", 2);
+  hID_Z2_Z4 = MakeH2I("ID/ID_S4","ID_Z2_Z4", 250,1,30, 250,1,30,"Z2", "Z4", 2);
+  hID_Z3_Z4 = MakeH2I("ID/ID_S4","ID_Z3_Z4", 250,1,30, 250,1,30,"Z3", "Z4", 2);
   hID_Z3_Sc21E = MakeH2I("ID/ID_S2","ID_Z3_Sc21E", 250,1,30, 400,0,4000,"Z from Traveling", "sqrt(Sc21_L*Sc21_R)", 2);
   hID_Z3_Sc22E = MakeH2I("ID/ID_S2","ID_Z3_Sc22E", 250,1,30, 400,0,4000,"Z from Traveling", "sqrt(Sc22_L*Sc22_R)", 2);
   hID_Z1_Sc21E = MakeH2I("ID/ID_S4","ID_Z_Sc21E", 300, 1,30 ,400,0,4000.,"Z from MUSIC41", "sqrt(Sc21_L*Sc21_R)", 2);
@@ -977,8 +1002,9 @@ void TFRSAnlProc::Create_Gated_Hist()
     hTPC_S4TargetY_gate[igate] = MakeH1I(Form("Gated/%s/S4",gate_name),Form("TPC_S4targetY_%s",gate_name),200,-120,120,"Y at S4 target [mm]",2,3);
     for(int ch=0; ch<8; ch++){
       hMUSIC1_E_gate[ch][igate] = MakeH1I(Form("Gated/%s/MUSIC1",gate_name),Form("MUSIC1dE_%d_%s",ch,gate_name),4096,0,4096,"MUSIC dE [channel]",2,3);
-      hMUSIC2_E_gate[ch][igate] = MakeH1I(Form("Gated/%s/MUSIC2",gate_name),Form("MUSIC2dE_%d_%s",ch,gate_name),4096,0,4096,"MUSIC dE [channel]",2,3);
-      hMUSIC3_E_gate[ch][igate] = MakeH1I(Form("Gated/%s/MUSIC3",gate_name),Form("MUSIC3dE_%d_%s",ch,gate_name),4096,0,4096,"MUSIC dE [channel]",2,3);
+      hMUSIC2_E_gate[ch][igate] = MakeH1I(Form("Gated/%s/MUSIC2",gate_name),Form("MUSIC2dE_%d_%s",ch,gate_name),4096,0,4096,"MUSIC2 dE [channel]",2,3);
+      hMUSIC3_E_gate[ch][igate] = MakeH1I(Form("Gated/%s/MUSIC3",gate_name),Form("MUSIC3dE_%d_%s",ch,gate_name),4096,0,4096,"MUSIC3 dE [channel]",2,3);
+      hMUSIC4_E_gate[ch][igate] = MakeH1I(Form("Gated/%s/MUSIC4",gate_name),Form("MUSIC4dE_%d_%s",ch,gate_name),4096,0,4096,"MUSIC4 dE [channel]",2,3);
     }
     total_range_vs_z_gate[igate] =  MakeH2I(Form("Gated/%s/Range",gate_name),Form("total_range_vs_z_%s",gate_name),1000,0,12000,500,0,100,"Range in Al [mg/cm^2]","Z",1);
     range_post_degrader_vs_z_gate[igate] =  MakeH2I(Form("Gated/%s/Range",gate_name),Form("range_post_degrader_vs_z_%s",gate_name),1000,0000,12000,500,0,100,"Range in Al [mg/cm^2]","Z",1);
@@ -1045,6 +1071,7 @@ void TFRSAnlProc::Process_Gated_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& cl
 	hMUSIC1_E_gate[ch][igate] ->Fill(srt.music_e1[ch]);
 	hMUSIC2_E_gate[ch][igate] ->Fill(srt.music_e2[ch]);
 	hMUSIC3_E_gate[ch][igate] ->Fill(srt.music_e3[ch]);
+	hMUSIC4_E_gate[ch][igate] ->Fill(srt.music_e4[ch]);
       }
       total_range_vs_z_gate[igate]->Fill(tgt.id_range_1,tgt.id_range_1_Z);
       range_post_degrader_vs_z_gate[igate]->Fill(tgt.id_range_1 - tgt.id_range_lost_1, tgt.id_range_1_Z);
@@ -1070,15 +1097,15 @@ void TFRSAnlProc::Process_MUSIC_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& cl
   tgt.music1_anodes_cnt = 0;
   tgt.music2_anodes_cnt = 0;
   tgt.music3_anodes_cnt = 0;
-
+  tgt.music4_anodes_cnt = 0;
 
    // Munich MUSIC
 
   for (int i=0;i<8;i++)
     {
       /* 8 anodes of TUM MUSIC and Travelling MUSIC */
-      /****** first MUSIC ***** threshold changed to 5, 9/8/2012 **/
-      if ( srt.music_e1[i] > 5){
+      /****** first MUSIC ***** threshold changed to 4, 01/12/2023 **/
+      if ( srt.music_e1[i] > 4){
 	if(bDrawHist){
 	    hMUSIC1_E[i]->Fill(srt.music_e1[i]);
 	}
@@ -1096,7 +1123,7 @@ void TFRSAnlProc::Process_MUSIC_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& cl
       }
 
       /****** second MUSIC = TUM *****/
-      if ( srt.music_e2[i] > 5){
+      if ( srt.music_e2[i] > 4){
 	if(bDrawHist){
 	    hMUSIC2_E[i]->Fill(srt.music_e2[i]);
 	}
@@ -1112,7 +1139,7 @@ void TFRSAnlProc::Process_MUSIC_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& cl
       }
 
       /****** third MUSIC = Travelling *****/
-      if ( srt.music_e3[i] > 5){
+      if ( srt.music_e3[i] > 4){
 	if(bDrawHist){
 	  hMUSIC3_E[i]->Fill(srt.music_e3[i]);
 	}
@@ -1127,6 +1154,23 @@ void TFRSAnlProc::Process_MUSIC_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& cl
 	}
 	tgt.music_b_t3[i] = cMusic3_T[i]->Test(srt.music_t3[i]);
       }
+
+      /****** fourth MUSIC  *****/
+      if ( srt.music_e4[i] > 4){
+	if(bDrawHist){
+	  hMUSIC4_E[i]->Fill(srt.music_e4[i]);
+	}
+	tgt.music_b_e4[i] = cMusic4_E[i]->Test(srt.music_e4[i]);
+	if (tgt.music_b_e4[i]){
+	    tgt.music4_anodes_cnt++;
+	}
+      }
+      if (srt.music_t4[i] > 0){
+	if(bDrawHist){
+	    hMUSIC4_T[i]->Fill(srt.music_t4[i]);
+	}
+	tgt.music_b_t4[i] = cMusic4_T[i]->Test(srt.music_t4[i]);
+	}
     }// end of i-loop
 
 
@@ -1160,7 +1204,7 @@ void TFRSAnlProc::Process_MUSIC_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& cl
 #endif
    
 #ifdef MUSIC_ANA_NEW
-   if (5 <= tgt.music1_anodes_cnt){
+   if (4 <= tgt.music1_anodes_cnt){
      Float_t temp_de1 = 1.0;
      Int_t   temp_count1 = 0;
      for(int ii=0; ii<8; ii++){
@@ -1201,7 +1245,7 @@ void TFRSAnlProc::Process_MUSIC_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& cl
 
 
   #ifdef MUSIC_ANA_NEW
-  if (5 <= tgt.music2_anodes_cnt){
+  if (4 <= tgt.music2_anodes_cnt){
     Float_t temp_de2 = 1.0;
     Int_t   temp_count2 = 0;
     for(int ii=0; ii<8; ii++){
@@ -1244,7 +1288,7 @@ void TFRSAnlProc::Process_MUSIC_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& cl
  #endif
 
  #ifdef MUSIC_ANA_NEW
-  if (5 <= tgt.music3_anodes_cnt){
+  if (4 <= tgt.music3_anodes_cnt){
     Float_t temp_de3 = 1.0;
     Int_t   temp_count3 = 0;
     for(int ii=0; ii<8; ii++){
@@ -1265,10 +1309,54 @@ void TFRSAnlProc::Process_MUSIC_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& cl
   }
  #endif
 
+  #ifndef MUSIC_ANA_NEW
+  if (8 == tgt.music4_anodes_cnt)
+    {
+
+      Float_t r1 = ((srt.music_e4[0])*music->e4_gain[0] + music->e4_off[0])*((srt.music_e4[1])*music->e4_gain[1] + music->e4_off[1]);
+      Float_t r2 = ((srt.music_e4[2])*music->e4_gain[2] + music->e4_off[2])*((srt.music_e4[3])*music->e4_gain[3] + music->e4_off[3]);
+      Float_t r3 = ((srt.music_e4[4])*music->e4_gain[4] + music->e4_off[4])*((srt.music_e4[5])*music->e4_gain[5] + music->e4_off[5]);
+      Float_t r4 = ((srt.music_e4[6])*music->e4_gain[6] + music->e4_off[6])*((srt.music_e4[7])*music->e4_gain[7] + music->e4_off[7]);
+
+      if ( (r1 > 0) && (r2 > 0) && (r3 > 0) && (r4 > 0) )
+	{
+	  tgt.b_de4 = kTRUE;
+	  tgt.de[3] = sqrt( sqrt( sqrt(r1) * sqrt(r2) ) * sqrt( sqrt(r3) * sqrt(r4) ) );
+	  tgt.de_cor[3] = tgt.de[3];
+	  if(bDrawHist){
+	    hMUSIC4_dE->Fill(tgt.de[1]);
+	  }
+	}
+    }
+  #endif
+
+  #ifdef MUSIC_ANA_NEW
+  if (4 <= tgt.music4_anodes_cnt){
+    Float_t temp_de4 = 1.0;
+    Int_t   temp_count4 = 0;
+    for(int ii=0; ii<8; ii++){
+      if(tgt.music_b_e4[ii] ){
+	temp_de4 *= ((srt.music_e4[ii])*music->e4_gain[ii] + music->e4_off[ii]);
+	temp_count4 ++;
+      }
+    }
+    tgt.de[3] = TMath::Power(temp_de4, 1./((float)(temp_count4)));
+    tgt.de_cor[3] = tgt.de[3];
+    tgt.b_de4 = kTRUE;
+    if(bDrawHist){
+      hMUSIC4_dE->Fill(tgt.de[3]);
+    }
+  }
+   #endif
+  
+
   if(bDrawHist){
     if(tgt.b_de1 && tgt.b_de2){ hMUSIC_dE1dE2->Fill(tgt.de[0],tgt.de[1]); }
     if(tgt.b_de1 && tgt.b_de3){ hMUSIC_dE1dE3->Fill(tgt.de[0],tgt.de[2]); }
+    if(tgt.b_de1 && tgt.b_de4){ hMUSIC_dE1dE4->Fill(tgt.de[0],tgt.de[3]); }
     if(tgt.b_de2 && tgt.b_de3){ hMUSIC_dE2dE3->Fill(tgt.de[1],tgt.de[2]); }
+    if(tgt.b_de2 && tgt.b_de4){ hMUSIC_dE2dE4->Fill(tgt.de[1],tgt.de[3]); }
+    if(tgt.b_de3 && tgt.b_de4){ hMUSIC_dE3dE4->Fill(tgt.de[2],tgt.de[3]); }
   }
 
 
@@ -1279,6 +1367,7 @@ void TFRSAnlProc::Process_MUSIC_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& cl
     tgt.music1_x_mean = clb.tpc_music41_x;
     tgt.music2_x_mean = clb.tpc_music42_x;
     tgt.music3_x_mean = clb.tpc_music43_x;
+    tgt.music4_x_mean = clb.tpc_music44_x;
 
     Float_t power, Corr;
     // correction for MUSIC41
@@ -1331,6 +1420,23 @@ void TFRSAnlProc::Process_MUSIC_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& cl
 	hMUSIC3_dE_x   ->Fill(tgt.music3_x_mean, tgt.de[2]);
 	hMUSIC3_dECOR_x->Fill(tgt.music3_x_mean, tgt.de_cor[2]);
 	hMUSIC3_dECOR  ->Fill(tgt.de_cor[2]);
+      }
+    }
+    // correction for MUSIC44
+    if(tgt.b_de4){
+      power = 1., Corr = 0.;
+      for(int i=0;i<4;i++) {
+	Corr += music->pos_a4[i] * power;
+	power *= tgt.music4_x_mean;
+      }
+      if (Corr!=0) {
+	Corr = music->pos_a4[0] / Corr;
+	tgt.de_cor[3] = tgt.de[3] * Corr;
+	}
+      if(bDrawHist){
+	hMUSIC4_dE_x   ->Fill(tgt.music4_x_mean, tgt.de[3]);
+	hMUSIC4_dECOR_x->Fill(tgt.music4_x_mean, tgt.de_cor[3]);
+	hMUSIC4_dECOR  ->Fill(tgt.de_cor[3]);
       }
     }
   } //end-of-if-for-tpc41-42-data
@@ -2938,7 +3044,7 @@ void TFRSAnlProc::Process_ID_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& clb, 
   /*------------------------------------------------*/
   /* Determination of Z                             */
   /*------------------------------------------------*/
-  /****  S4  (MUSIC 1)   */
+  /****  S4  (MUSIC 41)   */
   //  if((tgt.de_cor[0]>0.0) && (tgt.id_beta>0.0) && (tgt.id_beta<1.0)) {
 
 
@@ -2962,7 +3068,7 @@ void TFRSAnlProc::Process_ID_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& clb, 
 
 
 
-  /****  S4  (MUSIC 2)   */
+  /****  S4  (MUSIC 42)   */
   if((tgt.de[1]>0.0) && (tgt.id_beta>0.0) && (tgt.id_beta<1.0)){
     Double_t power = 1., sum = 0.;
     for (int i=0;i<4;i++)
@@ -2981,7 +3087,7 @@ void TFRSAnlProc::Process_ID_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& clb, 
   }
 
 
-  /****  S4  (MUSIC)   */
+  /****  S4  (MUSIC 43)   */
   if((tgt.de[2]>0.0) && (tgt.id_beta>0.0) && (tgt.id_beta<1.0)){
     Double_t power = 1., sum = 0.;
     for (int i=0;i<4;i++){
@@ -2998,14 +3104,35 @@ void TFRSAnlProc::Process_ID_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& clb, 
     }
   }
 
+  /****  S4  (MUSIC 44)   */
+  if((tgt.de[3]>0.0) && (tgt.id_beta>0.0) && (tgt.id_beta<1.0)){
+    Double_t power = 1., sum = 0.;
+    for (int i=0;i<4;i++){
+      sum += power * id->vel_a4[i];
+      power *= tgt.id_beta;
+    }
+    tgt.id_v_cor4 = sum;
+    if (tgt.id_v_cor4 > 0.0){
+      tgt.id_z4 = frs->primary_z * sqrt(tgt.de[3]/tgt.id_v_cor4) + id->offset_z4;
+    }
+
+    if ((tgt.id_z4>0.0) && (tgt.id_z4<100.0)){
+      tgt.id_b_z4 = kTRUE;
+    }
+  }
+
   /// plot Z1,Z2,Z3 ...
   if(bDrawHist){
     if(tgt.id_b_z){  hID_Z1->Fill(tgt.id_z);}
     if(tgt.id_b_z2){ hID_Z2->Fill(tgt.id_z2);}
     if(tgt.id_b_z3){ hID_Z3->Fill(tgt.id_z3);}
+    if(tgt.id_b_z4){ hID_Z4->Fill(tgt.id_z4);}
     if(tgt.id_b_z && tgt.id_b_z2){ hID_Z1_Z2->Fill(tgt.id_z,tgt.id_z2);}
     if(tgt.id_b_z && tgt.id_b_z3){ hID_Z1_Z3->Fill(tgt.id_z,tgt.id_z3);}
+    if(tgt.id_b_z && tgt.id_b_z4){ hID_Z1_Z4->Fill(tgt.id_z,tgt.id_z4);}
     if(tgt.id_b_z2 && tgt.id_b_z3){ hID_Z2_Z3->Fill(tgt.id_z2,tgt.id_z3);}
+    if(tgt.id_b_z2 && tgt.id_b_z4){ hID_Z2_Z4->Fill(tgt.id_z2,tgt.id_z4);}
+    if(tgt.id_b_z3 && tgt.id_b_z4){ hID_Z3_Z4->Fill(tgt.id_z3,tgt.id_z4);}
   }
 
     /*------------------------------------------------*/

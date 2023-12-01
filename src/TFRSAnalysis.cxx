@@ -263,6 +263,7 @@ Bool_t TFRSAnalysis::InitEventClasses()
   SetupH1("ID_Z",1200,fIDPar->min_z_plot,fIDPar->max_z_plot,"Z from MUSIC41");
   SetupH1("ID_Z2",1200,fIDPar->min_z_plot,fIDPar->max_z_plot,"Z from MUSIC42");
   SetupH1("ID_Z3",1200,fIDPar->min_z_plot,fIDPar->max_z_plot,"Z from MUSIC43");
+  SetupH1("ID_Z4",1200,fIDPar->min_z_plot,fIDPar->max_z_plot,"Z from MUSIC44");
   SetupH2("ID_DBrho_AoQ",600,fIDPar->min_aoq_plot,fIDPar->max_aoq_plot,500,0.,2.5,"A/Q s2-s4", "Brho(ta-s2) - Brho(s2-s4) [Tm]");
   SetupH2("ID_x2AoQ", 600,fIDPar->min_aoq_plot,fIDPar->max_aoq_plot, 200,-100.,100.,"A/Q s2-s4", "X at S2 [mm]");
   SetupH2("ID_Z_AoQ", 600,fIDPar->min_aoq_plot,fIDPar->max_aoq_plot, 600,fIDPar->min_z_plot,fIDPar->max_z_plot,"A/Q s2-s4", "Z from MUSIC41");
@@ -272,7 +273,10 @@ Bool_t TFRSAnalysis::InitEventClasses()
   SetupH2("ID_Z2_AoQcorr", 600,fIDPar->min_aoq_plot,fIDPar->max_aoq_plot, 600,fIDPar->min_z_plot,fIDPar->max_z_plot,"A/Q s2-s4 with correction", "Z from MUSIC42");
   SetupH2("ID_Z_Z2", 600,fIDPar->min_z_plot,fIDPar->max_z_plot, 600,fIDPar->min_z_plot,fIDPar->max_z_plot,"Z", "Z2");
   SetupH2("ID_Z_Z3", 600,fIDPar->min_z_plot,fIDPar->max_z_plot, 600,fIDPar->min_z_plot,fIDPar->max_z_plot,"Z", "Z3 'MUSIC'");
-  SetupH2("ID_Z2_Z3", 600,fIDPar->min_z_plot,fIDPar->max_z_plot, 600,fIDPar->min_z_plot,fIDPar->max_z_plot,"Z", "Z3 'MUSIC'");
+  SetupH2("ID_Z_Z4", 600,fIDPar->min_z_plot,fIDPar->max_z_plot, 600,fIDPar->min_z_plot,fIDPar->max_z_plot,"Z", "Z4 'MUSIC'");
+  SetupH2("ID_Z2_Z3", 600,fIDPar->min_z_plot,fIDPar->max_z_plot, 600,fIDPar->min_z_plot,fIDPar->max_z_plot,"Z2", "Z3 'MUSIC'");
+  SetupH2("ID_Z2_Z4", 600,fIDPar->min_z_plot,fIDPar->max_z_plot, 600,fIDPar->min_z_plot,fIDPar->max_z_plot,"Z2", "Z4 'MUSIC'");
+  SetupH2("ID_Z3_Z4", 600,fIDPar->min_z_plot,fIDPar->max_z_plot, 600,fIDPar->min_z_plot,fIDPar->max_z_plot,"Z3", "Z4 'MUSIC'");
   SetupH2("ID_Z_Sc21E", 600, fIDPar->min_z_plot,fIDPar->max_z_plot ,400,0,4000.,"Z from MUSIC41", "sqrt(Sc21_L*sC21_R)");
   SetupH2("ID_x4AoQ", 100,fIDPar->min_aoq_plot,fIDPar->max_aoq_plot, 100,-100.,100.,"A/Q s2-s4", "X at S4 [mm]");
   SetupH2("ID_x4z", 600,fIDPar->min_z_plot,fIDPar->max_z_plot, 200,-100.,100., "Z from MUSIC41", "X at S4 [mm]");
@@ -292,6 +296,8 @@ Bool_t TFRSAnalysis::InitEventClasses()
     SetupH1(Form("MUSIC2_T(%d)",i),4096,0,fMUSICPar->max_tdc_music2,Form("T MUSIC2(%d)",i));
     SetupH1(Form("MUSIC3_E(%d)",i),4096,0,fMUSICPar->max_adc_music3,Form("dE MUSIC3(%d)",i));
     SetupH1(Form("MUSIC3_T(%d)",i),4096,0,fMUSICPar->max_tdc_music3,Form("T MUSIC3(%d)",i));
+    SetupH1(Form("MUSIC4_E(%d)",i),4096,0,fMUSICPar->max_adc_music4,Form("dE MUSIC4(%d)",i));
+    SetupH1(Form("MUSIC4_T(%d)",i),4096,0,fMUSICPar->max_tdc_music4,Form("T MUSIC4(%d)",i));
     if( fMUSICPar->exclude_de1_adc_channel[i]){//true means exclude
       SetupWinCond(Form("cMusic1_E(%d)",i), 10, 10);
     }else{
@@ -309,23 +315,36 @@ Bool_t TFRSAnalysis::InitEventClasses()
     }else{
       SetupWinCond(Form("cMusic3_E(%d)",i), 10, fMUSICPar->max_adc_music3-10);
     }
-    SetupWinCond(Form("cMusic3_T(%d)",i), 10, fMUSICPar->max_tdc_music3-10);
+    SetupWinCond(Form("cMusic4_T(%d)",i), 10, fMUSICPar->max_tdc_music4-10);
+    if( fMUSICPar->exclude_de4_adc_channel[i]){//true means exclude
+      SetupWinCond(Form("cMusic4_E(%d)",i), 10, 10);
+    }else{
+      SetupWinCond(Form("cMusic4_E(%d)",i), 10, fMUSICPar->max_adc_music4-10);
+    }
+    SetupWinCond(Form("cMusic4_T(%d)",i), 10, fMUSICPar->max_tdc_music4-10);
   }
   SetupH1("MUSIC1_dE",4096,0.0,fMUSICPar->max_adc_music1,"Average dE MUSIC41 (root)");
   SetupH1("MUSIC2_dE",4096,0.0,fMUSICPar->max_adc_music2,"Average dE MUSIC42 (root)");
   SetupH1("MUSIC3_dE",4096,0.0,fMUSICPar->max_adc_music3,"Average dE MUSIC43 (root)");
+  SetupH1("MUSIC4_dE",4096,0.0,fMUSICPar->max_adc_music4,"Average dE MUSIC44 (root)");
   SetupH2("dE1_dE2",1024,0,fMUSICPar->max_adc_music1,1024,0,fMUSICPar->max_adc_music2,"dE MUSIC41","dE MUSIC42");
   SetupH2("dE1_dE3",1024,0,fMUSICPar->max_adc_music1,1024,0,fMUSICPar->max_adc_music3,"dE MUSIC41","dE MUSIC43");
+  SetupH2("dE1_dE4",1024,0,fMUSICPar->max_adc_music1,1024,0,fMUSICPar->max_adc_music4,"dE MUSIC41","dE MUSIC44");
   SetupH2("dE2_dE3",1024,0,fMUSICPar->max_adc_music2,1024,0,fMUSICPar->max_adc_music3,"dE MUSIC42","dE MUSIC43");
+  SetupH2("dE2_dE4",1024,0,fMUSICPar->max_adc_music2,1024,0,fMUSICPar->max_adc_music4,"dE MUSIC42","dE MUSIC44");
+  SetupH2("dE3_dE4",1024,0,fMUSICPar->max_adc_music3,1024,0,fMUSICPar->max_adc_music4,"dE MUSIC43","dE MUSIC44");
   SetupH2("MUSIC1_dE_x",100,-100,100,200,0,fMUSICPar->max_adc_music1,"Average x position in MUSIC41","dE MUSIC41 [channels]");
   SetupH2("MUSIC2_dE_x",100,-100,100,200,0,fMUSICPar->max_adc_music2,"Average x position in MUSIC42","dE MUSIC42 [channels]");
   SetupH2("MUSIC3_dE_x",100,-100,100,200,0,fMUSICPar->max_adc_music3,"Average x position in MUSIC43","dE MUSIC43 [channels]");
+  SetupH2("MUSIC4_dE_x",100,-100,100,200,0,fMUSICPar->max_adc_music4,"Average x position in MUSIC44","dE MUSIC44 [channels]");
   SetupH1("MUSIC1_dECOR",4096,0,fMUSICPar->max_adc_music1,"dE MUSIC41 corrected for position (ch)");
   SetupH1("MUSIC2_dECOR",4096,0,fMUSICPar->max_adc_music2,"dE MUSIC42 corrected for position (ch)");
   SetupH1("MUSIC3_dECOR",4096,0,fMUSICPar->max_adc_music3,"dE MUSIC43 corrected for position (ch)");
+  SetupH1("MUSIC4_dECOR",4096,0,fMUSICPar->max_adc_music4,"dE MUSIC44 corrected for position (ch)");
   SetupH2("MUSIC1_dECOR_x",100,-100,+100,200,0,fMUSICPar->max_adc_music1,"Average x position in MUSIC41", "dE MUSIC41 corrected for position  (ch)");
   SetupH2("MUSIC2_dECOR_x",100,-100,+100,200,0,fMUSICPar->max_adc_music2,"Average x position in MUSIC42", "dE MUSIC42 corrected for position  (ch)");
   SetupH2("MUSIC3_dECOR_x",100,-100,+100,200,0,fMUSICPar->max_adc_music3,"Average x position in MUSIC43", "dE MUSIC43 corrected for position  (ch)");
+  SetupH2("MUSIC4_dECOR_x",100,-100,+100,200,0,fMUSICPar->max_adc_music4,"Average x position in MUSIC44", "dE MUSIC44 corrected for position  (ch)");
   for(int igate=0; igate<15;igate++){
     char gate_name[256];
     if(0 <=igate && igate<5){  sprintf(gate_name,"cID_ZAoQ(%d)",igate); }
@@ -335,6 +354,7 @@ Bool_t TFRSAnalysis::InitEventClasses()
       SetupH1(Form("MUSIC1dE_%d_%s",ch,gate_name),4096,0,fMUSICPar->max_adc_music1,"MUSIC dE [channel]");
       SetupH1(Form("MUSIC2dE_%d_%s",ch,gate_name),4096,0,fMUSICPar->max_adc_music2,"MUSIC dE [channel]");
       SetupH1(Form("MUSIC3dE_%d_%s",ch,gate_name),4096,0,fMUSICPar->max_adc_music3,"MUSIC dE [channel]");
+      SetupH1(Form("MUSIC4dE_%d_%s",ch,gate_name),4096,0,fMUSICPar->max_adc_music4,"MUSIC dE [channel]");
     }
     SetupH2(Form("total_range_vs_z_%s",gate_name), 1000,0,12000, 600,fIDPar->min_z_plot,fIDPar->max_z_plot,"Range in Al [mg/cm^2]", "Z");
     SetupH2(Form("range_post_degrader_vs_z_%s",gate_name), 1000,0,12000, 600,fIDPar->min_z_plot,fIDPar->max_z_plot,"Range in Al [mg/cm^2]", "Z");

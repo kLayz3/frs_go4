@@ -57,25 +57,33 @@ void TFRSAnlEvent::Clear(Option_t *t)
       music_b_t2[i] = kFALSE;
       music_b_t3[i] = kFALSE;
       music_b_e3[i] = kFALSE;
+      music_b_t4[i] = kFALSE;
+      music_b_e4[i] = kFALSE;
     }
 
   music1_anodes_cnt = 0;
   music2_anodes_cnt = 0;
   music3_anodes_cnt = 0;
+  music4_anodes_cnt = 0;
   b_de1 = kFALSE;
   b_de2 = kFALSE;
   b_de3 = kFALSE;
+  b_de4 = kFALSE;
   b_dt3 = kFALSE;
+  b_dt4 = kFALSE;
   de[0] = 0.;
   de[1] = 0.;
   de[2] = 0.;
+  de[3] = 0.;
   de_cor[0] = 0.;
   de_cor[1] = 0.;
   de_cor[2] = 0.;
+  de_cor[3] = 0.;
 
   music1_x_mean = -999.;
   music2_x_mean = -999.;
   music3_x_mean = -999.;
+  music4_x_mean = -999.;
   b_decor = kFALSE;
 
   // SCI part
@@ -219,9 +227,12 @@ void TFRSAnlEvent::Clear(Option_t *t)
   
   id_v_cor = 0.;
   id_v_cor2 = 0.;
+  id_v_cor3 = 0.;
+  id_v_cor4 = 0.;
   id_z = 0.;
   id_z2 = 0.;
-  id_z3 = 0;
+  id_z3 = 0.;
+  id_z4 = 0.;
   id_energy_geL = 0.;
   id_tac_41_geL = 0.;
   id_energy_geL_raw = 0;
@@ -246,6 +257,9 @@ void TFRSAnlEvent::Clear(Option_t *t)
 
   id_b_AoQ    = kFALSE;
   id_b_z      = kFALSE;
+  id_b_z2      = kFALSE;
+  id_b_z3      = kFALSE;
+  id_b_z4      = kFALSE;
   id_b_AoQ_s2s8    = kFALSE;
 
   // KW inconistent array length for this multihit should be 50!!
