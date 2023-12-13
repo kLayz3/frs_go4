@@ -7,6 +7,10 @@ src/*.swp
 src/.*
 src/#*
 *.lmd
+*.root
+*.png
+*.pdf
+.nfs*
 lmd/*
 MainUserAnalysis
 martin*
