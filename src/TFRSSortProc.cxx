@@ -592,9 +592,12 @@ for(int i = 0; i<32; i++)
   tgt->mrtof_spill = src->leading_v1190_mrtof[10][0];
   tgt->mrtof_ts = (src->mrtof_ts-21600-31557600*51)%(24*3600);
   //printf("unix time %02d mrtof_ts %02d\n", src->mrtof_ts, tgt->mrtof_ts);
+<<<<<<< HEAD
 #ifdef LISA_INCLUDED
 	tgt->lisa_en = src->lisa_en;
 #endif
+=======
+>>>>>>> f3cd2a544901e92c13f045f38f9754ba6eeac681
   return kTRUE;
 } // end of ProcSort
 

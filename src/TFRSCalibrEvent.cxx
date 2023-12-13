@@ -227,9 +227,13 @@ for(int i = 0; i<8; i++){
   dssd_xmaxindex=-1;
   dssd_ymaxenergy=0;
   dssd_ymaxindex=-1;
+<<<<<<< HEAD
 #ifdef LISA_INCLUDED
 	lisa_en = 0;
 #endif
+=======
+
+>>>>>>> f3cd2a544901e92c13f045f38f9754ba6eeac681
 }
 
 ClassImp(TFRSCalibrEvent)

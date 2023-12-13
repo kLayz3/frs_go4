@@ -8,8 +8,11 @@
 #include "TFRSVftxSetting.h"
 #include "TRandom3.h"
 
+<<<<<<< HEAD
 #include "define.hh"
 
+=======
+>>>>>>> f3cd2a544901e92c13f045f38f9754ba6eeac681
 class TFRSUnpackEvent;
 class TGo4MbsSubEvent;
 
@@ -30,11 +33,15 @@ private:
   // KW this function returns nothing, and should be void
   //Bool_t TimeStampExtract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   void TimeStampExtract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
+<<<<<<< HEAD
   void TimeStampExtract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   void TimeStampExtract_TravMus(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
 #ifdef LISA_INCLUDED
   void SubevExtract_LISA(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
 #endif
+=======
+  bool TimeStampExtract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
+>>>>>>> f3cd2a544901e92c13f045f38f9754ba6eeac681
   Bool_t Event_Extract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   Bool_t Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   
@@ -160,12 +167,15 @@ private:
   TH1 * h1_vftx_trailing_ft[VFTX_N][VFTX_MAX_CHN];
   TH1 * h1_vftx_lead_mult[VFTX_N][VFTX_MAX_CHN];
   TH1 * h1_vftx_trail_mult[VFTX_N][VFTX_MAX_CHN];
+<<<<<<< HEAD
 #ifdef LISA_INCLUDED
 	TH1I * h1_wr_diff_FRS_LISA;
 	TH1I * h1_wr_diff_TM_LISA;
 	TH2I * h2_en_lisa_music;
 #endif
 	TH1I * h1_wr_diff_FRS_TM;
+=======
+>>>>>>> f3cd2a544901e92c13f045f38f9754ba6eeac681
 
   // maybe not needed, just event counter
   UInt_t Vftx_Stat[VFTX_N][VFTX_MAX_CHN];

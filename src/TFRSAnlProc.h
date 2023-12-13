@@ -88,10 +88,13 @@ private:
   TH2I          *hMUSIC4_dE_x;
   TH1I          *hMUSIC4_dECOR;
   TH2I          *hMUSIC4_dECOR_x;
+<<<<<<< HEAD
   TH1I          *hMUSIC4_drift_y1;
   TH1I          *hMUSIC4_drift_y2;
   TH1I          *hMUSIC4_drift_y3;
   TH1I          *hMUSIC4_drift_y4;
+=======
+>>>>>>> f3cd2a544901e92c13f045f38f9754ba6eeac681
   
   // correlation between MUSICs
   TH2I          *hMUSIC_dE1dE2;

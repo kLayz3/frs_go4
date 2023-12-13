@@ -3,7 +3,11 @@
 
 
 #include "TGo4EventElement.h"
+<<<<<<< HEAD
 #include "define.hh"
+=======
+
+>>>>>>> f3cd2a544901e92c13f045f38f9754ba6eeac681
 #include "TFRSVftxSetting.h"
 
 class TFRSUnpackProc;
@@ -89,6 +93,7 @@ public:
   UInt_t nhit_mdpp_s530[16][3];        // multi-hit of MDPP-16 TDC, LQDC, SQDC in s530 crate
   UInt_t mdpp_trig_s530[2];            // T0, T1 trigger of MDPP-16-QDC 
   //end of s530 fission crate
+<<<<<<< HEAD
 
   uint64_t frs_wr;
   uint64_t travmus_wr;
@@ -97,6 +102,9 @@ public:
   uint32_t lisa_en;
   uint32_t mus_avg_en;
 #endif
+=======
+  
+>>>>>>> f3cd2a544901e92c13f045f38f9754ba6eeac681
 //------------
   Int_t         qlength;         /* From event header     */
   Int_t         qtype;           /*                       */

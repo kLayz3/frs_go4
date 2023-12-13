@@ -2,7 +2,10 @@
 #define TFRSANLEVENT_H
 
 #include "TGo4EventElement.h"
+<<<<<<< HEAD
 #include "define.hh"
+=======
+>>>>>>> f3cd2a544901e92c13f045f38f9754ba6eeac681
 
 class TFRSAnlProc;
 class TGo4FileSource;
@@ -403,9 +406,12 @@ public:
   Float_t mrtof_si_e4;
   Float_t mrtof_si_e5;
 
+<<<<<<< HEAD
 #ifdef LISA_INCLUDED
 	uint32_t lisa_en;
 #endif
+=======
+>>>>>>> f3cd2a544901e92c13f045f38f9754ba6eeac681
 
 
 private:

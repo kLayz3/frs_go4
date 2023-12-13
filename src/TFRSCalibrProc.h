@@ -10,7 +10,10 @@
 #include "TFRSCalibrEvent.h"
 
 #include "TFRSParameter.h"
+<<<<<<< HEAD
 #include "define.hh"
+=======
+>>>>>>> f3cd2a544901e92c13f045f38f9754ba6eeac681
 
 class TFRSCalibrEvent;
 class TFRSSortEvent;
@@ -238,7 +241,10 @@ private:
   TH1I *hTPC_MUSIC43y;
   TH1I *hTPC_S4target_x;
   TH1I *hTPC_S4target_y;
+<<<<<<< HEAD
   TH2I *hTPC_S4target_xy;//JZ2023Dec
+=======
+>>>>>>> f3cd2a544901e92c13f045f38f9754ba6eeac681
 
 
   ////condtition for control sum

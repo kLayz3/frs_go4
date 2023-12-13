@@ -4,7 +4,10 @@
 #include "TFRSBasicProc.h"
 
 #include "TFRSVftxSetting.h"
+<<<<<<< HEAD
 #include "define.hh"
+=======
+>>>>>>> f3cd2a544901e92c13f045f38f9754ba6eeac681
 
 class TFRSSortEvent;
 

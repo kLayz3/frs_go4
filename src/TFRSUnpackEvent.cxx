@@ -160,6 +160,7 @@ void TFRSUnpackEvent::Clear(Option_t *t)
        mdpp_trig_s530[j] = 0;  //T0, T1 trigger of mesytec MDPP-16-QDC
     }
    //end of s530 fission crate 
+<<<<<<< HEAD
 
 #ifdef LISA_INCLUDED
 	lisa_wr = 0;
@@ -170,6 +171,9 @@ void TFRSUnpackEvent::Clear(Option_t *t)
 	travmus_wr = 0;
 	frs_wr = 0;
 
+=======
+   
+>>>>>>> f3cd2a544901e92c13f045f38f9754ba6eeac681
    qlength = 0;
    qtype = 0;
    qsubtype = 0;
