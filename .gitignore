@@ -12,6 +12,7 @@ src/#*
 *.pdf
 .nfs*
 lmd/*
+rootfile/*
 MainUserAnalysis
 martin*
 *.so
