@@ -1,6 +1,6 @@
 #include "Riostream.h"
 
-void setup_sxxx_xxx_2023()
+void setup_engrun_008_2023()
 {
   // look up analysis object and all parameters
 
@@ -526,14 +526,14 @@ void setup_sxxx_xxx_2023()
   // multihit TDC cut TPC time reference signal
   // After changing cut limits => Launch analysis again in Go4GUI
   // [Updated on 2021/Mar/21, YT, EH, IM] to catch all timeref signals.
-  tpc->lim_timeref[0][0] = 1000.0; tpc->lim_timeref[0][1] = 38000.0;//time ref (accept trig)
-  tpc->lim_timeref[1][0] = 1000.0; tpc->lim_timeref[1][1] = 30000.0;//time ref (sc21) changed to narrow gate, 2023-Nov-28
-  tpc->lim_timeref[2][0] = 1000.0; tpc->lim_timeref[2][1] = 38500.0;//time ref (sc22)
-  tpc->lim_timeref[3][0] = 1000.0; tpc->lim_timeref[3][1] = 30000.0;//time ref (sc31) changed to narrow gate, 2023-Nov-28
-  tpc->lim_timeref[4][0] = 1000.0; tpc->lim_timeref[4][1] = 30000.0;//time ref (sc41) changed to narrow gate, 2023-Nov-28
-  tpc->lim_timeref[5][0] = 1000.0; tpc->lim_timeref[5][1] = 38000.0;//time ref (---)
-  tpc->lim_timeref[6][0] = 1000.0; tpc->lim_timeref[6][1] = 38000.0;//time ref (---)
-  tpc->lim_timeref[7][0] = 1000.0; tpc->lim_timeref[7][1] = 38000.0;//time ref (---)
+  tpc->lim_timeref[0][0] = 1000.0; tpc->lim_timeref[0][1] = 48000.0;//time ref (accept trig)
+  tpc->lim_timeref[1][0] = 5000.0; tpc->lim_timeref[1][1] = 20000.0;//time ref (sc21) changed to narrow gate, 2023-Nov-28
+  tpc->lim_timeref[2][0] = 1000.0; tpc->lim_timeref[2][1] = 48500.0;//time ref (sc22)
+  tpc->lim_timeref[3][0] = 5000.0; tpc->lim_timeref[3][1] = 20000.0;//time ref (sc31) changed to narrow gate, 2023-Nov-28
+  tpc->lim_timeref[4][0] = 5000.0; tpc->lim_timeref[4][1] = 20000.0;//time ref (sc41) changed to narrow gate, 2023-Nov-28
+  tpc->lim_timeref[5][0] = 1000.0; tpc->lim_timeref[5][1] = 48000.0;//time ref (---)
+  tpc->lim_timeref[6][0] = 1000.0; tpc->lim_timeref[6][1] = 48000.0;//time ref (---)
+  tpc->lim_timeref[7][0] = 1000.0; tpc->lim_timeref[7][1] = 48000.0;//time ref (---)
 
 
   //-------- TPC21 parameters (updated on // 19/June/2021, BARB june 2021) ---------
@@ -564,10 +564,10 @@ void setup_sxxx_xxx_2023()
   tpc->lim_rt[0][0][0] = 20000.;  tpc->lim_rt[0][0][1] = 50000.0; //DR1 time TDC cut
   tpc->lim_lt[0][1][0] = 20000.;  tpc->lim_lt[0][1][1] = 50000.0; //DL2 time TDC cut
   tpc->lim_rt[0][1][0] = 20000.;  tpc->lim_rt[0][1][1] = 50000.0; //DL2 time TDC cut
-  tpc->lim_csum1[0][0] = 12000.0;  tpc->lim_csum1[0][1] = 16000.0;
-  tpc->lim_csum2[0][0] = 12000.0;  tpc->lim_csum2[0][1] = 16000.0;
-  tpc->lim_csum3[0][0] = 12000.0;  tpc->lim_csum3[0][1] = 16000.0; 
-  tpc->lim_csum4[0][0] = 12000.0;  tpc->lim_csum4[0][1] = 16000.0;
+  tpc->lim_csum1[0][0] = 13700.0;  tpc->lim_csum1[0][1] = 14600.0;
+  tpc->lim_csum2[0][0] = 13900.0;  tpc->lim_csum2[0][1] = 14600.0;
+  tpc->lim_csum3[0][0] = 13500.0;  tpc->lim_csum3[0][1] = 14600.0; 
+  tpc->lim_csum4[0][0] = 13500.0;  tpc->lim_csum4[0][1] = 14600.0;
 
   
   //-------- TPC22 parameters after Repair in May 2021 (updated on // 19/June/2021, BARB june 2021) ----------
@@ -631,10 +631,10 @@ void setup_sxxx_xxx_2023()
   tpc->lim_rt[2][0][0] = 20000.;  tpc->lim_rt[2][0][1] = 50000.0; //DR1 time TDC cut
   tpc->lim_lt[2][1][0] = 20000.;  tpc->lim_lt[2][1][1] = 50000.0; //DL2 time TDC cut
   tpc->lim_rt[2][1][0] = 20000.;  tpc->lim_rt[2][1][1] = 50000.0; //DL2 time TDC cut
-  tpc->lim_csum1[2][0] = 13000.0;   tpc->lim_csum1[2][1] = 15500.0; //, 15:00 2022-May-12
-  tpc->lim_csum2[2][0] = 13000.0;   tpc->lim_csum2[2][1] = 15500.0;//, 15:00 2022-May-12
-  tpc->lim_csum3[2][0] = 13000.0;   tpc->lim_csum3[2][1] = 15500.0;//, 15:00 2022-May-12
-  tpc->lim_csum4[2][0] = 13000.0;   tpc->lim_csum4[2][1] = 15500.0; //, 15:00 2022-May-12
+  tpc->lim_csum1[2][0] = 13800.0;   tpc->lim_csum1[2][1] = 14800.0; //, 15:00 2022-May-12
+  tpc->lim_csum2[2][0] = 14000.0;   tpc->lim_csum2[2][1] = 14800.0;//, 15:00 2022-May-12
+  tpc->lim_csum3[2][0] = 14000.0;   tpc->lim_csum3[2][1] = 14800.0;//, 15:00 2022-May-12
+  tpc->lim_csum4[2][0] = 14000.0;   tpc->lim_csum4[2][1] = 14800.0; //, 15:00 2022-May-12
   
   
   //-------- TPC24 parameters  ------- (updated on 2021/May31, begeinnig of S526, timeref=2, U beam)--------------
@@ -665,11 +665,10 @@ void setup_sxxx_xxx_2023()
   tpc->lim_rt[3][0][0] = 20000.;  tpc->lim_rt[3][0][1] = 50000.0; //DR1 time TDC cut
   tpc->lim_lt[3][1][0] = 20000.;  tpc->lim_lt[3][1][1] = 50000.0; //DL2 time TDC cut
   tpc->lim_rt[3][1][0] = 20000.;  tpc->lim_rt[3][1][1] = 50000.0; //DL2 time TDC cut
-
-  tpc->lim_csum1[3][0] = 16000.;    tpc->lim_csum1[3][1] = 20000.; ////, 15:00 2022-May-12
-  tpc->lim_csum2[3][0] = 16000.;    tpc->lim_csum2[3][1] = 20000.; ////, 15:00 2022-May-12
-  tpc->lim_csum3[3][0] = 16000.;    tpc->lim_csum3[3][1] = 20000.; ////, 15:00 2022-May-12
-  tpc->lim_csum4[3][0] = 16000.;    tpc->lim_csum4[3][1] = 20000.; ////, 15:00 2022-May-12
+  tpc->lim_csum1[3][0] = 18100.0 -200.;    tpc->lim_csum1[3][1] = 18800.0+200.; ////, 15:00 2022-May-12
+  tpc->lim_csum2[3][0] = 17900.0 -200.;    tpc->lim_csum2[3][1] = 18700.0+200.; ////, 15:00 2022-May-12
+  tpc->lim_csum3[3][0] = 18600.0 -200.;    tpc->lim_csum3[3][1] = 19400.0+200.; ////, 15:00 2022-May-12
+  tpc->lim_csum4[3][0] = 18200.0 -200.;    tpc->lim_csum4[3][1] = 19000.0+200.; ////, 15:00 2022-May-12
   
   
   //-------- TPC41 parameters  (updated on // 19/June/2021, BARB june 2021) -------
@@ -678,9 +677,9 @@ void setup_sxxx_xxx_2023()
   tpc->id_tpc_timeref[4] = 4; // Do not change id_tpc_timeref. (0:accepttrig, 1:sc21, 2:sc22, 3:sc31, 4:sc41)
   // because calibration parameters (for y) are valid only with timeref used during calibration.
   // if you want to change timeref, you need to calibrate y-position  again ! )
-  tpc->x_offset[4][0] = -0.657524+2.0 +1.8-3.8-0.25;// 19/June/2021
+  tpc->x_offset[4][0] = -0.657524+2.0 +1.8-3.8-0.25+1.5;// 19/June/2021, +1.5 Dec.02 2023
   tpc->x_factor[4][0] = 0.007779*12./11.;
-  tpc->x_offset[4][1] = -1.806150+2.0 +1.8-3.8-0.25; // 19/June/2021//trust more final grid in front of IC, and correct for TPC41/42
+  tpc->x_offset[4][1] = -1.806150+2.0 +1.8-3.8-0.25+1.5; // 19/June/2021//trust more final grid in front of IC, and correct for TPC41/42
   tpc->x_factor[4][1] = 0.007802*12./11.;
   tpc->y_offset[4][0] = 54.670698 -1.3 -0.5+0.8+0.8;// 19/June/2021
   tpc->y_factor[4][0] = -0.004075;  //air tpc is drift to top. negative y-factor
@@ -699,10 +698,10 @@ void setup_sxxx_xxx_2023()
   tpc->lim_rt[4][0][0] = 20000.;  tpc->lim_rt[4][0][1] = 45000.0; //DR1 time TDC cut
   tpc->lim_lt[4][1][0] = 20000.;  tpc->lim_lt[4][1][1] = 45000.0; //DL2 time TDC cut
   tpc->lim_rt[4][1][0] = 20000.;  tpc->lim_rt[4][1][1] = 45000.0; //DL2 time TDC cut
-  tpc->lim_csum1[4][0] = 13000.0;    tpc->lim_csum1[4][1] = 15000.0;
-  tpc->lim_csum2[4][0] = 13000.0;    tpc->lim_csum2[4][1] = 15000.0;
-  tpc->lim_csum3[4][0] = 13000.0;    tpc->lim_csum3[4][1] = 15000.0;
-  tpc->lim_csum4[4][0] = 13000.0;    tpc->lim_csum4[4][1] = 15000.0;
+  tpc->lim_csum1[4][0] = 14000.0;    tpc->lim_csum1[4][1] = 14900.0;
+  tpc->lim_csum2[4][0] = 14050.0;    tpc->lim_csum2[4][1] = 14650.0;
+  tpc->lim_csum3[4][0] = 14100.0;    tpc->lim_csum3[4][1] = 14600.0;
+  tpc->lim_csum4[4][0] = 14100.0;    tpc->lim_csum4[4][1] = 14700.0;
   
 
   //-------- TPC42 parameters (updated on // 19/June/2021, BARB june 2021)
@@ -710,9 +709,9 @@ void setup_sxxx_xxx_2023()
   tpc->id_tpc_timeref[5] = 4; // Do not change id_tpc_timeref. (0:accepttrig, 1:sc21, 2:sc22, 3:sc31, 4:sc41)
   // because calibration parameters (y) are valid only with timeref used during calibration.
   // if you want to change timeref, you need to calibrate y-position again ! )
-  tpc->x_offset[5][0] = 2.821206-2.0 +8.0 -1.8-4.5-0.2; // 19/June/2021
+  tpc->x_offset[5][0] = 2.821206-2.0 +8.0 -1.8-4.5-0.2-1.5; // 19/June/2021, -1.5 Dec.02 2023 
   tpc->x_factor[5][0] = 0.007828*24./23.;
-  tpc->x_offset[5][1] = 1.989353-2.0 +8.0 -1.8-4.5-0.2; // 19/June/2021 //trust more final grid in front of IC, and correct for TPC41/42
+  tpc->x_offset[5][1] = 1.989353-2.0 +8.0 -1.8-4.5-0.2-1.5; // 19/June/2021 //trust more final grid in front of IC, and correct for TPC41/42
   tpc->x_factor[5][1] = 0.007999*24./23.;
   tpc->y_offset[5][0] = 55.137927 +1.3 +0.5-0.8-1.1;// 19/June/2021
   tpc->y_factor[5][0] = -0.004056; //air tpc is drift to top. negative y-factor
@@ -731,10 +730,10 @@ void setup_sxxx_xxx_2023()
   tpc->lim_rt[5][0][0] = 20000.;  tpc->lim_rt[5][0][1] = 45000.0; //DR1 time TDC cut
   tpc->lim_lt[5][1][0] = 20000.;  tpc->lim_lt[5][1][1] = 45000.0; //DL2 time TDC cut
   tpc->lim_rt[5][1][0] = 20000.;  tpc->lim_rt[5][1][1] = 45000.0; //DL2 time TDC cut
-  tpc->lim_csum1[5][0] = 13000.0;    tpc->lim_csum1[5][1] = 15000.0;
-  tpc->lim_csum2[5][0] = 13000.0;    tpc->lim_csum2[5][1] = 15000.0;
-  tpc->lim_csum3[5][0] = 13000.0;    tpc->lim_csum3[5][1] = 15000.0;
-  tpc->lim_csum4[5][0] = 13000.0;    tpc->lim_csum4[5][1] = 15000.0;
+  tpc->lim_csum1[5][0] = 14300.0;    tpc->lim_csum1[5][1] = 14900.0;
+  tpc->lim_csum2[5][0] = 14100.0;    tpc->lim_csum2[5][1] = 14500.0;
+  tpc->lim_csum3[5][0] = 13650.0;    tpc->lim_csum3[5][1] = 14050.0;
+  tpc->lim_csum4[5][0] = 13750.0;    tpc->lim_csum4[5][1] = 14250.0;
 
 
   //TPC at S3 (TPC 31) calibration updated on 19/June/2021
@@ -759,10 +758,10 @@ void setup_sxxx_xxx_2023()
   tpc->lim_rt[6][0][0] = 20000.;  tpc->lim_rt[6][0][1] = 45000.0; //DR1 time TDC cut
   tpc->lim_lt[6][1][0] = 20000.;  tpc->lim_lt[6][1][1] = 45000.0; //DL2 time TDC cut
   tpc->lim_rt[6][1][0] = 20000.;  tpc->lim_rt[6][1][1] = 45000.0; //DL2 time TDC cut
-  tpc->lim_csum1[6][0] = 11000.0;    tpc->lim_csum1[6][1] = 13500.0;
-  tpc->lim_csum2[6][0] = 10000.0;    tpc->lim_csum2[6][1] = 12500.0;
-  tpc->lim_csum3[6][0] = 12000.0;    tpc->lim_csum3[6][1] = 14500.0;
-  tpc->lim_csum4[6][0] = 12200.0;    tpc->lim_csum4[6][1] = 14400.0;
+  tpc->lim_csum1[6][0] = 11500.0;    tpc->lim_csum1[6][1] = 14500.0;
+  tpc->lim_csum2[6][0] = 11000.0;    tpc->lim_csum2[6][1] = 14000.0;
+  tpc->lim_csum3[6][0] = 12500.0;    tpc->lim_csum3[6][1] = 14200.0;
+  tpc->lim_csum4[6][0] = 12500.0;    tpc->lim_csum4[6][1] = 14000.0;
 
   //TPC21 ADC pedestal
   tpc->a_offset[0][0] = 999.;

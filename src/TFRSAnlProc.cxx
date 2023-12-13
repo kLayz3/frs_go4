@@ -150,44 +150,44 @@ void TFRSAnlProc::Create_MUSIC_Hist()
 
        sprintf(name,"MUSIC1_T(%d)",i);
        sprintf(xtitle,"dT MUSIC1(%d) ",i);
-       hMUSIC1_T[i] = MakeH1I("MUSIC/MUSIC(1)/T",name,4096,0, 4096,xtitle,2,6);
+       hMUSIC1_T[i] = MakeH1I("MUSIC/MUSIC(1)/T",name,4000,0, 120000,xtitle,2,6);
 
        sprintf(name,"MUSIC2_T(%d)",i);
        sprintf(xtitle,"dT MUSIC2(%d) ",i);
-       hMUSIC2_T[i] = MakeH1I("MUSIC/MUSIC(2)/T",name,4096,0, 4096-10, xtitle,2,6); //travel music, tdcmax = 0x10000
+       hMUSIC2_T[i] = MakeH1I("MUSIC/MUSIC(2)/T",name,4000,0, 120000, xtitle,2,6); //travel music, tdcmax = 0x10000
 
        sprintf(name,"MUSIC3_T(%d)",i);
        sprintf(xtitle,"dT MUSIC3(%d) ",i);
-       hMUSIC3_T[i] = MakeH1I("MUSIC/MUSIC(3)/T",name,4096,0, 4096-10, xtitle,2,6);
+       hMUSIC3_T[i] = MakeH1I("MUSIC/MUSIC(3)/T",name,4000,0, 120000, xtitle,2,6);
 
        sprintf(name,"MUSIC4_T(%d)",i);
        sprintf(xtitle,"dT MUSIC4(%d) ",i);
-       hMUSIC4_T[i] = MakeH1I("MUSIC/MUSIC(4)/T",name,4096,0, 4096-10, xtitle,2,6);
+       hMUSIC4_T[i] = MakeH1I("MUSIC/MUSIC(4)/T",name,4000,0, 120000, xtitle,2,6);
 
        // basic cut conditions
        sprintf(name,"cMusic1_E(%d)",i);
        cMusic1_E[i] = MakeWindowCond("MUSIC/MUSIC(1)/E",name, 10, 4096-10, hMUSIC1_E[i]->GetName());
 
        sprintf(name,"cMusic1_T(%d)",i);
-       cMusic1_T[i] = MakeWindowCond("MUSIC/MUSIC(1)/T",name, 10, 4096-10, hMUSIC1_T[i]->GetName());
+       cMusic1_T[i] = MakeWindowCond("MUSIC/MUSIC(1)/T",name, 10, 120000-10, hMUSIC1_T[i]->GetName());
 
        sprintf(name,"cMusic2_E(%d)",i);
        cMusic2_E[i] = MakeWindowCond("MUSIC/MUSIC(2)/E",name, 10, 4096-10, hMUSIC2_E[i]->GetName());
 
        sprintf(name,"cMusic2_T(%d)",i);
-       cMusic2_T[i] = MakeWindowCond("MUSIC/MUSIC(2)/T",name, 10, 4096-10, hMUSIC2_T[i]->GetName());
+       cMusic2_T[i] = MakeWindowCond("MUSIC/MUSIC(2)/T",name, 10, 120000-10, hMUSIC2_T[i]->GetName());
 
        sprintf(name,"cMusic3_E(%d)",i);
        cMusic3_E[i] = MakeWindowCond("MUSIC/MUSIC(3)/E",name, 10, 4096-10, hMUSIC3_E[i]->GetName());
 
        sprintf(name,"cMusic3_T(%d)",i);
-       cMusic3_T[i] = MakeWindowCond("MUSIC/MUSIC(3)/T",name, 10,4096-10, hMUSIC3_T[i]->GetName());
+       cMusic3_T[i] = MakeWindowCond("MUSIC/MUSIC(3)/T",name, 10,120000-10, hMUSIC3_T[i]->GetName());
        
        sprintf(name,"cMusic4_E(%d)",i);
        cMusic4_E[i] = MakeWindowCond("MUSIC/MUSIC(4)/E",name, 10, 4096-10, hMUSIC4_E[i]->GetName());
 
        sprintf(name,"cMusic4_T(%d)",i);
-       cMusic4_T[i] = MakeWindowCond("MUSIC/MUSIC(4)/T",name, 10,4096-10, hMUSIC4_T[i]->GetName());
+       cMusic4_T[i] = MakeWindowCond("MUSIC/MUSIC(4)/T",name, 10,120000-10, hMUSIC4_T[i]->GetName());
    }
 
    hMUSIC1_dE = MakeH1I("MUSIC/MUSIC(1)/E","MUSIC1_dE",4096,0.0,4096,"Average dE MUSIC41 (root)",2,6);
@@ -211,7 +211,11 @@ void TFRSAnlProc::Create_MUSIC_Hist()
    hMUSIC1_dECOR_x = MakeH2I("MUSIC/MUSIC(1)/E","MUSIC1_dECOR_x",100,-100,+100,200,0,4096,"Average x position in MUSIC41", "dE MUSIC41 corrected for position  (ch)", 2);
    hMUSIC2_dECOR_x = MakeH2I("MUSIC/MUSIC(2)/E","MUSIC2_dECOR_x",100,-100,+100,200,0,4096,"Average x position in MUSIC42", "dE MUSIC42 corrected for position  (ch)", 2);
    hMUSIC3_dECOR_x = MakeH2I("MUSIC/MUSIC(3)/E","MUSIC3_dECOR_x",100,-100,+100,200,0,4096,"Average x position in MUSIC43", "dE MUSIC43 corrected for position  (ch)", 2);
-   hMUSIC4_dECOR_x = MakeH2I("MUSIC/MUSIC(4)/E","MUSIC4_dECOR_x",100,-100,+100,200,0,4096,"Average x position in MUSIC44", "dE MUSIC44 corrected for position  (ch)", 2); 
+   hMUSIC4_dECOR_x = MakeH2I("MUSIC/MUSIC(4)/E","MUSIC4_dECOR_x",100,-100,+100,200,0,4096,"Average x position in MUSIC44", "dE MUSIC44 corrected for position  (ch)", 2);
+   hMUSIC4_drift_y1 = MakeH1I("MUSIC/MUSIC(4)/T","MUSIC4_drift_y_A1",300,-150,150,"Y_position MUSIC44-A1 from drift (mm)",2,6);//JZ 07.12.2023
+   hMUSIC4_drift_y2 = MakeH1I("MUSIC/MUSIC(4)/T","MUSIC4_drift_y_A2",300,-150,150,"Y_position MUSIC44-A2 from drift (mm)",2,6);//JZ 07.12.2023
+   hMUSIC4_drift_y3 = MakeH1I("MUSIC/MUSIC(4)/T","MUSIC4_drift_y_A3",300,-150,150,"Y_position MUSIC44-A3 from drift (mm)",2,6);//JZ 07.12.2023
+   hMUSIC4_drift_y4 = MakeH1I("MUSIC/MUSIC(4)/T","MUSIC4_drift_y_A4",300,-150,150,"Y_position MUSIC44-A4 from drift (mm)",2,6); //JZ 07.12.2023
 
    // for(int i=0;i<8;i++){
    //    for(int k=0;k<5;++k){
@@ -1173,6 +1177,14 @@ void TFRSAnlProc::Process_MUSIC_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& cl
 	}
     }// end of i-loop
 
+//added by JZ 07.12.2023
+
+      hMUSIC4_drift_y1->Fill(0.025*0.25*(srt.music_t2[4]-70000));
+
+      hMUSIC4_drift_y2->Fill(0.025*0.25*(srt.music_t2[5]-70000));
+      hMUSIC4_drift_y3->Fill(0.025*0.25*(srt.music_t2[6]-70000));
+      hMUSIC4_drift_y4->Fill(0.025*0.25*(srt.music_t2[7]-70000));
+//added by JZ 07.12.2023
 
 
 
@@ -1186,10 +1198,13 @@ void TFRSAnlProc::Process_MUSIC_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& cl
       //      Float_t r3 = (srt.music_e1[4] - music->e1_off[4])*(srt.music_e1[5] - music->e1_off[5]);
       //      Float_t r4 = (srt.music_e1[6] - music->e1_off[6])*(srt.music_e1[7] - music->e1_off[7]);
 
-      Float_t r1 = ((srt.music_e1[0])*music->e1_gain[0] + music->e1_off[0])*((srt.music_e1[1])*music->e1_gain[1] + music->e1_off[1]);
+      Float_t r1 = ((srt.music_e1[1])*music->e1_gain[1] + music->e1_off[1])*((srt.music_e1[1])*music->e1_gain[1] + music->e1_off[1]);
+      //Float_t r1 = ((srt.music_e1[0])*music->e1_gain[0] + music->e1_off[0])*((srt.music_e1[1])*music->e1_gain[1] + music->e1_off[1]);//JZ Dec. 11,2023
       Float_t r2 = ((srt.music_e1[2])*music->e1_gain[2] + music->e1_off[2])*((srt.music_e1[3])*music->e1_gain[3] + music->e1_off[3]);
       Float_t r3 = ((srt.music_e1[4])*music->e1_gain[4] + music->e1_off[4])*((srt.music_e1[5])*music->e1_gain[5] + music->e1_off[5]);
-      Float_t r4 = ((srt.music_e1[6])*music->e1_gain[6] + music->e1_off[6])*((srt.music_e1[7])*music->e1_gain[7] + music->e1_off[7]);
+      Float_t r4 = ((srt.music_e1[6])*music->e1_gain[6] + music->e1_off[6])*((srt.music_e1[6])*music->e1_gain[6] + music->e1_off[6]);
+
+      //Float_t r4 = ((srt.music_e1[6])*music->e1_gain[6] + music->e1_off[6])*((srt.music_e1[7])*music->e1_gain[7] + music->e1_off[7]);//JZ Dec. 11,2023
 
       if ( (r1 > 0) && (r2 > 0) && (r3 > 0) && (r4 > 0) )
 	{
@@ -1226,9 +1241,11 @@ void TFRSAnlProc::Process_MUSIC_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& cl
   if (8 == tgt.music2_anodes_cnt)
     {
 
+      //Float_t r1 = ((srt.music_e2[1])*music->e2_gain[1] + music->e2_off[1])*((srt.music_e2[1])*music->e2_gain[1] + music->e2_off[1]);//JZ Dec. 11,2023
       Float_t r1 = ((srt.music_e2[0])*music->e2_gain[0] + music->e2_off[0])*((srt.music_e2[1])*music->e2_gain[1] + music->e2_off[1]);
       Float_t r2 = ((srt.music_e2[2])*music->e2_gain[2] + music->e2_off[2])*((srt.music_e2[3])*music->e2_gain[3] + music->e2_off[3]);
       Float_t r3 = ((srt.music_e2[4])*music->e2_gain[4] + music->e2_off[4])*((srt.music_e2[5])*music->e2_gain[5] + music->e2_off[5]);
+      //Float_t r4 = ((srt.music_e2[6])*music->e2_gain[6] + music->e2_off[6])*((srt.music_e2[6])*music->e2_gain[6] + music->e2_off[6]);//JZ Dec. 11,2023
       Float_t r4 = ((srt.music_e2[6])*music->e2_gain[6] + music->e2_off[6])*((srt.music_e2[7])*music->e2_gain[7] + music->e2_off[7]);
 
       if ( (r1 > 0) && (r2 > 0) && (r3 > 0) && (r4 > 0) )

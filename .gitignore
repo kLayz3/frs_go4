@@ -7,9 +7,14 @@ src/*.swp
 src/.*
 src/#*
 *.lmd
+*.root
 lmd/*
+rootfiles/*
+rootfile/*
 MainUserAnalysis
 martin*
 *.so
 *.pcm
 src/G__*
+*.pdf
+*.png

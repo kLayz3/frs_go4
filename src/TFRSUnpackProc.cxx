@@ -19,7 +19,6 @@
 #endif
 
 
-
 TFRSUnpackProc::TFRSUnpackProc() : TFRSBasicProc("FRSUnpackProc")
 {
 
@@ -38,6 +37,12 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
   hTpat = MakeH1I("Unpack", "Tpat", 16, 0.5, 16.5);
   hNbTrig = MakeH1I("Unpack/tpat_combinations", "Trigger Number", 16, 0.5, 16.5);
   hCombiTrig2  = MakeH2I("Unpack/tpat_combinations","Two Trigger Combinations",16,0.5,16.5,16,0.5,16.5,"first trig","second trig",1);// two trigger/event combinations
+
+#ifdef LISA_INCLUDED
+  h1_wr_diff_FRS_LISA = MakeH1I("Unpack/wr_diff_FRS_LISA", "WR difference FRS-LISA", 2400, -1200, 1200);
+  h1_wr_diff_TM_LISA = MakeH1I("Unpack/wr_diff_TM_LISA", "WR difference TM-LISA", 2400, -1200, 1200);
+#endif
+  h1_wr_diff_FRS_TM = MakeH1I("Unpack/wr_diff_FRS_TM", "WR difference FRS-TM", 2400, -1200, 1200);
 
   frs = dynamic_cast<TFRSParameter*>(GetParameter("FRSPar"));
   //ModSetup = dynamic_cast<TModParameter*>(GetParameter("ModPar"));
@@ -406,7 +411,8 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 
     if (((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 20))||((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 21))) //nurdlib stimstamp subevent shall be type 10
     {
-	    TimeStampExtract(tgt,psubevt) ; 
+	 	 if(psubevt->GetProcid() != 60)
+	    	TimeStampExtract(tgt,psubevt); 
 //	    switch(fInput->GetTrigger())
 //	    { // trigger value curently always one, tpat says who triggered
 //	      case 1:
@@ -471,6 +477,14 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 	     }  // switch on trigger value
      }//end test of vme mvlc event
 
+// Lisa subev
+#ifdef LISA_INCLUDED
+	    if ((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 20) && (psubevt->GetProcid() == 60))
+    {
+	 	// Unpack WR, throw out all the rest
+		TimeStampExtract_LISA(tgt,psubevt);
+	 }
+#endif
 
 
 
@@ -523,41 +537,94 @@ void TFRSUnpackProc::TimeStampExtract(TFRSUnpackEvent* event_out, TGo4MbsSubEven
      //std::cout <<"TimeStampExtract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl ;//JZ 2022-05-04
 	   }
      //std::cout <<"This is Main crate in TimeStampExtract TFRSUnpackProc, wrid ID:" << event_out->wrid << std::endl ;//JZ 2022-05-04
-		break ;
+	
+	break ;
 
     default:
      std::cout <<"proc ID unknow in TimeStampExtract TFRSUnpackProc " << psubevt->GetProcid()<< std::endl ; 
      break ; 
-  }
-  
+  }  
 }
 
-bool TFRSUnpackProc::TimeStampExtract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int)
-{
-/*
+#ifdef LISA_INCLUDED
+void TFRSUnpackProc::TimeStampExtract_LISA(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int) {
+  Int_t *pdata = psubevt->GetDataField();
+  Int_t len = 0;
+ // Int_t vme_chn; //usually redefined for each crate
+  Int_t lenMax = (psubevt->GetDlen()-2)/2;
+  //decide to print the WR identifier
+  uint32_t wr_id = get_bits(*pdata++,0,11); len++;
+if(! (wr_id == 0x700)) {
+	printf("LISA WR ID not 0x700 while trying to match it ...! It is %x\n", wr_id);
+	return;
+}
+if(! ((*pdata & 0xffff0000) == 0x03e10000)) {
+	printf("LISA not matching LoLo of WR ...! It is %x\n", *pdata);
+	return;
+}
+	uint64_t lisa_wr = 
+		((uint64_t)(*pdata++ & 0xffff)) |
+		((uint64_t)(*pdata++ & 0xffff) << 16) |
+		((uint64_t)(*pdata++ & 0xffff) << 32) |
+		((uint64_t)(*pdata++ & 0xffff) << 48);
+	len += 4;
+
+#ifdef LISA_DEBUG
+	printf("lisa WR LoLo: %d\n", (uint16_t)lisa_wr);
+#endif
+
+  event_out->lisa_wr = lisa_wr; 
+
+  SKIP_REST(pdata, len, lenMax)
+}
+#endif
+
+void TFRSUnpackProc::TimeStampExtract_TravMus(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int) {
   Int_t *pdata = psubevt->GetDataField();
   Int_t len = 0;
   Int_t lenMax = (psubevt->GetDlen()-2)/2;
-  if(lenMax <=
-  int hexwrid ; 
-  hex_wrid = get_bits(*pdata, 0,11);
-  event_out->wrid = hex_wrid;
+  uint32_t wr_id = get_bits(*pdata++,0,11); len++;
+if(! (wr_id == 0x200)) { //
+	printf("travmus WR ID not 0x200 while trying to match it ...! It is %x\n", wr_id);
+	return;
+}
+if(! ((*pdata & 0xffff0000) == 0x03e10000)) {
+	printf("travmus not matching LoLo of WR ...! It is %x\n", *pdata);
+	return;
+}
+	uint64_t travmus_wr = 
+		((uint64_t)(*pdata++ & 0xffff)) |
+		((uint64_t)(*pdata++ & 0xffff) << 16) |
+		((uint64_t)(*pdata++ & 0xffff) << 32) |
+		((uint64_t)(*pdata++ & 0xffff) << 48);
+	len += 4;
 
-  // Possible error flag:
-  uint8_t err_flag = (uint8_t)get_bits(*pdata,16,16);
-  if(err_flag == 1) {
-  	cerr << __PRETTY_FUNCTION__ << " :: error bit flag raised. Ignoring for now ..." << endl;
-  }
-  pdata++; len++;
-  
-  // Extract TS data
-  uint16_t flag = 0x03e1;
-  for(int ii=0; ii<4; ++ii) {
- 	 	if(get_bits(*pdata, 16,31) != flag)
-  }
-*/
+  event_out->travmus_wr = travmus_wr; 
+}
 
-  return false;
+void TFRSUnpackProc::TimeStampExtract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int) {
+  Int_t *pdata = psubevt->GetDataField();
+  Int_t len = 0;
+ // Int_t vme_chn; //usually redefined for each crate
+  Int_t lenMax = (psubevt->GetDlen()-2)/2;
+  //decide to print the WR identifier
+  uint32_t wr_id = get_bits(*pdata++,0,11); len++;
+if(! (wr_id == 0x100)) {
+	printf("FRS WR ID not 0x100 while trying to match it ...! It is %x\n", wr_id);
+	return;
+  void TimeStampExtract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
+}
+if(! ((*pdata & 0xffff0000) == 0x03e10000)) {
+	printf("FRS not matching LoLo of WR ...! It is %x\n", *pdata);
+	return;
+}
+	uint64_t frs_wr = 
+		((uint64_t)(*pdata++ & 0xffff)) |
+		((uint64_t)(*pdata++ & 0xffff) << 16) |
+		((uint64_t)(*pdata++ & 0xffff) << 32) |
+		((uint64_t)(*pdata++ & 0xffff) << 48);
+	len += 4;
+	event_out->frs_wr = frs_wr;
 }
 
 Bool_t TFRSUnpackProc::Event_Extract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int){
@@ -1465,7 +1532,6 @@ Bool_t TFRSUnpackProc::Event_Extract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent
   } // end switch prodID
 
   return kTRUE;
-
 }
 
 Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int){
@@ -1475,7 +1541,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 	
 #ifdef DEBUG
 	cout << __PRETTY_FUNCTION__ << " :: entered here...\n";
-	#endif
+#endif
 	switch(psubevt->GetProcid())
 	{
 		//===========
@@ -1483,7 +1549,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 		{
 			//----  CAEN V820 ---
 			{ 
-				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 30 : Barrier missed <V820>!" << *pdata  << std::endl; }
+				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 30 : Barrier missed <V820>! " << *pdata  << std::endl; }
 				else{//Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
@@ -1506,8 +1572,9 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			//while (len < lenMax){
 				//----  CAEN V775 and V785---
 				{ 
-					if(get_bits(*pdata,16,31) != 0xf520){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 30 : Barrier missed! <V775/85>" << std::hex << *pdata <<std::dec << std::endl; }
-					else{Int_t words = get_bits(*pdata,0,15);
+					if(get_bits(*pdata,16,31) != 0xf520){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 30 : Barrier missed <V775/85>! " << std::hex << *pdata <<std::dec << std::endl; }
+					else {
+						Int_t words = get_bits(*pdata,0,15);
 						//std::cout<< "Number of words of this modul: "<< words << std::endl;
 						pdata++; len++;
 						int i_word = 0;
@@ -1548,9 +1615,9 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 		case 10:	// Main crate
 		{
 			// TS Extractor
-			for(int ii=0; ii<5;ii++){
-				pdata++; len++;
-			}
+			TimeStampExtract_MVLC(event_out, psubevt);
+			pdata += 5;
+			len += 5;
 			//----  CAEN V820 ---
 			{ 
 				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
@@ -1677,6 +1744,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 		//================
 		case 20:	// TPC crate
 		{
+			if(*pdata == 0xbad00bad) break; 
 			for (int ii=0; ii < 2;ii++){ // read out 2 of them
 				//----  CAEN V775 and V785---
 				{ 
@@ -1720,8 +1788,12 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			//----  CAEN V1190 ---
 			{
 			  if(getbits(*pdata,2,1,16) != 62752){
-			    if(getbits(*pdata,2,1,16) == 62848){std::cout<<"E> Event Nr: "<< myevent <<",  ProcID 20 : Strange event! " << std::hex << *pdata <<std::dec << std::endl;}
-			    else{std::cout<<"E> Event Nr: "<< myevent <<",  ProcID 20 : Barrier V1190 missed! " << std::hex << *pdata <<std::dec << std::endl;}
+						 if(getbits(*pdata,2,1,16) == 62848){ // 0xf5800 mvlc flag
+									// std::cout<<"E> Event Nr: "<< myevent <<",  ProcID 20 : Strange event! " << std::hex << *pdata <<std::dec << std::endl;
+						 }
+						 else {
+									std::cout<<"E> Event Nr: "<< myevent <<",  ProcID 20 : Barrier V1190 missed! " << std::hex << *pdata <<std::dec << std::endl;
+						 }
 			  }
 				else {
 					Int_t words = getbits(*pdata,1,1,16);
@@ -1958,6 +2030,8 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 				}
 				else {std::cout<<"E> Event Nr: "<< myevent <<", ProcID 40: Barrier missed! " << std::hex << *pdata <<std::dec << std::endl;}
 
+
+#ifndef QDC_IS_BAD
 				// No. of words from MQDC-32 header. NOT from MVLC header.
 				// For me, MQDC-32 manual is easy and quick to follow.
 				Int_t no_of_words;
@@ -2009,7 +2083,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 					// if there is no data, don't show this message
 					if (num_data_words_from_MVLC != 0) {std::cout<<"E> ProcID 40: MQDC-32 ender missed! " << std::hex << *pdata <<std::dec << std::endl;}
 				}
-
+#endif
 			} // end of MQDC-32
 			
 		}
@@ -2017,8 +2091,12 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 		//================
 		case 35:	// --- travelling MUSIC crate ---
 		{
-		  if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 30 : Barrier missed !" << *pdata  << std::endl; }
-		  else{//-----MDPP module----- (do not remove this bracket)
+			// First 5 words are whiterabbit!
+			TimeStampExtract_TravMus(event_out, psubevt);
+			pdata+=5;
+			len+=5;
+		  if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 35 : Barrier missed !" << *pdata  << std::endl; }
+		  else{ //-----MDPP module----- (do not remove this bracket)
 		    pdata++; len++;
 		    // header
 		    Int_t header = *pdata;
@@ -2314,7 +2392,14 @@ Bool_t TFRSUnpackProc::FillHistograms(TFRSUnpackEvent* event)
 	//end of s530 fission crate
 	
     }
+#ifdef LISA_INCLUDED
+if(event->frs_wr > 0 && event->lisa_wr > 0)
+	h1_wr_diff_FRS_LISA->Fill(event->frs_wr - event->lisa_wr);
 
+if(event->travmus_wr > 0 && event->lisa_wr > 0)
+	h1_wr_diff_TM_LISA->Fill(event->travmus_wr - event->lisa_wr);
+#endif
+if(event->frs_wr > 0 && event->travmus_wr > 0) h1_wr_diff_FRS_TM->Fill(event->frs_wr - event->travmus_wr);
   return kTRUE;
 }
 // --- ----------------------------------- --- //

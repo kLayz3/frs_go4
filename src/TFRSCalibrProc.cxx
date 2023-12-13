@@ -457,6 +457,7 @@ void TFRSCalibrProc::Create_TPC_Hist()
 
   hTPC_S4target_x = MakeH1I_TPC("TPC/At_Target","S4target_x",-1, 221,-110.5,110.5,"X tracked at S4target [mm]",2,3);
   hTPC_S4target_y = MakeH1I_TPC("TPC/At_Target","S4target_y",-1, 221,-110.5,110.5,"Y tracked at S4target [mm]",2,3);
+  hTPC_S4target_xy =MakeH2I("TPC/At_Target","S4target_y vs S4target_x", 220,-110.,110., 220,-110.0,110.0,"Y tracked at S4target [mm]","X tracked at S4target [mm] ", 2); //JZ23Dec
 
   for(int i=0;i<7;i++){
     char name[100];
@@ -1291,6 +1292,7 @@ void TFRSCalibrProc::Process_TPC_Analysis(const TFRSSortEvent& src, TFRSCalibrEv
 	  hTPC_MUSIC43y -> Fill(tgt.tpc_music43_y);
 	  hTPC_S4target_x -> Fill(tgt.tpc_s4target_x);
 	  hTPC_S4target_y -> Fill(tgt.tpc_s4target_y);
+	  hTPC_S4target_xy -> Fill(tgt.tpc_s4target_y,tgt.tpc_s4target_x);
 
 	  hTPC_XS4_AXS2_TPC_21_22 -> Fill(tgt.tpc_x_s4, tgt.tpc_angle_x_s2_foc_21_22);
 	  hTPC_YS4_AYS2_TPC_21_22 -> Fill(tgt.tpc_y_s4, tgt.tpc_angle_y_s2_foc_21_22);

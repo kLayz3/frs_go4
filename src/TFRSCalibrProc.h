@@ -237,6 +237,7 @@ private:
   TH1I *hTPC_MUSIC43y;
   TH1I *hTPC_S4target_x;
   TH1I *hTPC_S4target_y;
+  TH2I *hTPC_S4target_xy;//JZ2023Dec
 
 
   ////condtition for control sum
