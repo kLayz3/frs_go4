@@ -1,0 +1,15 @@
+src/*.o
+src/*.so
+src/*.d
+libGo4UserAnalysis*
+# In case of hanging swap files ... *wink*
+src/*.swp
+src/.*
+src/#*
+*.lmd
+lmd/*
+MainUserAnalysis
+martin*
+*.so
+*.pcm
+src/G__*
