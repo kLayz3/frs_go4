@@ -18,3 +18,5 @@ martin*
 src/G__*
 *.pdf
 *.png
+*.sh
+file_loc
