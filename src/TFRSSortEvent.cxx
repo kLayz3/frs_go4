@@ -304,7 +304,10 @@ void TFRSSortEvent::Clear(Option_t *t)
   for(int i=0; i<6; i++){
     hall_probe_adc[i] = 0;
   }
- 
+
+#ifdef LISA_INCLUDED
+	lisa_en = 0;
+#endif
 }
 
 ClassImp(TFRSSortEvent)

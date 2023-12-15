@@ -8,8 +8,10 @@ src/.*
 src/#*
 *.lmd
 *.root
+*.png
+*.pdf
+.nfs*
 lmd/*
-rootfiles/*
 rootfile/*
 MainUserAnalysis
 martin*

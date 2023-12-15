@@ -5,6 +5,8 @@
 
 #include "TFRSVftxSetting.h"
 
+#include "define.hh"
+
 class TFRSSortEvent;
 
 class TFRSSortProc : public TFRSBasicProc {

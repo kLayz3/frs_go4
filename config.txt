@@ -5,7 +5,6 @@
 # the function inside of the file with the same name as the file
 
 #NameExperiment      000_2023
-#NameExperiment      s450_012_2022
 #NameExperiment      sxxx_xxx_2023
 #NameExperiment      engrun_008_2023_new
 #NameExperiment      engrun_027_2023

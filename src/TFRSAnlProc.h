@@ -88,6 +88,7 @@ private:
   TH2I          *hMUSIC4_dE_x;
   TH1I          *hMUSIC4_dECOR;
   TH2I          *hMUSIC4_dECOR_x;
+
   TH1I          *hMUSIC4_drift_y1;
   TH1I          *hMUSIC4_drift_y2;
   TH1I          *hMUSIC4_drift_y3;

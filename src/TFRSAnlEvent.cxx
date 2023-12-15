@@ -432,6 +432,10 @@ for(int i = 0; i<32; i++){
   LaBr_t_raw[i] = 0;
  }
 
+#ifdef LISA_INCLUDED
+	lisa_en = 0;
+#endif
+
 }
 
 ClassImp(TFRSAnlEvent)

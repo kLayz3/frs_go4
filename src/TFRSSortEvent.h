@@ -3,6 +3,7 @@
 
 #include "TGo4EventElement.h"
 
+#include "define.hh"
 
 class TFRSSortProc;
 class TGo4FileSource;
@@ -271,6 +272,10 @@ public:
 
   // Hall probe
   Int_t hall_probe_adc[6];
+
+#ifdef LISA_INCLUDED
+	uint32_t lisa_en;
+#endif
 
 private:
   // TFRSSortProc   *fxProc;     //! This is processor

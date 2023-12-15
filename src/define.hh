@@ -4,9 +4,6 @@
 #define TRAV_MUS_WR // comment out this line if travmus has no WR
 #define QDC_IS_BAD
 
-//#define LISA_INCLUDED
-//#define LISA_DEBUG
-
 #define SKIP_REST(pdata, len, lenMax) \
 	while(len < lenMax) { \
 		pdata++; \

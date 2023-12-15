@@ -2,7 +2,7 @@
 #define TFRSCALIBREVENT_H
 
 #include "TGo4EventElement.h"
-
+#include "define.hh"
 
 class TFRSCalibrProc;
 class TGo4FileSource;
@@ -218,6 +218,10 @@ public:
   Int_t dssd_xmaxindex;
   Float_t dssd_ymaxenergy;
   Int_t dssd_ymaxindex;
+
+#ifdef LISA_INCLUDED
+	uint32_t lisa_en;
+#endif
 
 private:
   // TFRSCalibrProc   *fxProc;  //! Don't put this to file

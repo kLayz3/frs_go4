@@ -162,7 +162,9 @@ void TFRSUnpackEvent::Clear(Option_t *t)
    //end of s530 fission crate 
 
 #ifdef LISA_INCLUDED
-	lisa_wr = 0
+	lisa_wr = 0;
+	lisa_en = 0;
+   mus_avg_en = 0;
 #endif
 	
 	travmus_wr = 0;

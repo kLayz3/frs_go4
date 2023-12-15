@@ -107,7 +107,6 @@ Bool_t TFRSAnlProc::BuildEvent(TGo4EventElement* output)
   Process_ID_MultiHitTDC_Analysis(*srt, *clb, *poutevt);
   Process_MRTOF_Analysis(*srt, *clb, *poutevt);
   Process_Gated_Analysis(*srt, *clb, *poutevt);
-
   return kTRUE;
 }
 
@@ -1178,15 +1177,11 @@ void TFRSAnlProc::Process_MUSIC_Analysis(TFRSSortEvent& srt, TFRSCalibrEvent& cl
     }// end of i-loop
 
 //added by JZ 07.12.2023
-
       hMUSIC4_drift_y1->Fill(0.025*0.25*(srt.music_t2[4]-70000));
-
       hMUSIC4_drift_y2->Fill(0.025*0.25*(srt.music_t2[5]-70000));
       hMUSIC4_drift_y3->Fill(0.025*0.25*(srt.music_t2[6]-70000));
       hMUSIC4_drift_y4->Fill(0.025*0.25*(srt.music_t2[7]-70000));
 //added by JZ 07.12.2023
-
-
 
   // calculate truncated dE from 8 anodes, Munich MUSIC
   #ifndef MUSIC_ANA_NEW
