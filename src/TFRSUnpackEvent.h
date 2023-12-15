@@ -93,11 +93,6 @@ public:
   //end of s530 fission crate
   uint64_t frs_wr;
   uint64_t travmus_wr;
-#ifdef LISA_INCLUDED
-  uint64_t lisa_wr;
-  uint32_t lisa_en;
-  uint32_t mus_avg_en;
-#endif
 
 //------------
   Int_t         qlength;         /* From event header     */

@@ -37,10 +37,6 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
   hNbTrig = MakeH1I("Unpack/tpat_combinations", "Trigger Number", 16, 0.5, 16.5);
   hCombiTrig2  = MakeH2I("Unpack/tpat_combinations","Two Trigger Combinations",16,0.5,16.5,16,0.5,16.5,"first trig","second trig",1);// two trigger/event combinations
 
-#ifdef LISA_INCLUDED
-  h1_wr_diff_FRS_LISA = MakeH1I("Unpack/wr_diff_FRS_LISA", "WR difference FRS-LISA", 2400, -1200, 1200);
-  h1_wr_diff_TM_LISA = MakeH1I("Unpack/wr_diff_TM_LISA", "WR difference TM-LISA", 2400, -1200, 1200);
-#endif
   h1_wr_diff_FRS_TM = MakeH1I("Unpack/wr_diff_FRS_TM", "WR difference FRS-TM", 2400, -1200, 1200);
 
   frs = dynamic_cast<TFRSParameter*>(GetParameter("FRSPar"));
@@ -475,19 +471,6 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 
 	     }  // switch on trigger value
      }//end test of vme mvlc event
-
-
-// Lisa subev
-#ifdef LISA_INCLUDED
-	    if ((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 20) && (psubevt->GetProcid() == 60))
-    {
-	 	// Unpack WR, throw out all the rest
-		TimeStampExtract_LISA(tgt,psubevt);
-		SubevExtract_LISA(tgt,psubevt);
-	 }
-#endif
-
-
 	} // end subevents loop
 
 
@@ -544,48 +527,6 @@ void TFRSUnpackProc::TimeStampExtract(TFRSUnpackEvent* event_out, TGo4MbsSubEven
   }  
 }
 
-#ifdef LISA_INCLUDED
-void TFRSUnpackProc::SubevExtract_LISA(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int) {
-  Int_t *pdata = psubevt->GetDataField();
-  Int_t len = 0;
- // Int_t vme_chn; //usually redefined for each crate
-  Int_t lenMax = (psubevt->GetDlen()-2)/2;
-  //decide to print the WR identifier
-  uint32_t wr_id = get_bits(*pdata++,0,11); len++;
-if(! (wr_id == 0x700)) {
-	printf("LISA WR ID not 0x700 while trying to match it ...! It is %x\n", wr_id);
-	return;
-}
-if(! ((*pdata & 0xffff0000) == 0x03e10000)) {
-	printf("LISA not matching LoLo of WR ...! It is %x\n", *pdata);
-	return;
-}
-	uint64_t lisa_wr = 
-		((uint64_t)(*pdata++ & 0xffff)) |
-		((uint64_t)(*pdata++ & 0xffff) << 16) |
-		((uint64_t)(*pdata++ & 0xffff) << 32) |
-		((uint64_t)(*pdata++ & 0xffff) << 48);
-	len += 4;
-
-#ifdef LISA_DEBUG
-	printf("lisa WR LoLo: %d\n", (uint16_t)lisa_wr);
-#endif
-
-  event_out->lisa_wr = lisa_wr;
-  // traverse the subev till we reach deadbeef word:
-	while(*pdata != 0xdeadbeef) {pdata++; len++;}
-	// ^------ now pdata points to deadbeef
-	
-	len++; pdata++; // now we point to 'f0' word 
-	if(get_bits(*pdata, 24,31) == 0xf0) {
-			  pdata+=2; len+=2;
-			  // now it points at the energy word;
-			  event_out->lisa_en = get_bits(*pdata, 0,23);
-	}
-  SKIP_REST(pdata, len, lenMax) // do i even need this?
-}
-#endif
-
 void TFRSUnpackProc::TimeStampExtract_TravMus(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int) {
   Int_t *pdata = psubevt->GetDataField();
   Int_t len = 0;
@@ -613,7 +554,7 @@ void TFRSUnpackProc::TimeStampExtract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSu
   Int_t *pdata = psubevt->GetDataField();
   Int_t len = 0;
  // Int_t vme_chn; //usually redefined for each crate
-  Int_t lenMax = (psubevt->GetDlen()-2)/2;
+  //Int_t lenMax = (psubevt->GetDlen()-2)/2;
   //decide to print the WR identifier
   uint32_t wr_id = get_bits(*pdata++,0,11); len++;
 if(! (wr_id == 0x100)) {
@@ -633,39 +574,6 @@ if(! ((*pdata & 0xffff0000) == 0x03e10000)) {
 	len += 4;
 	event_out->frs_wr = frs_wr;
   }
-
-#ifdef LISA_INCLUDED
-void TFRSUnpackProc::TimeStampExtract_LISA(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int) {
-  Int_t *pdata = psubevt->GetDataField();
-  Int_t len = 0;
- // Int_t vme_chn; //usually redefined for each crate
-  Int_t lenMax = (psubevt->GetDlen()-2)/2;
-  //decide to print the WR identifier
-  uint32_t wr_id = get_bits(*pdata++,0,11); len++;
-if(! (wr_id == 0x700)) {
-	printf("LISA WR ID not 0x700 while trying to match it ...! It is %x\n", wr_id);
-	return;
-}
-if(! ((*pdata & 0xffff0000) == 0x03e10000)) {
-	printf("LISA not matching LoLo of WR ...! It is %x\n", *pdata);
-	return;
-}
-	uint64_t lisa_wr = 
-		((uint64_t)(*pdata++ & 0xffff)) |
-		((uint64_t)(*pdata++ & 0xffff) << 16) |
-		((uint64_t)(*pdata++ & 0xffff) << 32) |
-		((uint64_t)(*pdata++ & 0xffff) << 48);
-	len += 4;
-
-#ifdef LISA_DEBUG
-	printf("lisa WR LoLo: %d\n", (uint16_t)lisa_wr);
-#endif
-
-  event_out->lisa_wr = lisa_wr; 
-
-  SKIP_REST(pdata, len, lenMax)
-}
-#endif
 
 Bool_t TFRSUnpackProc::Event_Extract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int){
   Int_t *pdata = psubevt->GetDataField();
@@ -1622,9 +1530,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 						Int_t vme_nlw =  get_bits(*pdata,8,13);
 						//std::cout << "vme_geo, vme_type, vme_nlw ="<< vme_geo << ", " <<  vme_type << ", " << vme_nlw <<std::endl ;
 						pdata++; len++; i_word++;
-#ifdef LISA_INCLUDED
-						double mus_avg_adc = 0;
-#endif
+
 						// read the data
 
 						if ((vme_nlw > 0 && 2 == vme_type )) {
@@ -1633,19 +1539,9 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 								vme_type = get_bits(*pdata,24,26);
 								vme_chn = get_bits(*pdata,16,20);
 								event_out->vme_frs[vme_geo][vme_chn] = get_bits(*pdata,0,11);
-
-#ifdef LISA_INCLUDED
-								if(vme_geo == 10 && vme_chn < 16) {
-									mus_avg_adc += event_out->vme_frs[vme_geo][vme_chn];
-								}
-#endif
 								pdata++; len++; i_word++;
 							}
 						}
-#ifdef LISA_INCLUDED
-						double smth_stupid = mus_avg_adc/16;
-						event_out->mus_avg_en = smth_stupid; // i hate life
-#endif
 
 						// sanity check at the end of a v7x5 unpacking 
 						vme_type = getbits(*pdata,2,9,3);
@@ -2071,7 +1967,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			// Note: current data structure is VFTX --> MTDC --> MQDC
 			//       so if the structure is changed, please change this part as well
 			{
-				int num_data_words_from_MVLC = 0;
+			  int num_data_words_from_MVLC = 0;
 
 				// MVLC header
 				if(((*pdata & 0xffff0000) >> 16) == 0xf520)
@@ -2446,20 +2342,7 @@ Bool_t TFRSUnpackProc::FillHistograms(TFRSUnpackEvent* event)
 	
     }
 
-#ifdef LISA_INCLUDED
-if(event->frs_wr > 0 && event->lisa_wr > 0)
-	h1_wr_diff_FRS_LISA->Fill(event->frs_wr - event->lisa_wr);
-	if(event->frs_wr > 0 && event->lisa_wr > 0) h1_wr_diff_FRS_LISA->Fill(event->frs_wr - event->lisa_wr);
-	if(event->travmus_wr > 0 && event->lisa_wr > 0) h1_wr_diff_TM_LISA->Fill(event->travmus_wr - event->lisa_wr);
-	if(event->lisa_en > 0 && event->mus_avg_en > 0) h2_en_lisa_music->Fill(event->lisa_en, event->mus_avg_en); 
-#endif
-
 if(event->frs_wr > 0 && event->travmus_wr > 0) h1_wr_diff_FRS_TM->Fill(event->frs_wr - event->travmus_wr);
-
-#ifdef LISA_INCLUDED
-if(event->travmus_wr > 0 && event->lisa_wr > 0)
-	h1_wr_diff_TM_LISA->Fill(event->travmus_wr - event->lisa_wr);
-#endif
 if(event->frs_wr > 0 && event->travmus_wr > 0) h1_wr_diff_FRS_TM->Fill(event->frs_wr - event->travmus_wr);
   return kTRUE;
 }

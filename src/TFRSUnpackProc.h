@@ -32,10 +32,6 @@ private:
   void TimeStampExtract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   void TimeStampExtract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   void TimeStampExtract_TravMus(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
-#ifdef LISA_INCLUDED
-  void TimeStampExtract_LISA(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
-  void SubevExtract_LISA(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
-#endif
   Bool_t Event_Extract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   Bool_t Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   
@@ -161,13 +157,7 @@ private:
   TH1 * h1_vftx_trailing_ft[VFTX_N][VFTX_MAX_CHN];
   TH1 * h1_vftx_lead_mult[VFTX_N][VFTX_MAX_CHN];
   TH1 * h1_vftx_trail_mult[VFTX_N][VFTX_MAX_CHN];
-
-#ifdef LISA_INCLUDED
-	TH1I * h1_wr_diff_FRS_LISA;
-	TH1I * h1_wr_diff_TM_LISA;
-	TH2I * h2_en_lisa_music;
-#endif
-	TH1I * h1_wr_diff_FRS_TM;
+  TH1I * h1_wr_diff_FRS_TM;
 
   // maybe not needed, just event counter
   UInt_t Vftx_Stat[VFTX_N][VFTX_MAX_CHN];

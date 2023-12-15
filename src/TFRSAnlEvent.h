@@ -403,10 +403,6 @@ public:
   Float_t mrtof_si_e4;
   Float_t mrtof_si_e5;
 
-#ifdef LISA_INCLUDED
-	uint32_t lisa_en;
-#endif
-
 private:
 
   // TFRSAnlProc *fxProc;        //! This is processor

@@ -219,10 +219,6 @@ public:
   Float_t dssd_ymaxenergy;
   Int_t dssd_ymaxindex;
 
-#ifdef LISA_INCLUDED
-	uint32_t lisa_en;
-#endif
-
 private:
   // TFRSCalibrProc   *fxProc;  //! Don't put this to file
   // TGo4FileSource *fxFileSrc;  //! This is file source
