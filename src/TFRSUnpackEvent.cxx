@@ -99,10 +99,12 @@ void TFRSUnpackEvent::Clear(Option_t *t)
 	  vme_actstop[i][j] = 0;
 	}
     }
+v1190_is_bad = false;
+
   for(int i=0; i<128; i++){
+      nhit_v1190_tpcs2[i] = 0;
     for(int j=0; j<64; j++){
       leading_v1190_tpcs2[i][j] = -1;
-      nhit_v1190_tpcs2[i] = 0;
     }
   }
   for(int j=0;j<32;j++)

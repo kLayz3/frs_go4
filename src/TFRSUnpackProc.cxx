@@ -139,6 +139,9 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
   hVME_TPCS2_12All = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_12_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_TPCS2_V1190All_firsthit = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_V1190_AllCh_firsthit",128,0,128,400,0,60000,"#Ch","TDC val",1);
   hVME_TPCS2_V1190All = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_V1190_AllCh",128,0,128,400,0,60000,"#Ch","TDC val",1);
+  hVME_TPCS2_V1190All_bad = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_V1190_AllCh_BAD",128,0,128,400,0,60000,"#Ch","TDC val",1);
+  hVME_TPCS2_V1190_bad_multip = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_V1190_BAD_MULTIPLICTY",128,0,128,128,0,128,"#Ch","Multp val",1);
+  hVME_TPCS2_V1190_multip = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_V1190_GOOD_MULTIPLICTY",128,0,128,128,0,128,"#Ch","Multp val",1);
 //  hVME_TPCS4_0All  = MakeH2I("Unpack/VME_TPCS4","VME_TPCS4_00_AllCh",32,0,32,512,0,4096,"#Ch","",1);
 //  hVME_TPCS4_1All  = MakeH2I("Unpack/VME_TPCS4","VME_TPCS4_01_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_TRMU_ADCAll = MakeH2I("Unpack/VME_TRMU", "VME_TRMU_ADC_Allch",16,0,16,512,0,0x2000,"#Ch","",1);
@@ -1736,15 +1739,14 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			
 			//----  CAEN V1190 ---
 			{
-			  if(getbits(*pdata,2,1,16) != 62752){
-						 if(getbits(*pdata,2,1,16) == 62848){ // 0xf5800 mvlc flag
-									 std::cout<<"E> Event Nr: "<< myevent <<",  ProcID 20 : Strange event! " << std::hex << *pdata <<std::dec << std::endl;
-						 }
-						 else {
-									std::cout<<"E> Event Nr: "<< myevent <<",  ProcID 20 : Barrier V1190 missed! " << std::hex << *pdata <<std::dec << std::endl;
-						 }
-			  }
-				else {
+				int mvlc_flag_v1190 = getbits(*pdata,2,1,16);
+				if(mvlc_flag_v1190 == 0xf580) { // 0xf5800 `overflown V1190` mvlc flag
+						  std::cout<<"E> Event Nr: "<< myevent <<",  ProcID 20 V1190: Strange event! " << std::hex << *pdata <<std::dec << std::endl;
+						  std::cout<< "Will still unpack it into histogram labelled `bad`" << endl;
+					event_out->v1190_is_bad = true;
+				}
+			  
+				if(mvlc_flag_v1190 == 0xf520 || mvlc_flag_v1190 == 0xf580) { // usual, good header 0xf520, or 0xf580 'strange' header
 					Int_t words = getbits(*pdata,1,1,16);
 					//std::cout<< "Number of words of this modul: "<< words << std::endl;
 					pdata++; len++;
@@ -1761,7 +1763,7 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 					Int_t multihit = 0;	
 					if(vme_type == 8) {
 						bool in_event = 0;
-						for(int i_word=2; i_word<= words;i_word++){
+						for(int i_word=2; i_word<= words;i_word++) {
 							vme_type = getbits(*pdata,2,12,5);
 							//printf("ProcID 20, geo %d, type %d, word %d\n", vme_geo, vme_type,i_word);
 							if(vme_type==1){ // TDC header
@@ -1784,10 +1786,18 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 										event_out->nhit_v1190_tpcs2[vme_chn]++;
 									}
 									//printf("leading_v1190_tpcs2[%d][%d] = %d\n",vme_chn,multihit,value);
-									if(multihit==0){hVME_TPCS2_V1190All_firsthit->Fill(vme_chn,value);}
-									hVME_TPCS2_V1190All->Fill(vme_chn,value);
+									if(multihit==0 && !event_out->v1190_is_bad) {
+										hVME_TPCS2_V1190All_firsthit->Fill(vme_chn,value);
+									}
+
+									if(event_out->v1190_is_bad) {
+										hVME_TPCS2_V1190All_bad->Fill(vme_chn,value);
+									}
+									else {
+										hVME_TPCS2_V1190All->Fill(vme_chn,value);
+									}
 								}
-								else{
+								else {
 									if (value > 0){
 									//event_out->trailing_v1190_tpcs2[vme_chn][multihit] = value;
 									}
@@ -1822,12 +1832,26 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 							if(vme_type != 1 && vme_type != 0 && vme_type != 3 && vme_type != 4 && vme_type != 17 && vme_type !=16 && vme_type!=24) std::cout<<"E> ProcID 20 MTDC strange type :"<<vme_type<< " (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
 							pdata++; len++;
 						}
+						// Out of the loop, fill the multip hist for good/bad V1190 events:
+						for(int i=0; i<128; ++i) {
+								  if(event_out->nhit_v1190_tpcs2[i] == 0) continue;
+								  if(event_out->v1190_is_bad) {
+											 hVME_TPCS2_V1190_bad_multip->Fill(i, event_out->nhit_v1190_tpcs2[i]);
+								  }
+								  else {
+											 hVME_TPCS2_V1190_multip->Fill(i, event_out->nhit_v1190_tpcs2[i]);
+								  }
+						}
 					}
 					else {
 						std::cout<<"E> ProcID 20 MTDC global header not found :" <<vme_type<< " ; data field: " << std::hex << std::setprecision(8) << *(pdata-1) << " " << *pdata << std::dec<<std::endl;
 						print_curr_module(pdata, len, lenMax);
 						printf("\n\n");
 					}
+				}
+				else { 
+						  std::cout<<"E> Event Nr: "<< myevent <<",  ProcID 20 : Barrier V1190 missed! " << std::hex << *pdata <<std::dec << std::endl;
+						  std::cout << "Not unpacking this event ..." << endl;
 				}
 			}// end of V1190
 		}

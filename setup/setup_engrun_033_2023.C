@@ -748,10 +748,10 @@ return;
   tpc->x_offset[6][1] = -3.30;
   tpc->x_factor[6][0] = 0.007981;
   tpc->x_factor[6][1] = 0.007888;
-  tpc->y_offset[6][0] = -55.2-11.5 -7.0;//19/June/2021  y parameters were deduced from SC31 edge
-  tpc->y_offset[6][1] = -57.3-11.5 -7.0;//19/June/2021  y in go4 follows y of S3 chamber (sc31 laddeer)
-  tpc->y_offset[6][2] = -54.0-11.5 -7.0;//19/June/2021
-  tpc->y_offset[6][3] = -53.7-11.5 -7.0;//19/June/2021
+  tpc->y_offset[6][0] = -55.2-1.3;//Dec11/2023  y parameters were deduced from SC31 edge
+  tpc->y_offset[6][1] = -57.3-1.3;//Dec11/2023  y in go4 follows y of S3 chamber (sc31 laddeer)
+  tpc->y_offset[6][2] = -54.0-1.3;//Dec11/2023
+  tpc->y_offset[6][3] = -53.7-1.3;//Dec11/2023
   tpc->y_factor[6][0] = 0.004*45./44.;
   tpc->y_factor[6][1] = 0.004*45./44.;
   tpc->y_factor[6][2] = 0.004*45./44;
@@ -973,7 +973,7 @@ return;
   sci->mhtdc_offset_41l_41r  =  584.927;          sci->mhtdc_factor_41l_41r = 69.4128; // pos = offset + factor*dt
   sci->mhtdc_offset_42l_42r  =  0.0;              sci->mhtdc_factor_42l_42r = 60.0; // pos = offset + factor*dt
   sci->mhtdc_offset_43l_43r  =  0.0;              sci->mhtdc_factor_43l_43r = 60.0; // pos = offset + factor*dt
-  sci->mhtdc_offset_31l_31r  =  910.7;             sci->mhtdc_factor_31l_31r = 60.0; // pos = offset + factor*dt
+  sci->mhtdc_offset_31l_31r  =  910.7 + 17.9;             sci->mhtdc_factor_31l_31r = 60.0; // pos = offset + factor*dt
   sci->mhtdc_offset_81l_81r  =  -410.411;         sci->mhtdc_factor_81l_81r = 43.691; // pos = offset + factor*dt
   sci->mhtdc_offset_22l_22r  =  -39.6625+20.0;    sci->mhtdc_factor_22l_22r = 62.5341;  // pos = offset + factor*dt
   sci->mhtdc_offset_M01l_M01r  =  338.677 + 650 + 14.0;    sci->mhtdc_factor_M01l_M01r = 52.6692; //rough guess with scattered particles

@@ -77,7 +77,8 @@ public:
   UInt_t vme_trmu_tdc[16];              // Travel Music crate
   UInt_t vme_trmu_trigger[2];           // Travel Music crate
   UInt_t vme_actstop[21][32];       //active stopper
-
+	bool v1190_is_bad;
+	uint32_t v1190_bad_multip[128];
   //for s530 fission crate by J.Zhao 20210317
   UInt_t scaler_s530[32];           // VME scaler SIS-3820 in s530 crate
 

@@ -34,6 +34,7 @@ private:
   void TimeStampExtract_TravMus(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   Bool_t Event_Extract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   Bool_t Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
+  void ExtractV1190(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   
 #ifdef USELESS
   void UnpackUserSubevent(TGo4MbsSubEvent* psubevt, TFRSUnpackEvent* tgt);
@@ -88,6 +89,9 @@ private:
   TH2I* hVME_TPCS4_1All;  //!
   TH2I* hVME_TPCS2_V1190All_firsthit;
   TH2I* hVME_TPCS2_V1190All;
+  TH2I* hVME_TPCS2_V1190All_bad;
+  TH2I* hVME_TPCS2_V1190_bad_multip;
+  TH2I* hVME_TPCS2_V1190_multip;
 
   TH1I* hVME_ACTSTOP_10[32]; //!
   TH1I* hVME_ACTSTOP_12[32]; //!
