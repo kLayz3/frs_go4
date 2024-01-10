@@ -563,7 +563,6 @@ void TFRSUnpackProc::TimeStampExtract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSu
 if(! (wr_id == 0x100)) {
 	printf("FRS WR ID not 0x100 while trying to match it ...! It is %x\n", wr_id);
 	return;
-  void TimeStampExtract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
 }
 if(! ((*pdata & 0xffff0000) == 0x03e10000)) {
 	printf("FRS not matching LoLo of WR ...! It is %x\n", *pdata);
