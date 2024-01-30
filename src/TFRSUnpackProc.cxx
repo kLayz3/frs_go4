@@ -95,7 +95,7 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
       hVME_ACTSTOP_18[n] = MakeH1ISeries("Unpack/VME_ACTSTOP_18", 18, 4, n, remove_histos);
       hVME_ACTSTOP_20[n] = MakeH1ISeries("Unpack/VME_ACTSTOP_20", 20, 4, n, remove_histos);
   }
-
+	
   for(int n=0; n<16; n++){
     hVME_TRMU_ADC[n] = MakeH1I("Unpack/VME_TRMU/ADC", Form("newVME_TRMU_ADC_%d",n), 4096, 0,  0x10000, "channels", 2, 3, "");
     hVME_TRMU_TDC[n] = MakeH1I("Unpack/VME_TRMU/TDC", Form("newVME_TRMU_TDC_%d",n), 4096, 0, 0x10000, "channels", 2, 3, "");
@@ -128,6 +128,7 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
   
   hVME_MAIN_11All = MakeH2I("Unpack/VME_MAIN","VME_MAIN_11_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_MAIN_14All = MakeH2I("Unpack/VME_MAIN","VME_MAIN_14_AllCh",32,0,32,512,0,4096,"#Ch","",1);
+  hVME_MAIN_TDC_V1290_eventbuffer = MakeH1I("Unpack/VME_MAIN/TDC_V1290_MUSIC41_42_and_Sci", "eventbuffer_v1290", 10, 0, 10, "events in buffer", 2, 3, ""); 
   hVME_USER_8All  = MakeH2I("Unpack/VME_USER","VME_USER_08_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_USER_9All  = MakeH2I("Unpack/VME_USER","VME_USER_09_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_USER_10All  = MakeH2I("Unpack/VME_USER","VME_USER_10_AllCh",32,0,32,512,0,4096,"#Ch","",1);
@@ -142,6 +143,7 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
   hVME_TPCS2_V1190All_bad = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_V1190_AllCh_BAD",128,0,128,400,0,60000,"#Ch","TDC val",1);
   hVME_TPCS2_V1190_bad_multip = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_V1190_BAD_MULTIPLICTY",128,0,128,128,0,128,"#Ch","Multp val",1);
   hVME_TPCS2_V1190_multip = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_V1190_GOOD_MULTIPLICTY",128,0,128,128,0,128,"#Ch","Multp val",1);
+  hVME_TPCS2_V1190_eventbuffer = MakeH1I("Unpack/VME_TPCS2", "eventbuffer_v1190", 10, 0, 10, "events in buffer", 2, 3, ""); 
 //  hVME_TPCS4_0All  = MakeH2I("Unpack/VME_TPCS4","VME_TPCS4_00_AllCh",32,0,32,512,0,4096,"#Ch","",1);
 //  hVME_TPCS4_1All  = MakeH2I("Unpack/VME_TPCS4","VME_TPCS4_01_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_TRMU_ADCAll = MakeH2I("Unpack/VME_TRMU", "VME_TRMU_ADC_Allch",16,0,16,512,0,0x2000,"#Ch","",1);
@@ -1621,6 +1623,10 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 				if(*pdata != (Int_t) 0xaaaa1290){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 10 (CAEN V1290): Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
 				else{pdata++; len++; 
 					if(*pdata != ((Int_t) 0x00000000) && *pdata != ((Int_t) 0x00000001)){std::cout<<"E> Event Nr: "<< myevent <<", ProcID 10 (CAEN V1290) number of events in buffer: " << std::hex << *pdata <<std::dec << std::endl;}
+					//std::cout<<"Number of events in buffer: " << std::hex << *pdata <<std::dec << std::endl;
+					Int_t eventbuffer = getbits(*pdata,1,1,31);
+					//std::cout<< "Number of events in the buffer of this modul: "<< eventbuffer << std::endl;
+					hVME_MAIN_TDC_V1290_eventbuffer->Fill(eventbuffer);
 					pdata++; len++;
 					if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 10 (CAEN V1290): Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
 					else{Int_t words = getbits(*pdata,1,1,16);
@@ -1747,6 +1753,10 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 				if(*pdata != (Int_t) 0xaaaa1190){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 10 (CAEN V1190): Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
 				else{pdata++; len++; 
 					if(*pdata != ((Int_t) 0x00000000) && *pdata != ((Int_t) 0x00000001)){std::cout<<"E> Event Nr: "<< myevent <<", ProcID 10 (CAEN V1190) number of events in buffer: " << std::hex << *pdata <<std::dec << std::endl;}
+					//std::cout<<"Number of events in buffer: " << std::hex << *pdata <<std::dec << std::endl;
+					Int_t eventbuffer = getbits(*pdata,1,1,31);
+					//std::cout<< "Number of events in the buffer of this modul: "<< eventbuffer << std::endl;
+					hVME_TPCS2_V1190_eventbuffer->Fill(eventbuffer);
 					pdata++; len++;
 					int mvlc_flag_v1190 = getbits(*pdata,2,1,16);
 					if(mvlc_flag_v1190 == 0xf580) { // 0xf5800 `overflown V1190` mvlc flag
