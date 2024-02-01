@@ -378,8 +378,13 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 	  /************************************************************************/
     if (((psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 20))||((psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 21))) //vme event !! WARNING, make sure we can unpack non VME systems
     {
-	    switch(fInput->GetTrigger())
-	    { // trigger value curently always one, tpat says who triggered
+      if(15 == psubevt->GetProcid()){
+	tgt->SetValid(kFALSE);
+	std::cout <<"No Event Extract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl;
+	return kFALSE;
+      }
+      switch(fInput->GetTrigger())
+	{ // trigger value curently always one, tpat says who triggered
 	      case 1:
 	      case 2:
 	      case 3:
@@ -411,6 +416,11 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 
     if (((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 20))||((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 21))) //nurdlib stimstamp subevent shall be type 10
     {
+      if(15 == psubevt->GetProcid()){
+	tgt->SetValid(kFALSE);
+	std::cout <<"No Timestamp Extract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl;
+	return kFALSE;
+      }
 	 	 if(psubevt->GetProcid() != 60)
 	    	TimeStampExtract(tgt,psubevt); 
 //	    switch(fInput->GetTrigger())
@@ -521,13 +531,9 @@ void TFRSUnpackProc::TimeStampExtract(TFRSUnpackEvent* event_out, TGo4MbsSubEven
 	       event_out->timestamp_main[ii] = *pdata;
 	       pdata++; len++; ii++;
 	     }
-     //std::cout <<"TimeStampExtract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl ;//JZ 2022-05-04
+	     //std::cout <<"TimeStampExtract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl ;//JZ 2022-05-04
 	   }
-     //std::cout <<"This is Main crate in TimeStampExtract TFRSUnpackProc, wrid ID:" << event_out->wrid << std::endl ;//JZ 2022-05-04	
-	break ;
-
-    default:
-     std::cout <<"proc ID unknow in TimeStampExtract TFRSUnpackProc " << psubevt->GetProcid()<< std::endl ; 
+	  //std::cout <<"This is Main crate in TimeStampExtract TFRSUnpackProc, wrid ID:" << event_out->wrid << std::endl ;//JZ 2022-05-04
      break ; 
   }  
 }

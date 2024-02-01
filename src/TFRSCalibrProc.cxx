@@ -62,8 +62,11 @@ Bool_t TFRSCalibrProc::BuildEvent(TGo4EventElement* output)
   tgt->SetValid(kTRUE);  // output event always accepted
 
   TFRSSortEvent *src = dynamic_cast<TFRSSortEvent*> (GetInputEvent());
+  tgt->SetValid( src->IsValid()) ;
+  if (src-> IsValid()==kFALSE) return kFALSE;
   if (src==nullptr)
     return kFALSE;
+  
  /*timestamp: */
   tgt->timestamp = src->timestamp;
 

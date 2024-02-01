@@ -38,6 +38,8 @@ Bool_t TFRSSortProc::BuildEvent(TGo4EventElement* output)
   tgt->SetValid(kTRUE);  // all events after unpack always accepted
 
   TFRSUnpackEvent *src = dynamic_cast<TFRSUnpackEvent*> (GetInputEvent());
+  tgt->SetValid( src->IsValid()) ;
+  if (src-> IsValid()==kFALSE) return kFALSE;
   if (src==nullptr)
     return kFALSE;
 

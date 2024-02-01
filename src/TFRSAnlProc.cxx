@@ -86,7 +86,8 @@ Bool_t TFRSAnlProc::BuildEvent(TGo4EventElement* output)
 
   TFRSSortEvent *srt = dynamic_cast<TFRSSortEvent*> (GetInputEvent("Calibr"));
   TFRSCalibrEvent *clb = dynamic_cast<TFRSCalibrEvent*> (GetInputEvent());
-
+  poutevt->SetValid( clb->IsValid()) ;
+  if (clb-> IsValid()==kFALSE) return kFALSE;
   if ((srt==nullptr) || (clb==nullptr))
     return kFALSE;
 
