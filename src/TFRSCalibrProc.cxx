@@ -119,6 +119,11 @@ void TFRSCalibrProc::Create_Scaler_Hist()
   sprintf(scaler_name[9],"Stop Extr");
   sprintf(scaler_name[10],"Beam Transformer");
 
+  for(int ii=0; ii<8; ii++){
+    sprintf(scaler_name[16+ii],"TrigBox(L)-ch%d",ii);
+    sprintf(scaler_name[24+ii],"TrigBox(R)-ch%d",ii);
+  }
+  
   sprintf(scaler_name[32],"Free Trigger");
   sprintf(scaler_name[33],"Accept Trigger");
   sprintf(scaler_name[34],"Spill Counter");

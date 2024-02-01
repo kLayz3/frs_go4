@@ -418,7 +418,7 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
     {
       if(15 == psubevt->GetProcid()){
 	tgt->SetValid(kFALSE);
-	std::cout <<"No Timestamp Extract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl;
+	//std::cout <<"No Timestamp Extract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl;
 	return kFALSE;
       }
 	 	 if(psubevt->GetProcid() != 60)
