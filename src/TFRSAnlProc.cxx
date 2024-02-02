@@ -94,6 +94,11 @@ Bool_t TFRSAnlProc::BuildEvent(TGo4EventElement* output)
   if(srt->EventFlag != clb->EventFlag)
     std::cout<<"E> AnlProc BuildEvent : EventFlag miss matched between Sort and Calib ! "<<srt->EventFlag <<" != "<< clb->EventFlag <<"\n";
 
+
+  /* trigger box info from V1190 (TPC crate) */
+  for(int i=0;i<16;i++){ poutevt->id_trigbox[i] =  clb->id_trigbox[i]; }
+
+  
   poutevt->EventFlag = srt->EventFlag;
   poutevt->timestamp = clb->timestamp; //absolut time stamp
   poutevt->atpat = clb->ctpat ; //tpat

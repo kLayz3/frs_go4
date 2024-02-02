@@ -2318,11 +2318,11 @@ Bool_t TFRSUnpackProc::FillHistograms(TFRSUnpackEvent* event)
      
       for(int i=0;i<32;i++)
 	{
-	  if (hVME_TPCS2_13[i] ) hVME_TPCS2_13[i] ->Fill(event->vme_tpcs2[13][i] & 0xfff);
+	  if (hVME_TPCS2_13[i] ) hVME_TPCS2_13[i] ->Fill(event->vme_tpcs2[8][i] & 0xfff);
 	  if (hVME_TPCS2_12[i]) hVME_TPCS2_12[i]->Fill(event->vme_tpcs2[12][i] & 0xfff);
 	  //if (hVME_TPCS4_0[i] ) hVME_TPCS4_0[i] ->Fill(event->vme_tpcs4[0][i] & 0xfff);
 	  //if (hVME_TPCS4_1[i] ) hVME_TPCS4_1[i] ->Fill(event->vme_tpcs4[1][i] & 0xfff);
-	  if (hVME_TPCS2_13All ) hVME_TPCS2_13All ->Fill(i,event->vme_tpcs2[13][i] & 0xfff);
+	  if (hVME_TPCS2_13All ) hVME_TPCS2_13All ->Fill(i,event->vme_tpcs2[8][i] & 0xfff);
 	  if (hVME_TPCS2_12All) hVME_TPCS2_12All->Fill(i,event->vme_tpcs2[12][i] & 0xfff);
 	  //if (hVME_TPCS4_0All ) hVME_TPCS4_0All ->Fill(i,event->vme_tpcs4[0][i] & 0xfff);
 	  //if (hVME_TPCS4_1All ) hVME_TPCS4_1All ->Fill(i,event->vme_tpcs4[1][i] & 0xfff);

@@ -82,6 +82,8 @@ void TFRSSortEvent::Clear(Option_t *t)
     }
 
   //TPC part
+  for(int i=0;i<16;i++){ id_trigbox[i] = false; }
+  
   for(int i=0;i<7;i++){
       // ADCs
       tpc_l[i][0]=0;

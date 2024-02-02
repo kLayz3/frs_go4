@@ -49,6 +49,8 @@ void TFRSAnlEvent::Clear(Option_t *t)
   anbtrig = 0;
   amaxtrig = 0;
 
+  for(int i=0;i<16;i++){ id_trigbox[i] = false; }
+  
   for(int i=0;i<8;i++)
     {
       music_b_e1[i] = kFALSE;

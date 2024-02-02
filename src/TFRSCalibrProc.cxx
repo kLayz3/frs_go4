@@ -70,6 +70,12 @@ Bool_t TFRSCalibrProc::BuildEvent(TGo4EventElement* output)
  /*timestamp: */
   tgt->timestamp = src->timestamp;
 
+  /* trigger box info from V1190 (TPC crate) */
+  for(int i=0;i<16;i++){
+    tgt->id_trigbox[i] =  src->id_trigbox[i];
+    // if(tgt->id_trigbox[i] ){ printf("trigbox id %d found\n",i);    } 
+  } 
+  
 /*tpat physics trigger: */
   /*
     if (src->pattern>500){
