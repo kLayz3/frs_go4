@@ -326,6 +326,18 @@ void TFRSCalibrProc::Create_TPC_Hist()
 
       //hitograms for calibration
       sprintf(fname,"TPC/%s/calib",tpc_folder_ext1[i]);
+	
+
+	hTPC_XRAW[i][0]=MakeH1I_TPC(fname,"XRAW1",i,2000,-10000,10000, "XRAW 1 [ch]",2,3);
+	hTPC_XRAW[i][1]=MakeH1I_TPC(fname,"XRAW2",i,2000,-10000,10000, "XRAW 2 [ch]",2,3);
+
+
+	hTPC_YRAW[i][0]=MakeH1I_TPC(fname,"YRAW1",i,3000,1000,30000, "YRAW 1 [ch]",2,3);
+	hTPC_YRAW[i][1]=MakeH1I_TPC(fname,"YRAW2",i,3000,1000,30000, "YRAW 2 [ch]",2,3);
+	hTPC_YRAW[i][2]=MakeH1I_TPC(fname,"YRAW3",i,3000,1000,30000, "YRAW 3 [ch]",2,3);
+	hTPC_YRAW[i][3]=MakeH1I_TPC(fname,"YRAW4",i,3000,1000,30000, "YRAW 4 [ch]",2,3);
+
+	
       sprintf(name,"%s%s",tpc_name_ext1[i],"xraw0-yraw0");
       hTPC_XRAW0_YRAW0[i]=MakeH2I(fname,name, 200,-20000,20000,300,-20000,40000, "Xraw0 [ch] ","Yraw0 [ch] ", 2);
       sprintf(name,"%s%s",tpc_name_ext1[i],"xraw0-yraw1");
@@ -960,7 +972,7 @@ void TFRSCalibrProc::Process_TPC_Analysis(const TFRSSortEvent& src, TFRSCalibrEv
     	  hTPC_R1[i]->Fill(src.tpc_r[i][1]);
         for(int j=0; j<4; j++){   hTPC_A[i][j]->Fill(src.tpc_a[i][j]);   }
 
-    	  for(int ihit=0; ihit<(src.tpc_nhit_lt[i][0] && ihit<64); ihit++){
+    	  for(int ihit=0; (ihit<src.tpc_nhit_lt[i][0] && ihit<64); ihit++){
           Int_t thisdata = src.tpc_lt[i][0][ihit];
           Int_t currently_selected = tgt.tpc_lt_s[i][0];
           bool  checkrange = cTPC_LT0[i]->Test(thisdata);
@@ -969,7 +981,7 @@ void TFRSCalibrProc::Process_TPC_Analysis(const TFRSSortEvent& src, TFRSCalibrEv
             tgt.tpc_lt_s[i][0] = thisdata;
           }
         }
-        for(int ihit=0; ihit<(src.tpc_nhit_rt[i][0] && ihit<64); ihit++){
+        for(int ihit=0; (ihit<src.tpc_nhit_rt[i][0] && ihit<64); ihit++){
           Int_t thisdata = src.tpc_rt[i][0][ihit];
           Int_t currently_selected = tgt.tpc_rt_s[i][0];
           bool  checkrange = cTPC_RT0[i]->Test(thisdata);
@@ -978,7 +990,7 @@ void TFRSCalibrProc::Process_TPC_Analysis(const TFRSSortEvent& src, TFRSCalibrEv
             tgt.tpc_rt_s[i][0] = thisdata;
           }
         }
-        for(int ihit=0; ihit<(src.tpc_nhit_lt[i][1] && ihit<64); ihit++){
+        for(int ihit=0; (ihit<src.tpc_nhit_lt[i][1] && ihit<64); ihit++){
           Int_t thisdata = src.tpc_lt[i][1][ihit];
           Int_t currently_selected = tgt.tpc_lt_s[i][1];
           bool  checkrange = cTPC_LT1[i]->Test(thisdata);
@@ -987,7 +999,7 @@ void TFRSCalibrProc::Process_TPC_Analysis(const TFRSSortEvent& src, TFRSCalibrEv
             tgt.tpc_lt_s[i][1] = thisdata;
           }
         }
-        for(int ihit=0; ihit<(src.tpc_nhit_rt[i][1] && ihit<64); ihit++){
+        for(int ihit=0; (ihit<src.tpc_nhit_rt[i][1] && ihit<64); ihit++){
           Int_t thisdata = src.tpc_rt[i][1][ihit];
           Int_t currently_selected = tgt.tpc_rt_s[i][1];
           bool  checkrange = cTPC_RT1[i]->Test(thisdata);
@@ -998,7 +1010,7 @@ void TFRSCalibrProc::Process_TPC_Analysis(const TFRSSortEvent& src, TFRSCalibrEv
         }
 
         for(int j=0; j<4; j++){
-          for(int ihit=0; ihit<(src.tpc_nhit_dt[i][j] && ihit<64); ihit++){
+          for(int ihit=0; (ihit<src.tpc_nhit_dt[i][j] && ihit<64); ihit++){
             Int_t thisdata = src.tpc_dt[i][j][ihit];
             Int_t currently_selected = tgt.tpc_dt_s[i][j];
             bool  checkrange = cTPC_DT[i][j]->Test(thisdata);
@@ -1099,6 +1111,13 @@ void TFRSCalibrProc::Process_TPC_Analysis(const TFRSSortEvent& src, TFRSCalibrEv
         hTPC_DELTAX[i]->Fill(tgt.tpc_dx12[i]);
 
         //histograms for TPC CALIBRATION
+	hTPC_XRAW[i][0]->Fill(tgt.tpc_xraw[i][0]);
+	hTPC_XRAW[i][1]->Fill(tgt.tpc_xraw[i][1]);
+	hTPC_YRAW[i][0]->Fill(tgt.tpc_yraw[i][0]);
+	hTPC_YRAW[i][1]->Fill(tgt.tpc_yraw[i][1]);
+	hTPC_YRAW[i][2]->Fill(tgt.tpc_yraw[i][2]);
+	hTPC_YRAW[i][3]->Fill(tgt.tpc_yraw[i][3]);
+
         hTPC_XRAW0_YRAW0[i]->Fill(tgt.tpc_xraw[i][0],tgt.tpc_yraw[i][0]);
         hTPC_XRAW0_YRAW1[i]->Fill(tgt.tpc_xraw[i][0],tgt.tpc_yraw[i][1]);
         hTPC_XRAW1_YRAW2[i]->Fill(tgt.tpc_xraw[i][1],tgt.tpc_yraw[i][2]);

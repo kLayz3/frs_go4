@@ -128,6 +128,9 @@ private:
 
 
   /// positions and control sum
+  TH1I *hTPC_XRAW[7][2]; //[index][plane_no]
+  TH1I *hTPC_YRAW[7][4]; //[index][anode_no]
+
   TH2I *hTPC_XRAW0_YRAW0[7];
   TH2I *hTPC_XRAW0_YRAW1[7];
   TH2I *hTPC_XRAW1_YRAW2[7];
