@@ -140,6 +140,7 @@ public:
   Float_t       mhtdc_tof4221;
   Float_t       mhtdc_tof4321;
   Float_t       mhtdc_tof3121;
+  Float_t       mhtdc_tof3122;
   Float_t       mhtdc_tof4122;
   Float_t       mhtdc_tof8122;
   Float_t       mhtdc_tofM0121;

@@ -2090,9 +2090,9 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 		case 35:	// --- travelling MUSIC crate ---
 		{
 			// First 5 words are whiterabbit!
-			TimeStampExtract_TravMus(event_out, psubevt);
-			pdata+=5;
-			len+=5;
+			//TimeStampExtract_TravMus(event_out, psubevt); // M.B & R.P 06.02.24 for testing there's no vetar there!
+			//pdata+=5;
+			//len+=5;
 		  if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 35 : Barrier missed !" << *pdata  << std::endl; }
 		  else{ //-----MDPP module----- (do not remove this bracket)
 		    pdata++; len++;
