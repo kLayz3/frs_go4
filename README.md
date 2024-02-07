@@ -1,9 +1,9 @@
 # FRS Go4 with FOOT detectors
 
-## Notes about build sistem
-Now Makefile use submakfile to build code in foot directory.
+## Notes on build system
+Now, Makefile use submakefile to build code in foot directory.
 
-## Notes about FOOT addressing
+## Notes on FOOT addressing
 
 For now detector ID in FOOT data is bases on MBS control value.
 This (control)ID is used as array index; so on unpacking step
