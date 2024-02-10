@@ -3,11 +3,12 @@
 
 #include "TGo4EventElement.h"
 #include "define.hh"
+#include "foot/TFOOTCalibrEvent.h"
 
 class TFRSCalibrProc;
 class TGo4FileSource;
 
-class TFRSCalibrEvent : public TGo4EventElement {
+class TFRSCalibrEvent : public TGo4EventElement, public TFOOTCalibrEvent {
 public:
   TFRSCalibrEvent();
   TFRSCalibrEvent(const char* name);

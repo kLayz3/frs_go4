@@ -8,8 +8,10 @@ FOOT_GEN=gen_hh.sh
 FOOT_GEN_DEP=foot_common.hh
 FOOT_GEN_RES=$(addprefix __foot_, defs.hh ptr_assign.hh clear_all.hh)
 
-FOOT_LIB=../../libFOOT.so
-CLASSLIST= TFOOTParameter TFOOTSortEvent TFOOTSortProc
+RES_DIR=$(shell pwd)/../../
+FOOT_LIB=libFOOT.so
+CLASSLIST= TFOOTParameter TFOOTSortEvent TFOOTSortProc\
+TFOOTContainer TFOOTCalibrEvent TFOOTCalibrProc
 
 FOOT_O=$(addsuffix .o,$(CLASSLIST))
 FOOT_H=$(addsuffix .h,$(CLASSLIST))
@@ -29,6 +31,7 @@ $(addprefix -I=,  $(GO4SYS)/include ../)
 
 
 all: $(FOOT_GEN_RES) $(FOOT_LIB)
+	$(info $(shell pwd))
 
 $(FOOT_GEN_RES) &: $(FOOT_GEN_DEP)
 	./$(FOOT_GEN)
@@ -45,6 +48,8 @@ FOOTDict.cxx: $(FOOT_H) LinkDef.h
 
 $(FOOT_LIB): FOOTDict.o $(FOOT_O)
 	$(CXX) $(LDFLAGS)  -shared -o $@ $^ $(LDLIBS)
-
+	ln -sf $(CURDIR)/$@ $(CURDIR)/../..
+	ln -sf $(CURDIR)/FOOTDict_rdict.pcm $(CURDIR)/../..
 %.o: %.cxx
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c  $< -o $@
+$(info cur $(CURDIR))

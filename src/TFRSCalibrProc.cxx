@@ -86,6 +86,12 @@ Bool_t TFRSCalibrProc::BuildEvent(TGo4EventElement* output)
   Process_LaBr_Analysis(*src, *tgt);  
   Process_SI_Analysis(*src, *tgt);  
   //  Process_ElCurrent_Analysis(*src, *tgt);
+
+  // FOOT Part
+  TFOOTCalibrEvent * tgt1 = dynamic_cast < TFOOTCalibrEvent * > (tgt);
+  TFOOTSortEvent * src1 = dynamic_cast < TFOOTSortEvent * > (src);
+  this->TFOOTCalibrProc::FillEvent(tgt1,src1);
+
   return kTRUE;
 }
 

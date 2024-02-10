@@ -9,6 +9,22 @@ For now detector ID in FOOT data is bases on MBS control value.
 This (control)ID is used as array index; so on unpacking step
 we need to operate with array of FOOT data with lengh of max(ID).
 
+## FOOT calibration
+For now calibration file has format  
+strip - pedestal - sigma - sigama - bad strip  
+
+The analysis is needed in 8 cal. files: FOOT0.clb -- FOOT7.clb (Default).
+The files prefix is stored in TFOOTParameter.
+
+macro
+
+`` clbreload.C ``
+
+allow to reload calibration during run. See section
+"4.5.4 User defined macro command buttons" of Go4introV6.pdf
+
+
+
 
 
 ## Getting started

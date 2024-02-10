@@ -12,15 +12,24 @@ TFOOTParameter::TFOOTParameter() : TGo4Parameter("FOOTParameter")
       order[i] = i+10;
       flip[i] = false;
     }
+  cal_prefix.Form("FOOT");
 }
 
 TFOOTParameter::TFOOTParameter(const char* name) : TGo4Parameter(name)
 {
   for(int i=0;i<8;i++)
     {
-      order[i] = i+10;
       flip[i] = false;
     }
+  cal_prefix.Form("FOOT");
+   order[0] = 10;
+   order[1] = 17;
+   order[2] = 19;
+   order[3] = 20;
+   order[4] = 21;
+   order[5] = 22;
+   order[6] = 23;
+   order[7] = 25;
 }
 
 TFOOTParameter::~TFOOTParameter()

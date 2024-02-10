@@ -7,7 +7,8 @@
 #include "TGo4Parameter.h"
 #include "Riostream.h"
 #include "TObjString.h"
-//#include "TArrayI.h"
+
+#include "TString.h"
 
 class TFOOTParameter : public TGo4Parameter
 {
@@ -20,7 +21,7 @@ public:
 
   Int_t order[8];
   Bool_t flip[8];
-
+  TString cal_prefix;
   ClassDef(TFOOTParameter,1)
 };
 

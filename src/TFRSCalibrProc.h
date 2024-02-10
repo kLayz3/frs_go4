@@ -11,11 +11,12 @@
 
 #include "TFRSParameter.h"
 #include "define.hh"
+#include "foot/TFOOTCalibrProc.h"
 
 class TFRSCalibrEvent;
 class TFRSSortEvent;
 
-class TFRSCalibrProc : public TFRSBasicProc {
+class TFRSCalibrProc : public TFRSBasicProc, public TFOOTCalibrProc  {
 public:
   TFRSCalibrProc() ;
   TFRSCalibrProc(const char* name);
