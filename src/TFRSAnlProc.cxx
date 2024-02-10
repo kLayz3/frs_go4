@@ -297,6 +297,7 @@ void TFRSAnlProc::Create_MultiHitTDC_Hist()
   
   
   hMultiHitTDC_TOF_31_21  = MakeH1I("MultiHitTDC/TOF/S2S3", "TOF_SC31_SC21",4000,50,100,"T(31) - T(21) [ns]",2,3);
+hMultiHitTDC_TOF_31_22  = MakeH1I("MultiHitTDC/TOF/S2S3", "TOF_SC31_SC22",4000,50,100,"T(31) - T(22) [ns]",2,3);
   hMultiHitTDC_TOF2131_SC41dE  = MakeH2I("MultiHitTDC/TOF/S2S3", "SC41dE_TOF2131", 4000,50,100, 4000,0,4000,"T(31) - T(21) [ns]","dE_SC41 (ch)",1);//RP, Feb. 2024
   hMultiHitTDC_TOF2231_SC22dE  = MakeH2I("MultiHitTDC/TOF/S2S3", "SC22dE_TOF2231", 4000,50,100, 4000,0,4000,"T(31) - T(22) [ns]","dE_SC22 (ch)",1);//RP, Feb. 2024
   hMultiHitTDC_TOF2231_SC31dE  = MakeH2I("MultiHitTDC/TOF/S2S3", "SC31dE_TOF2231", 4000,50,100, 4000,0,4000,"T(31) - T(22) [ns]","dE_SC31 (ch)",1);//RP, Feb. 2024
@@ -1595,6 +1596,7 @@ void TFRSAnlProc::Process_MultiHitTDC_Analysis(TFRSSortEvent& srt, TFRSCalibrEve
  } 
   if(0!=srt.tdc_sc22l[0] && 0!=srt.tdc_sc22r[0] && 0!=srt.tdc_sc31l[0] && 0!=srt.tdc_sc31r[0]){
     tgt.mhtdc_tof3122 = sci->mhtdc_factor_ch_to_ns*( 0.5*(srt.tdc_sc31l[0]+srt.tdc_sc31r[0])  - 0.5*(srt.tdc_sc22l[0]+srt.tdc_sc22r[0]) ) + sci->mhtdc_offset_31_22;
+    if(bDrawHist) hMultiHitTDC_TOF_31_22->Fill(tgt.mhtdc_tof3122);
     if(bDrawHist) hMultiHitTDC_TOF2231_SC22dE->Fill(tgt.mhtdc_tof3122,tgt.sci_e[3]);
     if(bDrawHist) hMultiHitTDC_TOF2231_SC31dE->Fill(tgt.mhtdc_tof3122,tgt.sci_e[4]);
   }

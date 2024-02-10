@@ -167,6 +167,7 @@ private:
   TH1I *hMultiHitTDC_TOF_42_21;
   TH1I *hMultiHitTDC_TOF_43_21;
   TH1I *hMultiHitTDC_TOF_31_21;
+  TH1I *hMultiHitTDC_TOF_31_22;//JZ, Feb. 2024
   TH1I *hMultiHitTDC_TOF_81_21;
   TH1I *hMultiHitTDC_TOF_41_22;
   TH1I *hMultiHitTDC_TOF_M01_21;
