@@ -16,14 +16,17 @@ strip - pedestal - sigma - sigama - bad strip
 The analysis is needed in 8 cal. files: FOOT0.clb -- FOOT7.clb (Default).
 The files prefix is stored in TFOOTParameter.
 
-macro
+The macro
 
 `` clbreload.C ``
 
 allow to reload calibration during run. See section
 "4.5.4 User defined macro command buttons" of Go4introV6.pdf
 
-
+## Search for clusters
+For now clustering is simple: only neighbor strips joint in to the
+cluster.
+ADC value sin not using becaue poor calibration.
 
 
 
