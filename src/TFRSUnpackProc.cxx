@@ -244,6 +244,9 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
   if (fInput==nullptr)
     return kFALSE;
 
+  Bool_t check_frs_main_crate = kFALSE; //set true if procid=10 is found
+
+  
   /*  Put the event header stuff into output event  */
   tgt->qlength   = fInput->GetDlen()   ;
   tgt->qtype     = fInput->GetType()   ;
@@ -288,6 +291,8 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
       fInput->ResetIterator();
       TGo4MbsSubEvent *psubevt = nullptr;
 
+     
+      
       while ((psubevt=fInput->NextSubEvent())!= nullptr)
 	{
 	  // start subevents loop
@@ -342,6 +347,7 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 	      continue; // skip subevent SL
 	    }
 
+	  
 	  if( (psubevt->GetType() == 36) && (psubevt->GetSubtype() == 3600) && (psubevt->GetProcid()) == 10) //tpat
 	    {
 		   Int_t lenMax = (psubevt->GetDlen()-2)/2;
@@ -373,16 +379,26 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 	    }
 
 
+	  
+ 
+	  if(10 ==  psubevt->GetProcid()){
+	    check_frs_main_crate = kTRUE;
+	  }
+	  
+	  
 	  /************************************************************************/
 	  /* Here we go for the different triggers.....                           */
 	  /************************************************************************/
     if (((psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 20))||((psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 21))) //vme event !! WARNING, make sure we can unpack non VME systems
     {
+      
       if(15 == psubevt->GetProcid()){
-	tgt->SetValid(kFALSE);
-	std::cout <<"No Event Extract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl;
-	return kFALSE;
+	continue;
+	//	tgt->SetValid(kFALSE);
+	//	std::cout <<"No Event Extract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl;
+	//	return kFALSE;
       }
+      
       switch(fInput->GetTrigger())
 	{ // trigger value curently always one, tpat says who triggered
 	      case 1:
@@ -417,11 +433,13 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
     if (((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 20))||((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 21))) //nurdlib stimstamp subevent shall be type 10
     {
       if(15 == psubevt->GetProcid()){
-	tgt->SetValid(kFALSE);
-	//std::cout <<"No Timestamp Extract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl;
-	return kFALSE;
+	continue;
+	//	tgt->SetValid(kFALSE);
+	//	//std::cout <<"No Timestamp Extract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl;
+	//	return kFALSE;
       }
-	 	 if(psubevt->GetProcid() != 60)
+   
+      if(psubevt->GetProcid() != 60)
 	    	TimeStampExtract(tgt,psubevt); 
 //	    switch(fInput->GetTrigger())
 //	    { // trigger value curently always one, tpat says who triggered
@@ -491,8 +509,16 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 
     } // end special event
 
+  //---if !check_frs_main_crate, it means the event does not include FRS Data. Probably Event from timesorter for something else.
+  //---In such a case, we do not count it as "event" for FRS go4 to avoid confusion for evalating efficiency. so set false and return false.
+  //---The conditions are to be modified, depending on the requirement by experiments.
+  //   printf("frsstatus=%d\n",(int)(check_frs_main_crate));
+  if(!check_frs_main_crate){
+      tgt->SetValid(kFALSE);
+      return kFALSE;
+  }
+
   FillHistograms(tgt); // fill histograms from output event
- 
   tgt->SetValid(kTRUE); // accept event
   return kTRUE;
 } // close unpack proc
