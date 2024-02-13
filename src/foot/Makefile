@@ -11,7 +11,7 @@ FOOT_GEN_RES=$(addprefix __foot_, defs.hh ptr_assign.hh clear_all.hh)
 RES_DIR=$(shell pwd)/../../
 FOOT_LIB=libFOOT.so
 CLASSLIST= TFOOTParameter TFOOTSortEvent TFOOTSortProc\
-TFOOTContainer TFOOTCalibrEvent TFOOTCalibrProc
+TFOOTContainer TFOOTCalibrEvent TFOOTCalibrProc TFOOTAnlProc
 
 FOOT_O=$(addsuffix .o,$(CLASSLIST))
 FOOT_H=$(addsuffix .h,$(CLASSLIST))

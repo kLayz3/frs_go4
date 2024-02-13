@@ -107,6 +107,10 @@ Bool_t TFRSAnlProc::BuildEvent(TGo4EventElement* output)
   Process_ID_MultiHitTDC_Analysis(*srt, *clb, *poutevt);
   Process_MRTOF_Analysis(*srt, *clb, *poutevt);
   Process_Gated_Analysis(*srt, *clb, *poutevt);
+
+  // foot part
+  TFOOTCalibrEvent *clb1 = dynamic_cast < TFOOTCalibrEvent * > (clb);
+  FillHist1( clb1 );
   return kTRUE;
 }
 

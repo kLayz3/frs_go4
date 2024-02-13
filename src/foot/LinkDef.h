@@ -9,4 +9,5 @@
 #pragma link C++ class TFOOTContainer+;
 #pragma link C++ class TFOOTCalibrEvent+;
 #pragma link C++ class TFOOTCalibrProc+;
+#pragma link C++ class TFOOTAnlProc+;
 #endif

@@ -4,6 +4,7 @@
 #include "TFRSBasicProc.h"
 #include "TFRSParameter.h"
 #include <TRandom3.h>
+#include "foot/TFOOTAnlProc.h"
 
 class TFRSAnlEvent;
 class TFRSSortEvent;
@@ -11,7 +12,7 @@ class TFRSCalibrEvent;
 
 class TFRSUnpackEvent;
 
-class TFRSAnlProc : public TFRSBasicProc {
+class TFRSAnlProc : public TFRSBasicProc, public TFOOTAnlProc {
 public:
   TFRSAnlProc();
   TFRSAnlProc(const char* name);
