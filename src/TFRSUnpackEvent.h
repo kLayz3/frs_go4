@@ -93,6 +93,7 @@ public:
   UInt_t mdpp_trig_s530[2];            // T0, T1 trigger of MDPP-16-QDC 
   //end of s530 fission crate
   uint64_t frs_wr;
+  uint64_t vulom_wr;
   uint64_t travmus_wr;
 
 //------------

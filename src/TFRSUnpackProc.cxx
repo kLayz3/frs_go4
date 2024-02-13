@@ -348,7 +348,7 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 	    }
 
 	  
-	  if( (psubevt->GetType() == 36) && (psubevt->GetSubtype() == 3600) && (psubevt->GetProcid()) == 10) //tpat
+	  if( (psubevt->GetType() == 36) && (psubevt->GetSubtype() == 3600) && (psubevt->GetProcid()) == 15) //tpat
 	    {
 		   Int_t lenMax = (psubevt->GetDlen()-2)/2;
 	      Int_t *pdata = psubevt->GetDataField();
@@ -392,12 +392,12 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
     if (((psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 20))||((psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 21))) //vme event !! WARNING, make sure we can unpack non VME systems
     {
       
-      if(15 == psubevt->GetProcid()){
-	continue;
+//      if(15 == psubevt->GetProcid()){
+//	continue;
 	//	tgt->SetValid(kFALSE);
 	//	std::cout <<"No Event Extract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl;
 	//	return kFALSE;
-      }
+ //     }
       
       switch(fInput->GetTrigger())
 	{ // trigger value curently always one, tpat says who triggered
@@ -430,17 +430,17 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 	     }  // switch on trigger value
      }//end test of vme event
 
-    if (((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 20))||((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 21))) //nurdlib stimstamp subevent shall be type 10
+    if (((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 20))||((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 21))) //nurdlib timestamp subevent shall be type 10
     {
-      if(15 == psubevt->GetProcid()){
-	continue;
+     // if(15 == psubevt->GetProcid()){
+//	continue;
 	//	tgt->SetValid(kFALSE);
 	//	//std::cout <<"No Timestamp Extract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl;
 	//	return kFALSE;
-      }
+   //   }
    
-      if(psubevt->GetProcid() != 60)
-	    	TimeStampExtract(tgt,psubevt); 
+      if(psubevt->GetProcid() == 15)
+	    	TimeStampExtract_VULOM(tgt,psubevt); 
 //	    switch(fInput->GetTrigger())
 //	    { // trigger value curently always one, tpat says who triggered
 //	      case 1:
@@ -610,6 +610,34 @@ if(! ((*pdata & 0xffff0000) == 0x03e10000)) {
 	len += 4;
 	event_out->frs_wr = frs_wr;
   }
+
+void TFRSUnpackProc::TimeStampExtract_VULOM(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int) {
+  //std::cout << __PRETTY_FUNCTION__ << std::endl;
+  Int_t *pdata = psubevt->GetDataField();
+  Int_t len = 0;
+  // Int_t vme_chn; //usually redefined for each crate
+  //Int_t lenMax = (psubevt->GetDlen()-2)/2;
+  //decide to print the WR identifier
+  uint32_t wr_id = get_bits(*pdata++,0,11); len++;
+  //std::cout << "wr_id " << wr_id<< std::endl;
+  if(! (wr_id == 0x300)) {
+    printf("VULOM WR ID not 0x300 while trying to match it ...! It is %x\n", wr_id);
+    return;
+  }
+  if(! ((*pdata & 0xffff0000) == 0x03e10000)) {
+    printf("VULOM not matching LoLo of WR ...! It is %x\n", *pdata);
+    return;
+  }
+  uint64_t vulom_wr = 
+    ((uint64_t)(*pdata++ & 0xffff)) |
+    ((uint64_t)(*pdata++ & 0xffff) << 16) |
+    ((uint64_t)(*pdata++ & 0xffff) << 32) |
+    ((uint64_t)(*pdata++ & 0xffff) << 48);
+  len += 4;
+  event_out->vulom_wr = vulom_wr;
+  //std::cout <<"FRS WR : " << event_out->frs_wr <<", VULOM WR : " << event_out->vulom_wr <<", difff : " << event_out->frs_wr-event_out->vulom_wr << endl;
+}
+//end KW
 
 Bool_t TFRSUnpackProc::Event_Extract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int){
   Int_t *pdata = psubevt->GetDataField();
