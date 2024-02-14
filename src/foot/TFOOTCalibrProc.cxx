@@ -2,6 +2,7 @@
 #include <algorithm>
 #include "TFOOTSortEvent.h"
 #include "TFOOTCalibrEvent.h"
+#include "TFRSCalibrEvent.h"
 #include "TH2D.h"
 #include <TGo4AnalysisImp.h>
 
@@ -67,6 +68,26 @@ TFOOTCalibrProc::TFOOTCalibrProc()
     hclsize[i]->SetYTitle("Energy deposit (a. u.)");
     TGo4Analysis::Instance()->AddHistogram(hclsize[i], dir);
   }
+  
+  // FOOT correlations with TPCs
+  for(int i=0;i<8;i++)
+  {
+   char fname[100];
+   char fn[100];
+   sprintf(fname,"TPC22_X_FOOT_%d", i+1);
+   sprintf(fn,"Position distribution in X for TPC22 and FOOT_%d", i+1);
+   hFOOT_tpcX[i] = new TH2D(fname,fn,300,-120,120,640,0,640);
+   hFOOT_tpcX[i]->SetXTitle("TPC22_X [mm]");
+   hFOOT_tpcX[i]->SetYTitle("Position (a. u.)");
+   TGo4Analysis::Instance()->AddHistogram(hFOOT_tpcX[i], dir);
+   
+   sprintf(fname,"TPC22_Y_FOOT_%d", i+1);
+   sprintf(fn,"Position distribution in Y for TPC22 and FOOT_%d", i+1);
+   hFOOT_tpcY[i] = new TH2D(fname,fn,300,-120,120,640,0,640);
+   hFOOT_tpcY[i]->SetXTitle("TPC22_Y [mm]");
+   hFOOT_tpcY[i]->SetYTitle("Position (a. u.)");
+   TGo4Analysis::Instance()->AddHistogram(hFOOT_tpcY[i], dir);
+  }
 }
 
 TFOOTCalibrProc::~TFOOTCalibrProc()
@@ -81,6 +102,18 @@ void TFOOTCalibrProc::FillEvent(TFOOTCalibrEvent *oev, TFOOTSortEvent *iev)
     oev->data.at(i).Set(iev->Get1(i));
   }
   FillHist(oev);
+}
+
+void TFOOTCalibrProc::FillFootTpcEvent(TFOOTCalibrEvent *oev, TFRSCalibrEvent* ifrs)
+{
+  for(int i=0;i<8;i++)
+  {
+   for (int j = 0; j < FOOT_CHN; j++)
+   {
+     hFOOT_tpcX[i]->Fill(ifrs->data.at(i).tpc_x[1],oev->data.at(i).clpos[j]);
+     hFOOT_tpcY[i]->Fill(ifrs->data.at(i).tpc_y[1],oev->data.at(i).clpos[j]);
+   }
+  }
 }
 
 void TFOOTCalibrProc::FillHist(TFOOTCalibrEvent *oev)

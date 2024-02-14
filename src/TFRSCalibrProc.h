@@ -35,7 +35,6 @@ private:
   void Create_SI_Hist();
   void Create_CT_Hist();
   void Create_ElCurrent_Hist();
-  void Create_FOOT_Hist();
 
   void Process_Scaler_Analysis(const TFRSSortEvent& src, TFRSCalibrEvent& tgt);
   void Process_MW_Analysis(const TFRSSortEvent& src, TFRSCalibrEvent& tgt);
@@ -44,8 +43,6 @@ private:
   void Process_SI_Analysis(const TFRSSortEvent& src, TFRSCalibrEvent& tgt);
   void Process_CT_Analysis(const TFRSSortEvent& src, TFRSCalibrEvent& tgt);
   void Process_ElCurrent_Analysis(const TFRSSortEvent& src, TFRSCalibrEvent& tgt);
-  
-  void Process_FOOT_TPC_Analysis(const TFRSCalibrEvent& srcFrs, const TFOOTSortEvent& srcFoot);
 
   TFRSParameter* frs ;
   TMWParameter* mw ;
@@ -162,11 +159,6 @@ private:
   /* TH1I *hTPC_AY_S2; */
   /* TH2I *hTPC_S2X_time; //YT20Jun */
   /* TH2I *hTPC_S2A_time; //YT20Jun */
-  
-  
-  // FOOT
-  TH2I *hFOOT_posX[8];
-  TH2I *hFOOT_posY[8];
 
   // S2 focal plane
   TH1I *hTPC_X_S2_TPC_21_22;  //Positions @ S2 focus using TPCs in Vaccum (TPC21 & TPC22)
