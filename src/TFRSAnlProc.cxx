@@ -86,13 +86,19 @@ Bool_t TFRSAnlProc::BuildEvent(TGo4EventElement* output)
 
   TFRSSortEvent *srt = dynamic_cast<TFRSSortEvent*> (GetInputEvent("Calibr"));
   TFRSCalibrEvent *clb = dynamic_cast<TFRSCalibrEvent*> (GetInputEvent());
-
+  poutevt->SetValid( clb->IsValid()) ;
+  if (clb-> IsValid()==kFALSE) return kFALSE;
   if ((srt==nullptr) || (clb==nullptr))
     return kFALSE;
 
   if(srt->EventFlag != clb->EventFlag)
     std::cout<<"E> AnlProc BuildEvent : EventFlag miss matched between Sort and Calib ! "<<srt->EventFlag <<" != "<< clb->EventFlag <<"\n";
 
+
+  /* trigger box info from V1190 (TPC crate) */
+  for(int i=0;i<16;i++){ poutevt->id_trigbox[i] =  clb->id_trigbox[i]; }
+
+  
   poutevt->EventFlag = srt->EventFlag;
   poutevt->timestamp = clb->timestamp; //absolut time stamp
   poutevt->atpat = clb->ctpat ; //tpat
@@ -235,11 +241,17 @@ void TFRSAnlProc::Create_MultiHitTDC_Hist()
   hMultiHitTDC_21l_21r_TPCX  = MakeH2I("MultiHitTDC/SCIX/SC21","Sc21L_Sc21R_MHTDC_TPCX", 800,-20,20, 200,-100,100,"T(21L) - T(21R) [ns]","X deduced from TPC [mm]",1);
   hMultiHitTDC_SC21X         = MakeH1I("MultiHitTDC/SCIX/SC21","Sc21X_MHTDC",           200,-100,100,"SC21X from SC21 time diff (L-R) [mm]",2,3);
   hMultiHitTDC_SC21X_TPCX    = MakeH2I("MultiHitTDC/SCIX/SC21","Sc21X_MHTDC_TPCX",       200,-100,100,200,-100,100,"SC21X from SC21 time diff (L-R) [mm]","X deduced from TPC [mm]",1);
+  
+  hMultiHitTDC_SC21dE_SC21X  = MakeH2I("MultiHitTDC/SCIX/SC21","Sc21dE_X_MHTDC",        200,-100,100,4000,0,4000,"SC21X from SC21 time diff (L-R) [mm]","SC21_dE",1);//JZ, Feb. 2024
+  hMultiHitTDC_SC21dE_TPCX   = MakeH2I("MultiHitTDC/SCIX/SC21","Sc21dE_TPCX",           200,-100,100,4000,0,4000,"X deduced from TPC [mm]","SC21_dE",1);
 
   hMultiHitTDC_22l_22r       = MakeH1I("MultiHitTDC/SCIX/SC22","Sc22L_Sc22R_MHTDC",     800,-20,20,"T(22L) - T(22R) [ns]",2,3);
   hMultiHitTDC_22l_22r_TPCX  = MakeH2I("MultiHitTDC/SCIX/SC22","Sc22L_Sc22R_MHTDC_TPCX", 800,-20,20, 200,-100,100,"T(22L) - T(22R) [ns]","X deduced from TPC [mm]",1);
   hMultiHitTDC_SC22X         = MakeH1I("MultiHitTDC/SCIX/SC22","Sc22X_MHTDC",           200,-100,100,"SC22X from SC22 time diff (L-R) [mm]",2,3);
   hMultiHitTDC_SC22X_TPCX    = MakeH2I("MultiHitTDC/SCIX/SC22","Sc22X_MHTDC_TPCX",       200,-100,100,200,-100,100,"SC22X from SC22 time diff (L-R) [mm]","X deduced from TPC [mm]",1);
+  
+  hMultiHitTDC_SC22dE_SC22X  = MakeH2I("MultiHitTDC/SCIX/SC22","Sc22dE_X_MHTDC",        200,-100,100,4000,0,4000,"SC22X from SC22 time diff (L-R) [mm]","SC22_dE",1);//JZ, Feb. 2024
+  hMultiHitTDC_SC22dE_TPCX   = MakeH2I("MultiHitTDC/SCIX/SC22","Sc22dE_TPCX",           200,-100,100,4000,0,4000,"X deduced from TPC [mm]","SC22_dE",1);
 
   hMultiHitTDC_41l_41r       = MakeH1I("MultiHitTDC/SCIX/SC41","Sc41L_Sc41R_MHTDC",     800,-20,20,"T(41L) - T(41R) [ns]",2,3);
   hMultiHitTDC_41l_41r_TPCX  = MakeH2I("MultiHitTDC/SCIX/SC41","Sc41L_Sc41R_MHTDC_TPCX", 800,-20,20, 200,-100,100,"T(41L) - T(41R) [ns]","X deduced from TPC [mm]",1);
@@ -260,6 +272,9 @@ void TFRSAnlProc::Create_MultiHitTDC_Hist()
   hMultiHitTDC_31l_31r_TPCX  = MakeH2I("MultiHitTDC/SCIX/SC31","Sc31L_Sc31R_MHTDC_TPCX", 800,-20,20, 200,-100,100,"T(31L) - T(31R) [ns]","X deduced from TPC [mm]",1);
   hMultiHitTDC_SC31X         = MakeH1I("MultiHitTDC/SCIX/SC31","Sc31X_MHTDC",           200,-100,100,"SC31X from SC31 time diff (L-R) [mm]",2,3);
   hMultiHitTDC_SC31X_TPCX    = MakeH2I("MultiHitTDC/SCIX/SC31","Sc31X_MHTDC_TPCX",       200,-100,100,200,-100,100,"SC31X from SC31 time diff (L-R) [mm]","X deduced from TPC [mm]",1);
+  
+  hMultiHitTDC_SC31dE_SC31X  = MakeH2I("MultiHitTDC/SCIX/SC31","Sc31dE_X_MHTDC",        200,-100,100,4000,0,4000,"SC31X from SC31 time diff (L-R) [mm]","SC31_dE",1);//JZ, Feb. 2024
+  hMultiHitTDC_SC31dE_TPCX   = MakeH2I("MultiHitTDC/SCIX/SC31","Sc31dE_TPCX",           200,-100,100,4000,0,4000,"X deduced from TPC [mm]","SC31_dE",1);
 
   hMultiHitTDC_81l_81r       = MakeH1I("MultiHitTDC/SCIX/SC81","Sc81L_Sc81R_MHTDC",     800,-20,20,"T(81L) - T(81R) [ns]",2,3);
   hMultiHitTDC_SC81X         = MakeH1I("MultiHitTDC/SCIX/SC81","Sc81X_MHTDC",           200,-100,100,"SC81X from SC81 time diff (L-R) [mm]",2,3);
@@ -274,9 +289,22 @@ void TFRSAnlProc::Create_MultiHitTDC_Hist()
   hMultiHitTDC_TOF_41_21  = MakeH1I("MultiHitTDC/TOF/S2S4", "TOF_SC41_SC21",36000,-300,300,"T(41) - T(21) [ns]",2,3);
   hMultiHitTDC_TOF_42_21  = MakeH1I("MultiHitTDC/TOF/S2S4", "TOF_SC42_SC21",12000,-100,200,"T(42) - T(21) [ns]",2,3);
   hMultiHitTDC_TOF_43_21  = MakeH1I("MultiHitTDC/TOF/S2S4", "TOF_SC43_SC21",4000,100,200,"T(43) - T(21) [ns]",2,3);
-  hMultiHitTDC_TOF_31_21  = MakeH1I("MultiHitTDC/TOF/S2S3", "TOF_SC31_SC21",4000,50,100,"T(31) - T(21) [ns]",2,3);
-  hMultiHitTDC_TOF_81_21  = MakeH1I("MultiHitTDC/TOF/S2S8", "TOF_SC81_SC21",4000,100,400,"T(81) - T(21) [ns]",2,3);
   hMultiHitTDC_TOF_41_22  = MakeH1I("MultiHitTDC/TOF/S2S4", "TOF_SC41_SC22",36000,-300,300,"T(41) - T(22) [ns]",2,3);
+
+  hMultiHitTDC_TOF4121_SC41dE  = MakeH2I("MultiHitTDC/TOF/S2S4", "SC41dE_TOF4121", 36000,-300,300, 4000,0,4000,"T(41) - T(21) [ns]","dE_SC41 (ch)",1);//JZ, Feb. 2024 
+  hMultiHitTDC_TOF4122_SC41dE  = MakeH2I("MultiHitTDC/TOF/S2S4", "SC41dE_TOF4122", 36000,-300,300, 4000,0,4000,"T(41) - T(22) [ns]","dE_SC41 (ch)",1);//JZ, Feb. 2024
+ 
+  
+  
+  hMultiHitTDC_TOF_31_21  = MakeH1I("MultiHitTDC/TOF/S2S3", "TOF_SC31_SC21",4000,50,100,"T(31) - T(21) [ns]",2,3);
+hMultiHitTDC_TOF_31_22  = MakeH1I("MultiHitTDC/TOF/S2S3", "TOF_SC31_SC22",4000,50,100,"T(31) - T(22) [ns]",2,3);
+  hMultiHitTDC_TOF2131_SC41dE  = MakeH2I("MultiHitTDC/TOF/S2S3", "SC41dE_TOF2131", 4000,50,100, 4000,0,4000,"T(31) - T(21) [ns]","dE_SC41 (ch)",1);//RP, Feb. 2024
+  hMultiHitTDC_TOF2231_SC22dE  = MakeH2I("MultiHitTDC/TOF/S2S3", "SC22dE_TOF2231", 4000,50,100, 4000,0,4000,"T(31) - T(22) [ns]","dE_SC22 (ch)",1);//RP, Feb. 2024
+  hMultiHitTDC_TOF2231_SC31dE  = MakeH2I("MultiHitTDC/TOF/S2S3", "SC31dE_TOF2231", 4000,50,100, 4000,0,4000,"T(31) - T(22) [ns]","dE_SC31 (ch)",1);//RP, Feb. 2024
+  
+  
+  hMultiHitTDC_TOF_81_21  = MakeH1I("MultiHitTDC/TOF/S2S8", "TOF_SC81_SC21",4000,100,400,"T(81) - T(21) [ns]",2,3);
+ 
   hMultiHitTDC_TOF_M01_21  = MakeH1I("MultiHitTDC/TOF/S2HTM", "TOF_SCM01_SC21",1000,600,700,"T(M01) - T(21) [ns]",2,3);
   hMultiHitTDC_TOF_M01_22  = MakeH1I("MultiHitTDC/TOF/S2HTM", "TOF_SCM01_SC22",1000,600,700,"T(M01) - T(22) [ns]",2,3);
  
@@ -1470,6 +1498,9 @@ void TFRSAnlProc::Process_MultiHitTDC_Analysis(TFRSSortEvent& srt, TFRSCalibrEve
     if(bDrawHist) hMultiHitTDC_SC21X       ->Fill(tgt.mhtdc_sc21lr_x);
     if(bDrawHist) hMultiHitTDC_21l_21r_TPCX->Fill(tgt.mhtdc_sc21lr_dt, sc21pos_from_tpc);
     if(bDrawHist) hMultiHitTDC_SC21X_TPCX  ->Fill(tgt.mhtdc_sc21lr_x, sc21pos_from_tpc);
+    
+    if(bDrawHist) hMultiHitTDC_SC21dE_SC21X->Fill(tgt.mhtdc_sc21lr_x, tgt.sci_e[2]);//JZ, Feb.2024
+    if(bDrawHist) hMultiHitTDC_SC21dE_TPCX ->Fill(sc21pos_from_tpc, tgt.sci_e[2]);
   }
 
   if(0!=srt.tdc_sc22l[0] && 0!=srt.tdc_sc22r[0]){
@@ -1485,6 +1516,9 @@ void TFRSAnlProc::Process_MultiHitTDC_Analysis(TFRSSortEvent& srt, TFRSCalibrEve
     if(bDrawHist) hMultiHitTDC_SC22X       ->Fill(tgt.mhtdc_sc22lr_x);
     if(bDrawHist) hMultiHitTDC_22l_22r_TPCX->Fill(tgt.mhtdc_sc22lr_dt, sc22pos_from_tpc);
     if(bDrawHist) hMultiHitTDC_SC22X_TPCX  ->Fill(tgt.mhtdc_sc22lr_x, sc22pos_from_tpc);
+    
+    if(bDrawHist) hMultiHitTDC_SC22dE_SC22X->Fill(tgt.mhtdc_sc22lr_x, tgt.sci_e[3]);//JZ, Feb.2024
+    if(bDrawHist) hMultiHitTDC_SC22dE_TPCX ->Fill(sc22pos_from_tpc, tgt.sci_e[3]);
   }
 
   if(0!=srt.tdc_sc41l[0] && 0!=srt.tdc_sc41r[0]){
@@ -1521,6 +1555,9 @@ void TFRSAnlProc::Process_MultiHitTDC_Analysis(TFRSSortEvent& srt, TFRSCalibrEve
     if(bDrawHist) hMultiHitTDC_SC31X       ->Fill(tgt.mhtdc_sc31lr_x);
     if(bDrawHist) hMultiHitTDC_31l_31r_TPCX->Fill(tgt.mhtdc_sc31lr_dt, clb.tpc_x[6]); //only 1 tpc
     if(bDrawHist) hMultiHitTDC_SC31X_TPCX  ->Fill(tgt.mhtdc_sc31lr_x, clb.tpc_x[6]);//only 1 tpc
+    
+    if(bDrawHist) hMultiHitTDC_SC31dE_SC31X->Fill(tgt.mhtdc_sc31lr_x, tgt.sci_e[4]);//JZ, Feb.2024
+    if(bDrawHist) hMultiHitTDC_SC31dE_TPCX ->Fill(clb.tpc_x[6], tgt.sci_e[4]);
   }
 
   if(0!=srt.tdc_sc81l[0] && 0!=srt.tdc_sc81r[0]){
@@ -1542,6 +1579,7 @@ void TFRSAnlProc::Process_MultiHitTDC_Analysis(TFRSSortEvent& srt, TFRSCalibrEve
   if(0!=srt.tdc_sc21l[0] && 0!=srt.tdc_sc21r[0] && 0!=srt.tdc_sc41l[0] && 0!=srt.tdc_sc41r[0]){
     tgt.mhtdc_tof4121 = sci->mhtdc_factor_ch_to_ns*( 0.5*(srt.tdc_sc41l[0]+srt.tdc_sc41r[0])  - 0.5*(srt.tdc_sc21l[0]+srt.tdc_sc21r[0]) ) + sci->mhtdc_offset_41_21;
     if(bDrawHist) hMultiHitTDC_TOF_41_21->Fill(tgt.mhtdc_tof4121);
+    if(bDrawHist) hMultiHitTDC_TOF4121_SC41dE->Fill(tgt.mhtdc_tof4121, tgt.sci_e[2]);//JZ, Feb. 2024
   }
   if(0!=srt.tdc_sc21l[0] && 0!=srt.tdc_sc21r[0] && 0!=srt.tdc_sc42l[0] && 0!=srt.tdc_sc42r[0]){
     tgt.mhtdc_tof4221 = sci->mhtdc_factor_ch_to_ns*( 0.5*(srt.tdc_sc42l[0]+srt.tdc_sc42r[0])  - 0.5*(srt.tdc_sc21l[0]+srt.tdc_sc21r[0]) ) + sci->mhtdc_offset_42_21;
@@ -1554,7 +1592,15 @@ void TFRSAnlProc::Process_MultiHitTDC_Analysis(TFRSSortEvent& srt, TFRSCalibrEve
   if(0!=srt.tdc_sc21l[0] && 0!=srt.tdc_sc21r[0] && 0!=srt.tdc_sc31l[0] && 0!=srt.tdc_sc31r[0]){
     tgt.mhtdc_tof3121 = sci->mhtdc_factor_ch_to_ns*( 0.5*(srt.tdc_sc31l[0]+srt.tdc_sc31r[0])  - 0.5*(srt.tdc_sc21l[0]+srt.tdc_sc21r[0]) ) + sci->mhtdc_offset_31_21;
     if(bDrawHist) hMultiHitTDC_TOF_31_21->Fill(tgt.mhtdc_tof3121);
+    if(bDrawHist) hMultiHitTDC_TOF2131_SC41dE->Fill(tgt.mhtdc_tof3121,tgt.sci_e[2]); 
+ } 
+  if(0!=srt.tdc_sc22l[0] && 0!=srt.tdc_sc22r[0] && 0!=srt.tdc_sc31l[0] && 0!=srt.tdc_sc31r[0]){
+    tgt.mhtdc_tof3122 = sci->mhtdc_factor_ch_to_ns*( 0.5*(srt.tdc_sc31l[0]+srt.tdc_sc31r[0])  - 0.5*(srt.tdc_sc22l[0]+srt.tdc_sc22r[0]) ) + sci->mhtdc_offset_31_22;
+    if(bDrawHist) hMultiHitTDC_TOF_31_22->Fill(tgt.mhtdc_tof3122);
+    if(bDrawHist) hMultiHitTDC_TOF2231_SC22dE->Fill(tgt.mhtdc_tof3122,tgt.sci_e[3]);
+    if(bDrawHist) hMultiHitTDC_TOF2231_SC31dE->Fill(tgt.mhtdc_tof3122,tgt.sci_e[4]);
   }
+
   if(0!=srt.tdc_sc21l[0] && 0!=srt.tdc_sc21r[0] && 0!=srt.tdc_sc81l[0] && 0!=srt.tdc_sc81r[0]){
     tgt.mhtdc_tof8121 = sci->mhtdc_factor_ch_to_ns*( 0.5*(srt.tdc_sc81l[0]+srt.tdc_sc81r[0])  - 0.5*(srt.tdc_sc21l[0]+srt.tdc_sc21r[0]) ) + sci->mhtdc_offset_81_21;
     if(bDrawHist) hMultiHitTDC_TOF_81_21->Fill(tgt.mhtdc_tof8121);
@@ -1562,6 +1608,7 @@ void TFRSAnlProc::Process_MultiHitTDC_Analysis(TFRSSortEvent& srt, TFRSCalibrEve
     if(0!=srt.tdc_sc22l[0] && 0!=srt.tdc_sc22r[0] && 0!=srt.tdc_sc41l[0] && 0!=srt.tdc_sc41r[0]){
     tgt.mhtdc_tof4122 = sci->mhtdc_factor_ch_to_ns*( 0.5*(srt.tdc_sc41l[0]+srt.tdc_sc41r[0])  - 0.5*(srt.tdc_sc22l[0]+srt.tdc_sc22r[0]) ) + sci->mhtdc_offset_41_22;
     if(bDrawHist) hMultiHitTDC_TOF_41_22->Fill(tgt.mhtdc_tof4122);
+    if(bDrawHist) hMultiHitTDC_TOF4122_SC41dE->Fill(tgt.mhtdc_tof4122, tgt.sci_e[2]);//JZ, Feb. 2024
     }
     if(0!=srt.tdc_sc21l[0] && 0!=srt.tdc_sc21r[0] && 0!=srt.tdc_scM01l[0] && 0!=srt.tdc_scM01r[0]){
     tgt.mhtdc_tofM0121 = sci->mhtdc_factor_ch_to_ns*( 0.5*(srt.tdc_scM01l[0]+srt.tdc_scM01r[0])  - 0.5*(srt.tdc_sc21l[0]+srt.tdc_sc21r[0]) ) + sci->mhtdc_offset_M01_21;
@@ -1570,6 +1617,7 @@ void TFRSAnlProc::Process_MultiHitTDC_Analysis(TFRSSortEvent& srt, TFRSCalibrEve
     if(0!=srt.tdc_sc22l[0] && 0!=srt.tdc_sc22r[0] && 0!=srt.tdc_scM01l[0] && 0!=srt.tdc_scM01r[0]){
     tgt.mhtdc_tofM0122 = sci->mhtdc_factor_ch_to_ns*( 0.5*(srt.tdc_scM01l[0]+srt.tdc_scM01r[0])  - 0.5*(srt.tdc_sc22l[0]+srt.tdc_sc22r[0]) ) + sci->mhtdc_offset_M01_22;
     if(bDrawHist) hMultiHitTDC_TOF_M01_22->Fill(tgt.mhtdc_tofM0122);
+    
     }
   return ;
 

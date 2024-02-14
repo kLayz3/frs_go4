@@ -49,6 +49,8 @@ void TFRSAnlEvent::Clear(Option_t *t)
   anbtrig = 0;
   amaxtrig = 0;
 
+  for(int i=0;i<16;i++){ id_trigbox[i] = false; }
+  
   for(int i=0;i<8;i++)
     {
       music_b_e1[i] = kFALSE;
@@ -163,6 +165,7 @@ void TFRSAnlEvent::Clear(Option_t *t)
    mhtdc_tof4221 = -999.9;
    mhtdc_tof4321 = -999.9;
    mhtdc_tof3121 = -999.9;
+   mhtdc_tof3122 = -999.9;
    mhtdc_tof4122 = -999.9;
    mhtdc_tof8122 = -999.9;
    mhtdc_tofM0121 = -999.9;

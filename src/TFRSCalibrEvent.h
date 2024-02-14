@@ -108,6 +108,8 @@ public:
   Bool_t b_tpc_timeref[8];
   Int_t tpc_timeref_s[8];
 
+  Bool_t id_trigbox[16];
+  
   //TPCs 21 & 22 @ S2 focus
   Float_t tpc_x_s2_foc_21_22;
   Float_t tpc_y_s2_foc_21_22;

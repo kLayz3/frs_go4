@@ -139,7 +139,18 @@ private:
   TH1I *hMultiHitTDC_SC31X;
   TH1I *hMultiHitTDC_SC81X;
   TH1I *hMultiHitTDC_SCM01X;
+  
+  TH2I *hMultiHitTDC_SC21dE_SC21X;//JZ, Feb. 2024
+  TH2I *hMultiHitTDC_SC21dE_TPCX;
+  TH2I *hMultiHitTDC_SC22dE_SC22X;//JZ, Feb. 2024
+  TH2I *hMultiHitTDC_SC22dE_TPCX;
+  TH2I *hMultiHitTDC_SC31dE_SC31X;//JZ, Feb. 2024
+  TH2I *hMultiHitTDC_SC31dE_TPCX;  
 
+  TH2I *hMultiHitTDC_TOF2131_SC41dE;//RP, Feb. 2024
+  TH2I *hMultiHitTDC_TOF2231_SC22dE;//RP, Feb. 2024
+  TH2I *hMultiHitTDC_TOF2231_SC31dE;//RP, Feb. 2024
+  
   TH2I *hMultiHitTDC_SC21X_TPCX;
   TH2I *hMultiHitTDC_SC22X_TPCX;
   TH2I *hMultiHitTDC_SC41X_TPCX;
@@ -149,10 +160,14 @@ private:
   //  TH2I *hMultiHitTDC_81l_81r_TPCX;
   //  TH2I *hMultiHitTDC_M01l_M01r_TPCX;
 
+  TH2I *hMultiHitTDC_TOF4121_SC41dE;//JZ, Feb. 2024
+  TH2I *hMultiHitTDC_TOF4122_SC41dE;
+  
   TH1I *hMultiHitTDC_TOF_41_21;
   TH1I *hMultiHitTDC_TOF_42_21;
   TH1I *hMultiHitTDC_TOF_43_21;
   TH1I *hMultiHitTDC_TOF_31_21;
+  TH1I *hMultiHitTDC_TOF_31_22;//JZ, Feb. 2024
   TH1I *hMultiHitTDC_TOF_81_21;
   TH1I *hMultiHitTDC_TOF_41_22;
   TH1I *hMultiHitTDC_TOF_M01_21;
