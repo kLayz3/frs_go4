@@ -100,7 +100,7 @@ void TFRSUnpackEvent::Clear(Option_t *t)
 	}
     }
 v1190_is_bad = false;
-
+vulom_wr = 0;
   for(int i=0; i<128; i++){
       nhit_v1190_tpcs2[i] = 0;
     for(int j=0; j<64; j++){

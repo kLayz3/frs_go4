@@ -38,6 +38,8 @@ Bool_t TFRSSortProc::BuildEvent(TGo4EventElement* output)
   tgt->SetValid(kTRUE);  // all events after unpack always accepted
 
   TFRSUnpackEvent *src = dynamic_cast<TFRSUnpackEvent*> (GetInputEvent());
+  tgt->SetValid( src->IsValid()) ;
+  if (src-> IsValid()==kFALSE) return kFALSE;
   if (src==nullptr)
     return kFALSE;
 
@@ -178,6 +180,22 @@ Bool_t TFRSSortProc::BuildEvent(TGo4EventElement* output)
   // TPC part                         //
   //                                  //
   //////////////////////////////////////
+
+  //
+  int min_trigbox_1190 = 18000; // can be moved to TFRSParameter 
+  int max_trigbox_1190 = 23000; // can be moved to TFRSParameter 
+  for(int i=0;i<16;i++){
+    bool tmp_id_trigbox = false;
+    int  ch_1190         = 112+i;
+    int  tmp_nhit_trigbox= src->nhit_v1190_tpcs2[ ch_1190 ];
+    for(int ihit=0; ihit< tmp_nhit_trigbox ; ihit++){
+      if(min_trigbox_1190 < src->leading_v1190_tpcs2[ch_1190][ihit] && src->leading_v1190_tpcs2[ch_1190][ihit] < max_trigbox_1190){
+	tmp_id_trigbox = true;
+	//printf( "trigbox id found %d \n",i);
+      }
+    }
+    tgt->id_trigbox[i] = tmp_id_trigbox ;
+  }
 
   //ADC
 

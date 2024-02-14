@@ -1,7 +1,7 @@
 ////////TPC Y Calibration Parameters Updated/////// 
 #include "Riostream.h"
 
-void setup_engrun_033_2023()
+void setup_engrun_001_2024()
 {
   // look up analysis object and all parameters
 
@@ -981,7 +981,6 @@ return;
   sci->mhtdc_offset_42_21  =  -7.53+171.5; //ns // s452 Pb 210311
   sci->mhtdc_offset_43_21  =  0.0; //ns
   sci->mhtdc_offset_31_21  =  85.0; //ns
-  sci->mhtdc_offset_31_22  =  85.0+50.0; //ns
   sci->mhtdc_offset_81_21  =  -400.0 + 165.214; //ns
   sci->mhtdc_offset_41_22  =  -44.91+203.3; //ns //s526 107Ag it was 253.3ns
   sci->mhtdc_offset_M01_21  =  -543.38095 + (681.88795 - 628.5) - 7.552; //ns 08.09.2021

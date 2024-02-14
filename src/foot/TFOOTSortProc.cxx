@@ -3,7 +3,7 @@
 #include <algorithm>
 #include "TFOOTSortEvent.h"
 #include "TH2I.h"
-#include <TGo4AnalysisImp.h>
+#include "TGo4AnalysisImp.h"
 
 TFOOTSortProc::TFOOTSortProc()
 {
