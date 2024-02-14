@@ -291,8 +291,6 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
       fInput->ResetIterator();
       TGo4MbsSubEvent *psubevt = nullptr;
 
-     
-      
       while ((psubevt=fInput->NextSubEvent())!= nullptr)
 	{
 	  // start subevents loop
@@ -513,12 +511,17 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
   //---In such a case, we do not count it as "event" for FRS go4 to avoid confusion for evalating efficiency. so set false and return false.
   //---The conditions are to be modified, depending on the requirement by experiments.
   //   printf("frsstatus=%d\n",(int)(check_frs_main_crate));
+  
+  /* A HACK!
+   * This part check event validity and cut events not from FRS crate
+   * It turned off for FOOT calibration
   if(!check_frs_main_crate){
       tgt->SetValid(kFALSE);
       return kFALSE;
   }
-
+  */
   FillHistograms(tgt); // fill histograms from output event
+ 
   tgt->SetValid(kTRUE); // accept event
   return kTRUE;
 } // close unpack proc

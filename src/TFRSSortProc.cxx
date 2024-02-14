@@ -569,16 +569,16 @@ Bool_t TFRSSortProc::BuildEvent(TGo4EventElement* output)
       tgt->labr_e_raw[i] = (src->vme_trmu_adc[i+8]);
       tgt->labr_t_raw[i] = (src->vme_trmu_tdc[i+8]);
     }
-//----Active Stopper
-for(int i = 0; i<32; i++)
- {
-	 tgt->dssd_adc_det1[i] = src->vme_actstop[10][i] & 0xfff;
-	 tgt->dssd_adc_det2[i] = src->vme_actstop[12][i] & 0xfff;
-	 tgt->dssd_adc_det3[i] = src->vme_actstop[14][i] & 0xfff;
-	 tgt->dssd_adc_det4[i] = src->vme_actstop[16][i] & 0xfff;
-	 tgt->dssd_adc_det5[i] = src->vme_actstop[18][i] & 0xfff;
-	 tgt->dssd_adc_det6[i] = src->vme_actstop[20][i] & 0xfff;
- }
+  //----Active Stopper
+  for(int i = 0; i<32; i++)
+    {
+      tgt->dssd_adc_det1[i] = src->vme_actstop[10][i] & 0xfff;
+      tgt->dssd_adc_det2[i] = src->vme_actstop[12][i] & 0xfff;
+      tgt->dssd_adc_det3[i] = src->vme_actstop[14][i] & 0xfff;
+      tgt->dssd_adc_det4[i] = src->vme_actstop[16][i] & 0xfff;
+      tgt->dssd_adc_det5[i] = src->vme_actstop[18][i] & 0xfff;
+      tgt->dssd_adc_det6[i] = src->vme_actstop[20][i] & 0xfff;
+    }
 
   /* ### MUSIC temp & pressure:  */
   // tgt->music_pres[0] = 0;
@@ -605,7 +605,7 @@ for(int i = 0; i<32; i++)
   // for(int i = 0; i<100; i++)
   for(int i = 0; i<10; i++)
     {
-    tgt->mrtof_stop[i] = src->leading_v1190_mrtof[9][i];
+      tgt->mrtof_stop[i] = src->leading_v1190_mrtof[9][i];
     }
   tgt->mrtof_spill = src->leading_v1190_mrtof[10][0];
   tgt->mrtof_ts = (src->mrtof_ts-21600-31557600*51)%(24*3600);

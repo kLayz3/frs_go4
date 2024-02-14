@@ -1,6 +1,6 @@
 *~
-src/*.o
-src/*.so
+*.o
+*.so
 *.d
 CHANGELOG
 libGo4UserAnalysis*
