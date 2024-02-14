@@ -102,46 +102,9 @@ Bool_t TFRSCalibrProc::BuildEvent(TGo4EventElement* output)
   TFOOTSortEvent * src1 = dynamic_cast < TFOOTSortEvent * > (src);
   this->TFOOTCalibrProc::FillEvent(tgt1,src1);
   
-  // Process data from FRS (tgt) and FOOT (src1)
-  Process_FOOT_TPC_Analysis(*tgt,src1);
+  this->TFOOTCalibrProc::FillFootTpcEvent(tgt1, tgt);
 
   return kTRUE;
-}
-
-void Create_FOOT_Hist()
-{
-  // 8 FOOT detectors
-  for(int i=0;i<8;i++)
-  {
-   char fname[100];
-   char fn[100];
-   sprintf(fname,"FOOT_TPC/TPC22_X_FOOT_%d", i+1);
-   sprintf(fn,"Position distribution in X for TPC22 and FOOT_%d", i+1);
-   hFOOT_posX[i] = MakeH1I(fname,fn,640,0,640);
-   hFOOT_posX[i] = MakeH2I(fname,fn,300,-120,120,640,0,640,"TPC22_X [mm]","Position (a. u.)",2);
-   
-   sprintf(fname,"FOOT_TPC/TPC22_Y_FOOT_%d", i+1);
-   sprintf(fn,"Position distribution in Y for TPC22 and FOOT_%d", i+1);
-   hFOOT_posY[i] = MakeH1I(fname,fn,640,0,640);
-   hFOOT_posY[i] = MakeH2I(fname,fn,300,-120,120,640,0,640,"TPC22_Y [mm]","Position (a. u.)",2);
-  }
-
- return ;
-}
-
-void TFRSCalibrProc::Process_FOOT_TPC_Analysis(const TFRSCalibrEvent& srcFrs, const TFOOTSortEvent& srcFoot)
-{
-  // TPC22 ---> srcFrs.tpc_x[1] and srcFrs.tpc_y[1]
-  // TPC24 ---> srcFrs.tpc_x[3] and srcFrs.tpc_y[3]
-  
-  for(int i=0;i<8;i++)
-  {
-   for (int j = 0; j < 640; j++)
-   {
-     hFOOT_posX[i]->Fill(srcFrs.tpc_x[1],srcFoot->data.at(i).clpos[j]);
-     hFOOT_posY[i]->Fill(srcFrs.tpc_y[1],srcFoot->data.at(i).clpos[j]);
-   }
-  }
 }
 
 void TFRSCalibrProc::Create_Scaler_Hist()
