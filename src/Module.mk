@@ -28,7 +28,6 @@ FRS_DS          = $(FRS_DICT).$(SrcSuf)
 FRS_DO          = $(FRS_DICT).$(ObjSuf)
 
 FRS_H           = $(filter-out $(FRS_EXEH) $(FRS_NOTLIBF) $(FRS_DH) $(FRS_LINKDEF), $(wildcard $(FRS_DIR)/*.$(HedSuf)))
-
 FRS_S           = $(filter-out $(FRS_EXES) $(FRS_NOTLIBF) $(FRS_DS), $(wildcard $(FRS_DIR)/*.$(SrcSuf)))
 FRS_O           = $(FRS_S:.$(SrcSuf)=.$(ObjSuf))
 

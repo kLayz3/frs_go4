@@ -1,5 +1,5 @@
 #general make file for any Go4 module
-## I have other part for go4 Makefile parts on my home PC
+
 -include $(GO4SYS)/Makefile.config
 
 # for compile example under cygwin, 
@@ -82,6 +82,5 @@ install: all
 	ln -s ../source/setup.C ../exec
 	cp libGo4UserAnalysis* ../exec
 #	cp MainUserAnalysis ../exec
-## I have other part for go4 Makefile parts on my home PC
+
 include $(GO4SYS)/Makefile.rules
-##include foot/foot.mk

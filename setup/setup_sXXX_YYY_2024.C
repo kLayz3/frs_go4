@@ -1,7 +1,7 @@
 ////////TPC Y Calibration Parameters Updated/////// 
 #include "Riostream.h"
 
-void setup_engrun_033_2023()
+void setup_sXXX_YYY_2024()
 {
   // look up analysis object and all parameters
 
@@ -570,10 +570,10 @@ return;
   tpc->lim_rt[0][0][0] = 20000.;  tpc->lim_rt[0][0][1] = 50000.0; //DR1 time TDC cut
   tpc->lim_lt[0][1][0] = 20000.;  tpc->lim_lt[0][1][1] = 50000.0; //DL2 time TDC cut
   tpc->lim_rt[0][1][0] = 20000.;  tpc->lim_rt[0][1][1] = 50000.0; //DL2 time TDC cut
-  tpc->lim_csum1[0][0] = 13700.0;  tpc->lim_csum1[0][1] = 14600.0;
-  tpc->lim_csum2[0][0] = 13900.0;  tpc->lim_csum2[0][1] = 14600.0;
-  tpc->lim_csum3[0][0] = 13500.0;  tpc->lim_csum3[0][1] = 14600.0; 
-  tpc->lim_csum4[0][0] = 13500.0;  tpc->lim_csum4[0][1] = 14600.0;
+  tpc->lim_csum1[0][0] = 13700.0 - 200.;  tpc->lim_csum1[0][1] = 14600.0;
+  tpc->lim_csum2[0][0] = 13900.0 - 200.;  tpc->lim_csum2[0][1] = 14600.0;
+  tpc->lim_csum3[0][0] = 13500.0 - 200.;  tpc->lim_csum3[0][1] = 14600.0 - 100.; 
+  tpc->lim_csum4[0][0] = 13500.0 - 200.;  tpc->lim_csum4[0][1] = 14600.0 - 100.;
 
   
   //-------- TPC22 parameters after Repair in May 2021 (updated on // 19/June/2021, BARB june 2021) ----------
@@ -603,10 +603,10 @@ return;
   tpc->lim_rt[1][0][0] = 20000.;  tpc->lim_rt[1][0][1] = 50000.0; //DR1 time TDC cut
   tpc->lim_lt[1][1][0] = 20000.;  tpc->lim_lt[1][1][1] = 50000.0; //DL2 time TDC cut
   tpc->lim_rt[1][1][0] = 20000.;  tpc->lim_rt[1][1][1] = 50000.0; //DL2 time TDC cut
-  tpc->lim_csum1[1][0] = 17000.0;    tpc->lim_csum1[1][1] =  19200.0;
+  tpc->lim_csum1[1][0] = 17000.0 + 500.;    tpc->lim_csum1[1][1] =  19200.0 - 200.;
   tpc->lim_csum2[1][0] = 17000.0;    tpc->lim_csum2[1][1] =  19200.0;
-  tpc->lim_csum3[1][0] = 17000.0;    tpc->lim_csum3[1][1] =  19200.0;
-  tpc->lim_csum4[1][0] = 17000.0;    tpc->lim_csum4[1][1] =  19200.0;
+  tpc->lim_csum3[1][0] = 17000.0 + 500.;    tpc->lim_csum3[1][1] =  19200.0 - 200.;
+  tpc->lim_csum4[1][0] = 17000.0 + 500.;    tpc->lim_csum4[1][1] =  19200.0 + 200.;
   
   
   //-------- TPC23 parameters  (updated on 2021/May31, begeinnig of S526, timeref=2, U beam)--------------
@@ -637,10 +637,10 @@ return;
   tpc->lim_rt[2][0][0] = 20000.;  tpc->lim_rt[2][0][1] = 50000.0; //DR1 time TDC cut
   tpc->lim_lt[2][1][0] = 20000.;  tpc->lim_lt[2][1][1] = 50000.0; //DL2 time TDC cut
   tpc->lim_rt[2][1][0] = 20000.;  tpc->lim_rt[2][1][1] = 50000.0; //DL2 time TDC cut
-  tpc->lim_csum1[2][0] = 13800.0;   tpc->lim_csum1[2][1] = 14800.0; //, 15:00 2022-May-12
-  tpc->lim_csum2[2][0] = 14000.0;   tpc->lim_csum2[2][1] = 14800.0;//, 15:00 2022-May-12
-  tpc->lim_csum3[2][0] = 14000.0;   tpc->lim_csum3[2][1] = 14800.0;//, 15:00 2022-May-12
-  tpc->lim_csum4[2][0] = 14000.0;   tpc->lim_csum4[2][1] = 14800.0; //, 15:00 2022-May-12
+  tpc->lim_csum1[2][0] = 13800.0 -100.;   tpc->lim_csum1[2][1] = 14800.0 -100.; //, 15:00 2022-May-12
+  tpc->lim_csum2[2][0] = 14000.0 -100.;   tpc->lim_csum2[2][1] = 14800.0 -100.;//, 15:00 2022-May-12
+  tpc->lim_csum3[2][0] = 14000.0 -100.;   tpc->lim_csum3[2][1] = 14800.0;//, 15:00 2022-May-12
+  tpc->lim_csum4[2][0] = 14000.0 -100.;   tpc->lim_csum4[2][1] = 14800.0; //, 15:00 2022-May-12
   
   
   //-------- TPC24 parameters  ------- (updated on 2021/May31, begeinnig of S526, timeref=2, U beam)--------------
@@ -671,10 +671,10 @@ return;
   tpc->lim_rt[3][0][0] = 20000.;  tpc->lim_rt[3][0][1] = 50000.0; //DR1 time TDC cut
   tpc->lim_lt[3][1][0] = 20000.;  tpc->lim_lt[3][1][1] = 50000.0; //DL2 time TDC cut
   tpc->lim_rt[3][1][0] = 20000.;  tpc->lim_rt[3][1][1] = 50000.0; //DL2 time TDC cut
-  tpc->lim_csum1[3][0] = 18100.0 -200.;    tpc->lim_csum1[3][1] = 18800.0+200.; ////, 15:00 2022-May-12
-  tpc->lim_csum2[3][0] = 17900.0 -200.;    tpc->lim_csum2[3][1] = 18700.0+200.; ////, 15:00 2022-May-12
-  tpc->lim_csum3[3][0] = 18600.0 -200.;    tpc->lim_csum3[3][1] = 19400.0+200.; ////, 15:00 2022-May-12
-  tpc->lim_csum4[3][0] = 18200.0 -200.;    tpc->lim_csum4[3][1] = 19000.0+200.; ////, 15:00 2022-May-12
+  tpc->lim_csum1[3][0] = 18100.0 -400.;    tpc->lim_csum1[3][1] = 18800.0+0.; 
+  tpc->lim_csum2[3][0] = 17900.0 -400.;    tpc->lim_csum2[3][1] = 18700.0+0.; ////, 15:00 2022-May-12
+  tpc->lim_csum3[3][0] = 18600.0 -400.;    tpc->lim_csum3[3][1] = 19400.0+0.; ////, 15:00 2022-May-12
+  tpc->lim_csum4[3][0] = 18200.0 -400.;    tpc->lim_csum4[3][1] = 19000.0+0.; ////, 15:00 2022-May-12
   
   
   //-------- TPC41 parameters  (updated on // 19/June/2021, BARB june 2021) -------
@@ -704,10 +704,10 @@ return;
   tpc->lim_rt[4][0][0] = 20000.;  tpc->lim_rt[4][0][1] = 45000.0; //DR1 time TDC cut
   tpc->lim_lt[4][1][0] = 20000.;  tpc->lim_lt[4][1][1] = 45000.0; //DL2 time TDC cut
   tpc->lim_rt[4][1][0] = 20000.;  tpc->lim_rt[4][1][1] = 45000.0; //DL2 time TDC cut
-  tpc->lim_csum1[4][0] = 14000.0;    tpc->lim_csum1[4][1] = 14900.0;
-  tpc->lim_csum2[4][0] = 14050.0;    tpc->lim_csum2[4][1] = 14650.0;
-  tpc->lim_csum3[4][0] = 14100.0;    tpc->lim_csum3[4][1] = 14600.0;
-  tpc->lim_csum4[4][0] = 14100.0;    tpc->lim_csum4[4][1] = 14700.0;
+  tpc->lim_csum1[4][0] = 13400.0;    tpc->lim_csum1[4][1] = 14900.0;
+  tpc->lim_csum2[4][0] = 13600.0;    tpc->lim_csum2[4][1] = 14650.0;
+  tpc->lim_csum3[4][0] = 13650.0;    tpc->lim_csum3[4][1] = 14600.0;
+  tpc->lim_csum4[4][0] = 13750.0;    tpc->lim_csum4[4][1] = 14700.0;
   
 
   //-------- TPC42 parameters (updated on // 19/June/2021, BARB june 2021)
@@ -736,10 +736,10 @@ return;
   tpc->lim_rt[5][0][0] = 20000.;  tpc->lim_rt[5][0][1] = 45000.0; //DR1 time TDC cut
   tpc->lim_lt[5][1][0] = 20000.;  tpc->lim_lt[5][1][1] = 45000.0; //DL2 time TDC cut
   tpc->lim_rt[5][1][0] = 20000.;  tpc->lim_rt[5][1][1] = 45000.0; //DL2 time TDC cut
-  tpc->lim_csum1[5][0] = 14300.0;    tpc->lim_csum1[5][1] = 14900.0;
-  tpc->lim_csum2[5][0] = 14100.0;    tpc->lim_csum2[5][1] = 14500.0;
-  tpc->lim_csum3[5][0] = 13650.0;    tpc->lim_csum3[5][1] = 14050.0;
-  tpc->lim_csum4[5][0] = 13750.0;    tpc->lim_csum4[5][1] = 14250.0;
+  tpc->lim_csum1[5][0] = 14200.0;    tpc->lim_csum1[5][1] = 14900.0;
+  tpc->lim_csum2[5][0] = 13900.0;    tpc->lim_csum2[5][1] = 14500.0;
+  tpc->lim_csum3[5][0] = 13400.0;    tpc->lim_csum3[5][1] = 14150.0;
+  tpc->lim_csum4[5][0] = 13500.0;    tpc->lim_csum4[5][1] = 14250.0;
 
 
   //TPC at S3 (TPC 31) calibration updated on 19/June/2021
@@ -756,16 +756,16 @@ return;
   tpc->y_factor[6][1] = 0.004*45./44.;
   tpc->y_factor[6][2] = 0.004*45./44;
   tpc->y_factor[6][3] = 0.004*45./44;
-  tpc->lim_dt[6][0][0] = 10000.;  tpc->lim_dt[6][0][1] = 40000.0; //A11 drift time TDC cut
-  tpc->lim_dt[6][1][0] = 10000.;  tpc->lim_dt[6][1][1] = 40000.0; //A12 drift time TDC cut
-  tpc->lim_dt[6][2][0] = 10000.;  tpc->lim_dt[6][2][1] = 40000.0; //A21 drift time TDC cut
-  tpc->lim_dt[6][3][0] = 10000.;  tpc->lim_dt[6][3][1] = 40000.0; //A22 drift time TDC cut
-  tpc->lim_lt[6][0][0] = 20000.;  tpc->lim_lt[6][0][1] = 45000.0; //DL1 time TDC cut
-  tpc->lim_rt[6][0][0] = 20000.;  tpc->lim_rt[6][0][1] = 45000.0; //DR1 time TDC cut
-  tpc->lim_lt[6][1][0] = 20000.;  tpc->lim_lt[6][1][1] = 45000.0; //DL2 time TDC cut
-  tpc->lim_rt[6][1][0] = 20000.;  tpc->lim_rt[6][1][1] = 45000.0; //DL2 time TDC cut
-  tpc->lim_csum1[6][0] = 11500.0;    tpc->lim_csum1[6][1] = 14500.0;
-  tpc->lim_csum2[6][0] = 11000.0;    tpc->lim_csum2[6][1] = 14000.0;
+  tpc->lim_dt[6][0][0] = 20000.;  tpc->lim_dt[6][0][1] = 55000.0; //A11 drift time TDC cut
+  tpc->lim_dt[6][1][0] = 20000.;  tpc->lim_dt[6][1][1] = 55000.0; //A12 drift time TDC cut
+  tpc->lim_dt[6][2][0] = 20000.;  tpc->lim_dt[6][2][1] = 55000.0; //A21 drift time TDC cut
+  tpc->lim_dt[6][3][0] = 20000.;  tpc->lim_dt[6][3][1] = 55000.0; //A22 drift time TDC cut
+  tpc->lim_lt[6][0][0] = 25000.;  tpc->lim_lt[6][0][1] = 55000.0; //DL1 time TDC cut
+  tpc->lim_rt[6][0][0] = 25000.;  tpc->lim_rt[6][0][1] = 55000.0; //DR1 time TDC cut
+  tpc->lim_lt[6][1][0] = 25000.;  tpc->lim_lt[6][1][1] = 55000.0; //DL2 time TDC cut
+  tpc->lim_rt[6][1][0] = 25000.;  tpc->lim_rt[6][1][1] = 55000.0; //DL2 time TDC cut
+  tpc->lim_csum1[6][0] = 11250.0;    tpc->lim_csum1[6][1] = 13500.0;
+  tpc->lim_csum2[6][0] = 10600.0;    tpc->lim_csum2[6][1] = 12400.0;
   tpc->lim_csum3[6][0] = 12500.0;    tpc->lim_csum3[6][1] = 14200.0;
   tpc->lim_csum4[6][0] = 12500.0;    tpc->lim_csum4[6][1] = 14000.0;
 

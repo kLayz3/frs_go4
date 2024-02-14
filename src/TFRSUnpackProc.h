@@ -31,6 +31,9 @@ private:
   //Bool_t TimeStampExtract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   void TimeStampExtract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   void TimeStampExtract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
+  // KW added function for VULOM WR
+  void TimeStampExtract_VULOM(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
+  // end KW
   void TimeStampExtract_TravMus(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   Bool_t Event_Extract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
   Bool_t Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* rawsub, int type_event=1);
@@ -60,6 +63,7 @@ private:
   TH1I* hVME_MAIN_TDC_V1290[32];      //!
   TH1I* hVME_MAIN_TDC_V1290_Multip[32];      //!
   TH1I* hVME_MAIN_TDC_V1290_hit[32];
+  TH1I* hVME_MAIN_TDC_V1290_eventbuffer;
   TH1I* hVME_MRTOF_TDC_V1190[32];      //
 
   TH1I* hVME_USER_8[32];      //! FRS crate
@@ -92,6 +96,7 @@ private:
   TH2I* hVME_TPCS2_V1190All_bad;
   TH2I* hVME_TPCS2_V1190_bad_multip;
   TH2I* hVME_TPCS2_V1190_multip;
+  TH1I* hVME_TPCS2_V1190_eventbuffer;
 
   TH1I* hVME_ACTSTOP_10[32]; //!
   TH1I* hVME_ACTSTOP_12[32]; //!

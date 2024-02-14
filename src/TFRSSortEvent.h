@@ -84,7 +84,7 @@ public:
   Int_t tpc_timeref[8][64];//multihit up to 16
   Int_t tpc_nhit_calibgrid[7];//multihit number
   Int_t tpc_nhit_timeref[8];//multihit number
-
+  Bool_t id_trigbox[16];
 
   // SCI part
   Int_t         de_21l;          /* dE SCI21 left            */

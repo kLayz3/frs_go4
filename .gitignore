@@ -2,6 +2,7 @@
 src/*.o
 src/*.so
 *.d
+CHANGELOG
 libGo4UserAnalysis*
 # In case of hanging swap files ... *wink*
 src/*.swp
@@ -25,3 +26,4 @@ src/G__*
 file_loc
 src/foot/__foot_*
 src/foot/*.swp
+jsroot-dir

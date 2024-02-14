@@ -93,6 +93,8 @@ void TFRSCalibrEvent::Clear(Option_t *t)
   focx_s8 = -999. ;
   focy_s8 = -999. ;
 
+  for(int i=0;i<16;i++){ id_trigbox[i] = false; }
+  
   tpc_x_s2_foc_21_22=-999.;
   tpc_y_s2_foc_21_22=-999.;
   tpc_x_s2_foc_23_24=-999.;

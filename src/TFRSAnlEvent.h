@@ -24,6 +24,9 @@ public:
   Int_t anbtrig ; //number of triggers in TPAT
   Int_t amaxtrig ; //second trigger from TPAT
 
+  //Trigger Box information
+  Bool_t id_trigbox[16];
+  
   // MUSIC part
   Int_t         music1_anodes_cnt;
   Int_t         music2_anodes_cnt;
@@ -137,6 +140,7 @@ public:
   Float_t       mhtdc_tof4221;
   Float_t       mhtdc_tof4321;
   Float_t       mhtdc_tof3121;
+  Float_t       mhtdc_tof3122;
   Float_t       mhtdc_tof4122;
   Float_t       mhtdc_tof8122;
   Float_t       mhtdc_tofM0121;

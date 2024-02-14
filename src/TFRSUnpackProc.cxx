@@ -95,7 +95,7 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
       hVME_ACTSTOP_18[n] = MakeH1ISeries("Unpack/VME_ACTSTOP_18", 18, 4, n, remove_histos);
       hVME_ACTSTOP_20[n] = MakeH1ISeries("Unpack/VME_ACTSTOP_20", 20, 4, n, remove_histos);
   }
-
+	
   for(int n=0; n<16; n++){
     hVME_TRMU_ADC[n] = MakeH1I("Unpack/VME_TRMU/ADC", Form("newVME_TRMU_ADC_%d",n), 4096, 0,  0x10000, "channels", 2, 3, "");
     hVME_TRMU_TDC[n] = MakeH1I("Unpack/VME_TRMU/TDC", Form("newVME_TRMU_TDC_%d",n), 4096, 0, 0x10000, "channels", 2, 3, "");
@@ -128,6 +128,7 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
   
   hVME_MAIN_11All = MakeH2I("Unpack/VME_MAIN","VME_MAIN_11_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_MAIN_14All = MakeH2I("Unpack/VME_MAIN","VME_MAIN_14_AllCh",32,0,32,512,0,4096,"#Ch","",1);
+  hVME_MAIN_TDC_V1290_eventbuffer = MakeH1I("Unpack/VME_MAIN/TDC_V1290_MUSIC41_42_and_Sci", "eventbuffer_v1290", 10, 0, 10, "events in buffer", 2, 3, ""); 
   hVME_USER_8All  = MakeH2I("Unpack/VME_USER","VME_USER_08_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_USER_9All  = MakeH2I("Unpack/VME_USER","VME_USER_09_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_USER_10All  = MakeH2I("Unpack/VME_USER","VME_USER_10_AllCh",32,0,32,512,0,4096,"#Ch","",1);
@@ -142,6 +143,7 @@ TFRSUnpackProc::TFRSUnpackProc(const char* name) :  TFRSBasicProc(name)
   hVME_TPCS2_V1190All_bad = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_V1190_AllCh_BAD",128,0,128,400,0,60000,"#Ch","TDC val",1);
   hVME_TPCS2_V1190_bad_multip = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_V1190_BAD_MULTIPLICTY",128,0,128,128,0,128,"#Ch","Multp val",1);
   hVME_TPCS2_V1190_multip = MakeH2I("Unpack/VME_TPCS2","VME_TPCS2_V1190_GOOD_MULTIPLICTY",128,0,128,128,0,128,"#Ch","Multp val",1);
+  hVME_TPCS2_V1190_eventbuffer = MakeH1I("Unpack/VME_TPCS2", "eventbuffer_v1190", 10, 0, 10, "events in buffer", 2, 3, ""); 
 //  hVME_TPCS4_0All  = MakeH2I("Unpack/VME_TPCS4","VME_TPCS4_00_AllCh",32,0,32,512,0,4096,"#Ch","",1);
 //  hVME_TPCS4_1All  = MakeH2I("Unpack/VME_TPCS4","VME_TPCS4_01_AllCh",32,0,32,512,0,4096,"#Ch","",1);
   hVME_TRMU_ADCAll = MakeH2I("Unpack/VME_TRMU", "VME_TRMU_ADC_Allch",16,0,16,512,0,0x2000,"#Ch","",1);
@@ -242,6 +244,9 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
   if (fInput==nullptr)
     return kFALSE;
 
+  Bool_t check_frs_main_crate = kFALSE; //set true if procid=10 is found
+
+  
   /*  Put the event header stuff into output event  */
   tgt->qlength   = fInput->GetDlen()   ;
   tgt->qtype     = fInput->GetType()   ;
@@ -286,6 +291,8 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
       fInput->ResetIterator();
       TGo4MbsSubEvent *psubevt = nullptr;
 
+     
+      
       while ((psubevt=fInput->NextSubEvent())!= nullptr)
 	{
 	  // start subevents loop
@@ -340,7 +347,8 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 	      continue; // skip subevent SL
 	    }
 
-	  if( (psubevt->GetType() == 36) && (psubevt->GetSubtype() == 3600) && (psubevt->GetProcid()) == 10) //tpat
+	  
+	  if( (psubevt->GetType() == 36) && (psubevt->GetSubtype() == 3600) && (psubevt->GetProcid()) == 15) //tpat
 	    {
 		   Int_t lenMax = (psubevt->GetDlen()-2)/2;
 	      Int_t *pdata = psubevt->GetDataField();
@@ -371,13 +379,28 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 	    }
 
 
+	  
+ 
+	  if(10 ==  psubevt->GetProcid()){
+	    check_frs_main_crate = kTRUE;
+	  }
+	  
+	  
 	  /************************************************************************/
 	  /* Here we go for the different triggers.....                           */
 	  /************************************************************************/
     if (((psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 20))||((psubevt->GetType() == 12) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 21))) //vme event !! WARNING, make sure we can unpack non VME systems
     {
-	    switch(fInput->GetTrigger())
-	    { // trigger value curently always one, tpat says who triggered
+      
+//      if(15 == psubevt->GetProcid()){
+//	continue;
+	//	tgt->SetValid(kFALSE);
+	//	std::cout <<"No Event Extract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl;
+	//	return kFALSE;
+ //     }
+      
+      switch(fInput->GetTrigger())
+	{ // trigger value curently always one, tpat says who triggered
 	      case 1:
 	      case 2:
 	      case 3:
@@ -407,10 +430,17 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 	     }  // switch on trigger value
      }//end test of vme event
 
-    if (((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 20))||((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 21))) //nurdlib stimstamp subevent shall be type 10
+    if (((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 20))||((psubevt->GetType() == 10) && (psubevt->GetSubtype() == 1) && (psubevt->GetControl() == 21))) //nurdlib timestamp subevent shall be type 10
     {
-	 	 if(psubevt->GetProcid() != 60)
-	    	TimeStampExtract(tgt,psubevt); 
+     // if(15 == psubevt->GetProcid()){
+//	continue;
+	//	tgt->SetValid(kFALSE);
+	//	//std::cout <<"No Timestamp Extract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl;
+	//	return kFALSE;
+   //   }
+   
+      if(psubevt->GetProcid() == 15)
+	    	TimeStampExtract_VULOM(tgt,psubevt); 
 //	    switch(fInput->GetTrigger())
 //	    { // trigger value curently always one, tpat says who triggered
 //	      case 1:
@@ -479,8 +509,16 @@ Bool_t TFRSUnpackProc::BuildEvent(TGo4EventElement* output)
 
     } // end special event
 
+  //---if !check_frs_main_crate, it means the event does not include FRS Data. Probably Event from timesorter for something else.
+  //---In such a case, we do not count it as "event" for FRS go4 to avoid confusion for evalating efficiency. so set false and return false.
+  //---The conditions are to be modified, depending on the requirement by experiments.
+  //   printf("frsstatus=%d\n",(int)(check_frs_main_crate));
+  if(!check_frs_main_crate){
+      tgt->SetValid(kFALSE);
+      return kFALSE;
+  }
+
   FillHistograms(tgt); // fill histograms from output event
- 
   tgt->SetValid(kTRUE); // accept event
   return kTRUE;
 } // close unpack proc
@@ -519,13 +557,9 @@ void TFRSUnpackProc::TimeStampExtract(TFRSUnpackEvent* event_out, TGo4MbsSubEven
 	       event_out->timestamp_main[ii] = *pdata;
 	       pdata++; len++; ii++;
 	     }
-     //std::cout <<"TimeStampExtract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl ;//JZ 2022-05-04
+	     //std::cout <<"TimeStampExtract TFRSUnpackProc, proc ID:" << psubevt->GetProcid()<< std::endl ;//JZ 2022-05-04
 	   }
-     //std::cout <<"This is Main crate in TimeStampExtract TFRSUnpackProc, wrid ID:" << event_out->wrid << std::endl ;//JZ 2022-05-04	
-	break ;
-
-    default:
-     std::cout <<"proc ID unknow in TimeStampExtract TFRSUnpackProc " << psubevt->GetProcid()<< std::endl ; 
+	  //std::cout <<"This is Main crate in TimeStampExtract TFRSUnpackProc, wrid ID:" << event_out->wrid << std::endl ;//JZ 2022-05-04
      break ; 
   }  
 }
@@ -576,6 +610,34 @@ if(! ((*pdata & 0xffff0000) == 0x03e10000)) {
 	len += 4;
 	event_out->frs_wr = frs_wr;
   }
+
+void TFRSUnpackProc::TimeStampExtract_VULOM(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int) {
+  //std::cout << __PRETTY_FUNCTION__ << std::endl;
+  Int_t *pdata = psubevt->GetDataField();
+  Int_t len = 0;
+  // Int_t vme_chn; //usually redefined for each crate
+  //Int_t lenMax = (psubevt->GetDlen()-2)/2;
+  //decide to print the WR identifier
+  uint32_t wr_id = get_bits(*pdata++,0,11); len++;
+  //std::cout << "wr_id " << wr_id<< std::endl;
+  if(! (wr_id == 0x300)) {
+    printf("VULOM WR ID not 0x300 while trying to match it ...! It is %x\n", wr_id);
+    return;
+  }
+  if(! ((*pdata & 0xffff0000) == 0x03e10000)) {
+    printf("VULOM not matching LoLo of WR ...! It is %x\n", *pdata);
+    return;
+  }
+  uint64_t vulom_wr = 
+    ((uint64_t)(*pdata++ & 0xffff)) |
+    ((uint64_t)(*pdata++ & 0xffff) << 16) |
+    ((uint64_t)(*pdata++ & 0xffff) << 32) |
+    ((uint64_t)(*pdata++ & 0xffff) << 48);
+  len += 4;
+  event_out->vulom_wr = vulom_wr;
+  //std::cout <<"FRS WR : " << event_out->frs_wr <<", VULOM WR : " << event_out->vulom_wr <<", difff : " << event_out->frs_wr-event_out->vulom_wr << endl;
+}
+//end KW
 
 Bool_t TFRSUnpackProc::Event_Extract(TFRSUnpackEvent* event_out, TGo4MbsSubEvent* psubevt, int){
   Int_t *pdata = psubevt->GetDataField();
@@ -1618,73 +1680,83 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			
 			//----  CAEN V1290 ---
 			{
-				if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 10 : Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
-				else{Int_t words = getbits(*pdata,1,1,16);
-					//std::cout<< "Number of words of this modul: "<< words << std::endl;
+				if(*pdata != (Int_t) 0xaaaa1290){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 10 (CAEN V1290): Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
+				else{pdata++; len++; 
+					if(*pdata != ((Int_t) 0x00000000) && *pdata != ((Int_t) 0x00000001)){std::cout<<"E> Event Nr: "<< myevent <<", ProcID 10 (CAEN V1290) number of events in buffer: " << std::hex << *pdata <<std::dec << std::endl;}
+					//std::cout<<"Number of events in buffer: " << std::hex << *pdata <<std::dec << std::endl;
+					Int_t eventbuffer = getbits(*pdata,1,1,31);
+					//std::cout<< "Number of events in the buffer of this modul: "<< eventbuffer << std::endl;
+					hVME_MAIN_TDC_V1290_eventbuffer->Fill(eventbuffer);
 					pdata++; len++;
-					Int_t vme_geo = getbits(*pdata,1,1,5);
-					Int_t vme_type = getbits(*pdata,2,12,5);
-					//printf("ProcID 10, geo %d, type %d, words %d\n", vme_geo, vme_type,words);
-					pdata++; len++;
-					Int_t multihit = 0;					
-					if(vme_type == 8){ // Global header
-						bool in_event = 0;
-						Int_t vme_chn = 0;
-						for(int i_word=2; i_word<= words;i_word++){
-							vme_type = getbits(*pdata,2,12,5);
-							//printf("ProcID 10, geo %d, type %d, word %d\n", vme_geo, vme_type,i_word);
-							if(vme_type==1){ // TDC header
-								in_event = 1;
-							}
-							if(vme_type == 0 && in_event == 1){// this indicates a TDC measurement
+					if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 10 (CAEN V1290): Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
+					else{Int_t words = getbits(*pdata,1,1,16);
+						//std::cout<< "Number of words of this modul: "<< words << std::endl;
+						if(words == 0){break;}
+						pdata++; len++;
+						Int_t vme_geo = getbits(*pdata,1,1,5);
+						Int_t vme_type = getbits(*pdata,2,12,5);
+						//printf("ProcID 10, geo %d, type %d, words %d\n", vme_geo, vme_type,words);
+						pdata++; len++;
+						Int_t multihit = 0;					
+						if(vme_type == 8){ // Global header
+							bool in_event = 0;
+							Int_t vme_chn = 0;
+							for(int i_word=2; i_word<= words;i_word++){
+								vme_type = getbits(*pdata,2,12,5);
+								//printf("ProcID 10, geo %d, type %d, word %d\n", vme_geo, vme_type,i_word);
+								if(vme_type==1){ // TDC header
+									in_event = 1;
+								}
+								if(vme_type == 0 && in_event == 1){// this indicates a TDC measurement
 
-								vme_chn = getbits(*pdata,2,6,5);
-								Int_t LeadingOrTrailing = getbits(*pdata,2,11,1);
-								Int_t value = getbits(*pdata,1,1,21);
+									vme_chn = getbits(*pdata,2,6,5);
+									Int_t LeadingOrTrailing = getbits(*pdata,2,11,1);
+									Int_t value = getbits(*pdata,1,1,21);
 
-								multihit = event_out->nhit_v1290_main[vme_chn][LeadingOrTrailing];    
-								if(LeadingOrTrailing == 0){
-									if (value > 0){
-										event_out->leading_v1290_main[vme_chn][multihit] = value;
-										hVME_MAIN_TDC_V1290_Multip[vme_chn]->Fill(value);
-										if(multihit == 0) hVME_MAIN_TDC_V1290[vme_chn]->Fill(value); 
+									multihit = event_out->nhit_v1290_main[vme_chn][LeadingOrTrailing];    
+									if(LeadingOrTrailing == 0){
+										if (value > 0){
+											event_out->leading_v1290_main[vme_chn][multihit] = value;
+											hVME_MAIN_TDC_V1290_Multip[vme_chn]->Fill(value);
+											if(multihit == 0) hVME_MAIN_TDC_V1290[vme_chn]->Fill(value); 
+										}
+										//printf("leading_v1290_main[%d][%d] = %d\n",vme_chn,multihit,value);
 									}
-									//printf("leading_v1290_main[%d][%d] = %d\n",vme_chn,multihit,value);
-								}
-								else{
-									if (value > 0){
-									event_out->trailing_v1290_main[vme_chn][multihit] = value;
+									else{
+										if (value > 0){
+										event_out->trailing_v1290_main[vme_chn][multihit] = value;
+										}
+										//printf("trailing_v1290_main[%d][%d] = %d\n",vme_chn,multihit,value);
 									}
-									//printf("trailing_v1290_main[%d][%d] = %d\n",vme_chn,multihit,value);
+									event_out->nhit_v1290_main[vme_chn][LeadingOrTrailing]++;
 								}
-								event_out->nhit_v1290_main[vme_chn][LeadingOrTrailing]++;
-							}
-							if(vme_type == 0 && in_event != 1){	
-								std::cout<<"E> ProcID 10 MTDC type 0 without header (word " << i_word << " of "<< words <<"):"<< std::hex << *pdata << std::dec<<std::endl;
-							}
-							if(vme_type == 3 && in_event != 1){	
-								std::cout<<"E> ProcID 10 MTDC type 3 without header (word " << i_word << " of "<< words <<"):"<< std::hex << *pdata << std::dec<<std::endl;
-							}							
-							if(vme_type==3 && in_event == 1){ // TDC trailer
-							  hVME_MAIN_TDC_V1290_hit[vme_chn]->Fill(multihit);
-							  in_event = 0;
-							}
-							if(vme_type==4){ // Error status
-								std::cout<<"E> ProcID 10 MTDC error data found (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
-							}
-							if(vme_type==17){ // Extended trigger time tag
-							}								
-							if(vme_type==16){
-								Int_t vme_geoEnd = getbits(*pdata,1,1,5);
-								if(vme_geo!=vme_geoEnd){
-									std::cout<<"E> ProcID 10 MTDC strange end buffer header :"<<vme_type<<" "<<vme_geo<<" != "<<vme_geoEnd<<std::endl;
-									pdata++; len++;
-									break;
+								if(vme_type == 0 && in_event != 1){	
+									std::cout<<"E> ProcID 10 MTDC type 0 without header (word " << i_word << " of "<< words <<"):"<< std::hex << *pdata << std::dec<<std::endl;
 								}
+								if(vme_type == 3 && in_event != 1){	
+									std::cout<<"E> ProcID 10 MTDC type 3 without header (word " << i_word << " of "<< words <<"):"<< std::hex << *pdata << std::dec<<std::endl;
+								}							
+								if(vme_type==3 && in_event == 1){ // TDC trailer
+									hVME_MAIN_TDC_V1290_hit[vme_chn]->Fill(multihit);
+									in_event = 0;
+								}
+								if(vme_type==4){ // Error status
+									std::cout<<"E> ProcID 10 MTDC error data found (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
+								}
+								if(vme_type==17){ // Extended trigger time tag
+								}								
+								if(vme_type==16){
+									Int_t vme_geoEnd = getbits(*pdata,1,1,5);
+									if(vme_geo!=vme_geoEnd){
+										std::cout<<"E> ProcID 10 MTDC strange end buffer header :"<<vme_type<<" "<<vme_geo<<" != "<<vme_geoEnd<<std::endl;
+										pdata++; len++;
+										break;
+									}
+								}
+								if(vme_type==24) {}
+								if(vme_type != 1 && vme_type != 0 && vme_type != 3 && vme_type != 4 && vme_type !=17 && vme_type !=16 && vme_type!=24) std::cout<<"E> ProcID 10 MTDC strange type :"<<vme_type<< " (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
+								pdata++; len++;
 							}
-							if(vme_type==24) {}
-							if(vme_type != 1 && vme_type != 0 && vme_type != 3 && vme_type != 4 && vme_type !=17 && vme_type !=16 && vme_type!=24) std::cout<<"E> ProcID 10 MTDC strange type :"<<vme_type<< " (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
-							pdata++; len++;
 						}
 					}
 				}
@@ -1738,121 +1810,129 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 			
 			//----  CAEN V1190 ---
 			{
-				int mvlc_flag_v1190 = getbits(*pdata,2,1,16);
-				if(mvlc_flag_v1190 == 0xf580) { // 0xf5800 `overflown V1190` mvlc flag
+				if(*pdata != (Int_t) 0xaaaa1190){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 10 (CAEN V1190): Barrier missed! " << std::hex << *pdata <<std::dec << std::endl; }
+				else{pdata++; len++; 
+					if(*pdata != ((Int_t) 0x00000000) && *pdata != ((Int_t) 0x00000001)){std::cout<<"E> Event Nr: "<< myevent <<", ProcID 10 (CAEN V1190) number of events in buffer: " << std::hex << *pdata <<std::dec << std::endl;}
+					//std::cout<<"Number of events in buffer: " << std::hex << *pdata <<std::dec << std::endl;
+					Int_t eventbuffer = getbits(*pdata,1,1,31);
+					//std::cout<< "Number of events in the buffer of this modul: "<< eventbuffer << std::endl;
+					hVME_TPCS2_V1190_eventbuffer->Fill(eventbuffer);
+					pdata++; len++;
+					int mvlc_flag_v1190 = getbits(*pdata,2,1,16);
+					if(mvlc_flag_v1190 == 0xf580) { // 0xf5800 `overflown V1190` mvlc flag
 						  std::cout<<"E> Event Nr: "<< myevent <<",  ProcID 20 V1190: Strange event! " << std::hex << *pdata <<std::dec << std::endl;
 						  std::cout<< "Will still unpack it into histogram labelled `bad`" << endl;
-					event_out->v1190_is_bad = true;
-				}
-			  
-				if(mvlc_flag_v1190 == 0xf520 || mvlc_flag_v1190 == 0xf580) { // usual, good header 0xf520, or 0xf580 'strange' header
-					Int_t words = getbits(*pdata,1,1,16);
-					//std::cout<< "Number of words of this modul: "<< words << std::endl;
-					pdata++; len++;
-//					uint32_t some_mask = 0x0000ffff;
-					if(*pdata == 0xffffffff || *(pdata+1) == 0xffffffff) {
-						//printf("Found 0xffffff, next word: %8x\n", *(pdata+1));
-						pdata += 2;
-						words -= 2;
+						event_out->v1190_is_bad = true;
 					}
-					Int_t vme_geo = getbits(*pdata,1,1,5);
-					Int_t vme_type = getbits(*pdata,2,12,5);
-					//printf("ProcID 20, geo %d, type %d, length %d\n", vme_geo, vme_type,words);
-					pdata++; len++;
-					Int_t multihit = 0;	
-					if(vme_type == 8) {
-						bool in_event = 0;
-						for(int i_word=2; i_word<= words;i_word++) {
-							vme_type = getbits(*pdata,2,12,5);
-							//printf("ProcID 20, geo %d, type %d, word %d\n", vme_geo, vme_type,i_word);
-							if(vme_type==1){ // TDC header
-								in_event = 1;
-							}
-							if(vme_type == 0 && in_event == 1){// this indicates a TDC measurement
+			  
+					if(mvlc_flag_v1190 == 0xf520 || mvlc_flag_v1190 == 0xf580) { // usual, good header 0xf520, or 0xf580 'strange' header
+						Int_t words = getbits(*pdata,1,1,16);
+						//std::cout<< "Number of words of this modul: "<< words << std::endl;
+						if(words == 0){break;}
+						pdata++; len++;
+//						uint32_t some_mask = 0x0000ffff;
+						if(*pdata == 0xffffffff || *(pdata+1) == 0xffffffff) {
+							//printf("Found 0xffffff, next word: %8x\n", *(pdata+1));
+							pdata += 2;
+							words -= 2;
+						}
+						Int_t vme_geo = getbits(*pdata,1,1,5);
+						Int_t vme_type = getbits(*pdata,2,12,5);
+						//printf("ProcID 20, geo %d, type %d, length %d\n", vme_geo, vme_type,words);
+						pdata++; len++;
+						Int_t multihit = 0;	
+						if(vme_type == 8) {
+							bool in_event = 0;
+							for(int i_word=2; i_word<= words;i_word++) {
+								vme_type = getbits(*pdata,2,12,5);
+								//printf("ProcID 20, geo %d, type %d, word %d\n", vme_geo, vme_type,i_word);
+								if(vme_type==1){ // TDC header
+									in_event = 1;
+								}
+								if(vme_type == 0 && in_event == 1){// this indicates a TDC measurement
+									//Int_t vme_chn = getbits(*pdata,2,6,5);
+									Int_t vme_chn = get_bits(*pdata,19,25);
+									Int_t LeadingOrTrailing = getbits(*pdata,2,11,1);
+									//Int_t value = getbits(*pdata,1,1,21);
+									Int_t value = get_bits(*pdata,0,18);
 
-								//Int_t vme_chn = getbits(*pdata,2,6,5);
-								Int_t vme_chn = get_bits(*pdata,19,25);
-								Int_t LeadingOrTrailing = getbits(*pdata,2,11,1);
-//								Int_t value = getbits(*pdata,1,1,21);
-								Int_t value = get_bits(*pdata,0,18);
-
-								//multihit = event_out->nhit_v1190_tpcs2[vme_chn][LeadingOrTrailing];  
+									//multihit = event_out->nhit_v1190_tpcs2[vme_chn][LeadingOrTrailing];  
 																
-								if(LeadingOrTrailing == 0){
-									if (value > 0){
-										multihit = event_out->nhit_v1190_tpcs2[vme_chn]; 
-										event_out->leading_v1190_tpcs2[vme_chn][multihit] = value;
-										event_out->nhit_v1190_tpcs2[vme_chn]++;
-									}
-									//printf("leading_v1190_tpcs2[%d][%d] = %d\n",vme_chn,multihit,value);
-									if(multihit==0 && !event_out->v1190_is_bad) {
-										hVME_TPCS2_V1190All_firsthit->Fill(vme_chn,value);
-									}
+									if(LeadingOrTrailing == 0){
+										if (value > 0){
+											multihit = event_out->nhit_v1190_tpcs2[vme_chn]; 
+											event_out->leading_v1190_tpcs2[vme_chn][multihit] = value;
+											event_out->nhit_v1190_tpcs2[vme_chn]++;
+										}
+										//printf("leading_v1190_tpcs2[%d][%d] = %d\n",vme_chn,multihit,value);
+										if(multihit==0 && !event_out->v1190_is_bad) {
+											hVME_TPCS2_V1190All_firsthit->Fill(vme_chn,value);
+										}
 
-									if(event_out->v1190_is_bad) {
-										hVME_TPCS2_V1190All_bad->Fill(vme_chn,value);
+										if(event_out->v1190_is_bad) {
+											hVME_TPCS2_V1190All_bad->Fill(vme_chn,value);
+										}
+										else {
+											hVME_TPCS2_V1190All->Fill(vme_chn,value);
+										}
 									}
 									else {
-										hVME_TPCS2_V1190All->Fill(vme_chn,value);
+										if (value > 0){
+										//event_out->trailing_v1190_tpcs2[vme_chn][multihit] = value;
+										}
+										//printf("trailing_v1190_tpcs2[%d][%d] = %d\n",vme_chn,multihit,value);
 									}
+									//event_out->nhit_v1190_tpcs2[vme_chn][LeadingOrTrailing]++;								
+								}
+								if(vme_type == 0 && in_event != 1){	
+									std::cout<<"E> ProcID 20 MTDC type 0 without header (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
+								}
+								if(vme_type == 3 && in_event != 1){	
+									std::cout<<"E> ProcID 20 MTDC type 3 without header (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
+								}							
+								if(vme_type==3 && in_event == 1){ // TDC trailer						
+									in_event = 0;
+								}
+								if(vme_type==4){ // Error status
+									std::cout<<"E> ProcID 20 MTDC error data found (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
+								}
+								if(vme_type==17){ // Extended trigger time tag
+								}	
+								if(vme_type==16){
+									Int_t vme_geoEnd = getbits(*pdata,1,1,5);
+									if(vme_geo!=vme_geoEnd){
+										std::cout<<"E> Proc ID 20 MTDC strange end buffer header :"<<vme_type<<" "<<vme_geo<<" != "<<vme_geoEnd<<std::endl;
+										pdata++; len++;
+										break;
+									}
+								}
+								if(vme_type==24) {}
+								if(vme_type != 1 && vme_type != 0 && vme_type != 3 && vme_type != 4 && vme_type != 17 && vme_type !=16 && vme_type!=24) std::cout<<"E> ProcID 20 MTDC strange type :"<<vme_type<< " (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
+								pdata++; len++;
+							}
+							// Out of the loop, fill the multip hist for good/bad V1190 events:
+							for(int i=0; i<128; ++i) {
+								if(event_out->nhit_v1190_tpcs2[i] == 0) continue;
+								if(event_out->v1190_is_bad) {
+									hVME_TPCS2_V1190_bad_multip->Fill(i, event_out->nhit_v1190_tpcs2[i]);
 								}
 								else {
-									if (value > 0){
-									//event_out->trailing_v1190_tpcs2[vme_chn][multihit] = value;
-									}
-									//printf("trailing_v1190_tpcs2[%d][%d] = %d\n",vme_chn,multihit,value);
-								}
-								//event_out->nhit_v1190_tpcs2[vme_chn][LeadingOrTrailing]++;
-								
-							}
-							if(vme_type == 0 && in_event != 1){	
-								std::cout<<"E> ProcID 20 MTDC type 0 without header (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
-							}
-							if(vme_type == 3 && in_event != 1){	
-								std::cout<<"E> ProcID 20 MTDC type 3 without header (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
-							}							
-							if(vme_type==3 && in_event == 1){ // TDC trailer						
-								in_event = 0;
-							}
-							if(vme_type==4){ // Error status
-								std::cout<<"E> ProcID 20 MTDC error data found (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
-							}
-							if(vme_type==17){ // Extended trigger time tag
-							}	
-							if(vme_type==16){
-								Int_t vme_geoEnd = getbits(*pdata,1,1,5);
-								if(vme_geo!=vme_geoEnd){
-									std::cout<<"E> Proc ID 20 MTDC strange end buffer header :"<<vme_type<<" "<<vme_geo<<" != "<<vme_geoEnd<<std::endl;
-									pdata++; len++;
-									break;
+									hVME_TPCS2_V1190_multip->Fill(i, event_out->nhit_v1190_tpcs2[i]);
 								}
 							}
-							if(vme_type==24) {}
-							if(vme_type != 1 && vme_type != 0 && vme_type != 3 && vme_type != 4 && vme_type != 17 && vme_type !=16 && vme_type!=24) std::cout<<"E> ProcID 20 MTDC strange type :"<<vme_type<< " (word " << i_word << " of "<< words <<"): "<< std::hex << *pdata << std::dec<<std::endl;
-							pdata++; len++;
 						}
-						// Out of the loop, fill the multip hist for good/bad V1190 events:
-						for(int i=0; i<128; ++i) {
-								  if(event_out->nhit_v1190_tpcs2[i] == 0) continue;
-								  if(event_out->v1190_is_bad) {
-											 hVME_TPCS2_V1190_bad_multip->Fill(i, event_out->nhit_v1190_tpcs2[i]);
-								  }
-								  else {
-											 hVME_TPCS2_V1190_multip->Fill(i, event_out->nhit_v1190_tpcs2[i]);
-								  }
+						else {
+							std::cout<<"E> ProcID 20 MTDC global header not found :" <<vme_type<< " ; data field: " << std::hex << std::setprecision(8) << *(pdata-1) << " " << *pdata << std::dec<<std::endl;
+							print_curr_module(pdata, len, lenMax);
+							printf("\n\n");
 						}
 					}
-					else {
-						std::cout<<"E> ProcID 20 MTDC global header not found :" <<vme_type<< " ; data field: " << std::hex << std::setprecision(8) << *(pdata-1) << " " << *pdata << std::dec<<std::endl;
-						print_curr_module(pdata, len, lenMax);
-						printf("\n\n");
+					else { 
+						std::cout<<"E> Event Nr: "<< myevent <<",  ProcID 20 : Barrier V1190 missed! " << std::hex << *pdata <<std::dec << std::endl;
+						std::cout << "Not unpacking this event ..." << endl;
 					}
-				}
-				else { 
-						  std::cout<<"E> Event Nr: "<< myevent <<",  ProcID 20 : Barrier V1190 missed! " << std::hex << *pdata <<std::dec << std::endl;
-						  std::cout << "Not unpacking this event ..." << endl;
-				}
-			}// end of V1190
+				}// end of V1190
+			}
 		}
 		break;
 
@@ -2064,9 +2144,9 @@ Bool_t TFRSUnpackProc::Event_Extract_MVLC(TFRSUnpackEvent* event_out, TGo4MbsSub
 		case 35:	// --- travelling MUSIC crate ---
 		{
 			// First 5 words are whiterabbit!
-			TimeStampExtract_TravMus(event_out, psubevt);
-			pdata+=5;
-			len+=5;
+			//TimeStampExtract_TravMus(event_out, psubevt); // M.B & R.P 06.02.24 for testing there's no vetar there!
+			//pdata+=5;
+			//len+=5;
 		  if(getbits(*pdata,2,1,16) != 62752){ std::cout<<"E> Event Nr: "<< myevent <<", ProcID 35 : Barrier missed !" << *pdata  << std::endl; }
 		  else{ //-----MDPP module----- (do not remove this bracket)
 		    pdata++; len++;
@@ -2292,11 +2372,11 @@ Bool_t TFRSUnpackProc::FillHistograms(TFRSUnpackEvent* event)
      
       for(int i=0;i<32;i++)
 	{
-	  if (hVME_TPCS2_13[i] ) hVME_TPCS2_13[i] ->Fill(event->vme_tpcs2[13][i] & 0xfff);
+	  if (hVME_TPCS2_13[i] ) hVME_TPCS2_13[i] ->Fill(event->vme_tpcs2[8][i] & 0xfff);
 	  if (hVME_TPCS2_12[i]) hVME_TPCS2_12[i]->Fill(event->vme_tpcs2[12][i] & 0xfff);
 	  //if (hVME_TPCS4_0[i] ) hVME_TPCS4_0[i] ->Fill(event->vme_tpcs4[0][i] & 0xfff);
 	  //if (hVME_TPCS4_1[i] ) hVME_TPCS4_1[i] ->Fill(event->vme_tpcs4[1][i] & 0xfff);
-	  if (hVME_TPCS2_13All ) hVME_TPCS2_13All ->Fill(i,event->vme_tpcs2[13][i] & 0xfff);
+	  if (hVME_TPCS2_13All ) hVME_TPCS2_13All ->Fill(i,event->vme_tpcs2[8][i] & 0xfff);
 	  if (hVME_TPCS2_12All) hVME_TPCS2_12All->Fill(i,event->vme_tpcs2[12][i] & 0xfff);
 	  //if (hVME_TPCS4_0All ) hVME_TPCS4_0All ->Fill(i,event->vme_tpcs4[0][i] & 0xfff);
 	  //if (hVME_TPCS4_1All ) hVME_TPCS4_1All ->Fill(i,event->vme_tpcs4[1][i] & 0xfff);

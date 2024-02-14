@@ -81,6 +81,7 @@ private:
   TH1I                  *fSize;      //!
   Int_t                 fEvents;     //!
   Int_t                 fLastEvent;  //!
+
   ClassDef(TFRSAnalysis,1)
 };
 #endif //TFRSANALYSIS_H
