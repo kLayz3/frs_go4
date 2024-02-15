@@ -114,7 +114,7 @@ void TFOOTCalibrProc::FillEvent(TFOOTCalibrEvent *oev, TFOOTSortEvent *iev)
 
 void TFOOTCalibrProc::FillFootTpcEvent(TFOOTCalibrEvent *oev, TFRSCalibrEvent* ifrsCal, TFRSSortEvent* ifrsSort)
 {
-  for(int i=0;i<8;i++)
+ /* for(int i=0;i<8;i++)
   {
    for (int j = 0; j < FOOT_CHN; j++)
    {
@@ -131,7 +131,11 @@ void TFOOTCalibrProc::FillFootTpcEvent(TFOOTCalibrEvent *oev, TFRSCalibrEvent* i
       }
     }
 
-  }
+  }*/
+  
+  fSci21_E = 0.5*(ifrsSort->de_21l+ifrsSort->de_21r);
+  fTpc22_x = ifrsCal->tpc_x[1];
+  fTpc22_y = ifrsCal->tpc_y[1];
 }
 
 void TFOOTCalibrProc::FillHist(TFOOTCalibrEvent *oev)
@@ -154,7 +158,14 @@ void TFOOTCalibrProc::FillHist(TFOOTCalibrEvent *oev)
                        oev->data.at(i).clE[j]);
         hclsize[i]->Fill(oev->data.at(i).cllast[j] -
                              oev->data.at(i).clfirst[j] + 1,
-                         oev->data.at(i).clE[j]);
+                         oev->data.at(i).clE[j]);  
+        if ((i%2)==1 && fTpc22_y>-150) 
+        hFOOT_tpcY[i]->Fill(fTpc22_y,oev->data.at(i).clpos[j]);
+        else if (fTpc22_x>-150)
+        hFOOT_tpcX[i]->Fill(fTpc22_x,oev->data.at(i).clpos[j]); 
+        
+        if (fSci21_E>0)             
+           hposE[i]->Fill(fSci21_E, oev->data.at(i).clE[j]);
       }
     }
   };
