@@ -32,9 +32,9 @@ public:
   
   TFOOTParameter *par;
   void  FillEvent(TFOOTCalibrEvent * oev,  TFOOTSortEvent* iev);
-  void  FillFootTpcEvent(TFOOTCalibrEvent * oev);
+  void  FillFootTpcEvent(TFOOTCalibrEvent * oev, TFRSCalibrEvent* ifrs);
 private:
-  void  FillHist(TFOOTCalibrEvent* oev, TFRSCalibrEvent* ifrs);
+  void  FillHist(TFOOTCalibrEvent* oev);
 };
 
 #endif  //TFOOTCALIBRPROC_H
