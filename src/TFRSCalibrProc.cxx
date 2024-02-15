@@ -101,7 +101,7 @@ Bool_t TFRSCalibrProc::BuildEvent(TGo4EventElement* output)
   TFOOTSortEvent * src1 = dynamic_cast < TFOOTSortEvent * > (src);
   this->TFOOTCalibrProc::FillEvent(tgt1,src1);
   
-  this->TFOOTCalibrProc::FillFootTpcEvent(tgt1, tgt);
+  this->TFOOTCalibrProc::FillFootTpcEvent(tgt1, tgt, src);
 
   return kTRUE;
 }

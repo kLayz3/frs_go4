@@ -3,6 +3,7 @@
 #include "TFOOTSortEvent.h"
 #include "TFOOTCalibrEvent.h"
 #include "TFRSCalibrEvent.h"
+#include "TFRSSortEvent.h"
 #include "TH2D.h"
 #include <TGo4AnalysisImp.h>
 
@@ -87,6 +88,13 @@ TFOOTCalibrProc::TFOOTCalibrProc()
    hFOOT_tpcY[i]->SetXTitle("TPC22_Y [mm]");
    hFOOT_tpcY[i]->SetYTitle("Position (a. u.)");
    TGo4Analysis::Instance()->AddHistogram(hFOOT_tpcY[i], dir);
+   
+   sprintf(fname,"SCI21_E_FOOT_%d", i+1);
+   sprintf(fn,"Energy correlation SCI21 and FOOT_%d", i+1);
+   hFOOT_SCI21[i] = new TH2D(fname, fn, 600, 0, 3000, FOOT_ADC_BINS, 0, FOOT_ADC_MAX);
+   hFOOT_SCI21[i]->SetXTitle("SCI21_E (a.u.)");
+   hFOOT_SCI21[i]->SetYTitle("Energy deposit (a. u.)");
+   TGo4Analysis::Instance()->AddHistogram(hFOOT_SCI21[i], dir);
   }
 }
 
@@ -104,15 +112,25 @@ void TFOOTCalibrProc::FillEvent(TFOOTCalibrEvent *oev, TFOOTSortEvent *iev)
   FillHist(oev);
 }
 
-void TFOOTCalibrProc::FillFootTpcEvent(TFOOTCalibrEvent *oev, TFRSCalibrEvent* ifrs)
+void TFOOTCalibrProc::FillFootTpcEvent(TFOOTCalibrEvent *oev, TFRSCalibrEvent* ifrsCal, TFRSSortEvent* ifrsSort)
 {
   for(int i=0;i<8;i++)
   {
    for (int j = 0; j < FOOT_CHN; j++)
    {
-     hFOOT_tpcX[i]->Fill(ifrs->tpc_x[1],oev->data.at(i).clpos[j]);
-     hFOOT_tpcY[i]->Fill(ifrs->tpc_y[1],oev->data.at(i).clpos[j]);
+     hFOOT_tpcX[i]->Fill(ifrsCal->tpc_x[1],oev->data.at(i).clpos[j]);
+     hFOOT_tpcY[i]->Fill(ifrsCal->tpc_y[1],oev->data.at(i).clpos[j]);
    }
+   
+   if (oev->data.at(i).clmult > 0)
+    {
+      for (UInt_t j = 0; j < oev->data.at(i).clmult; j++)
+      {
+        hposE[i]->Fill(0.5*(ifrsSort->de_21l+ifrsSort->de_21r),
+                       oev->data.at(i).clE[j]);
+      }
+    }
+
   }
 }
 
