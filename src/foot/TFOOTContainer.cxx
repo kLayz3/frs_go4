@@ -5,6 +5,7 @@
 #include <iostream>
 #include "TFile.h"
 #include "TGraph.h"
+#include "TGo4AnalysisImp.h"
 
 TFOOTContainer::TFOOTContainer()
 {
@@ -35,6 +36,8 @@ void TFOOTContainer::ReadCalib(const char *file)
 void TFOOTContainer::ReadCalibFromROOTfile(const char *file, Int_t i)
 {
 
+  par = dynamic_cast<TFOOTParameter *>(TGo4Analysis::Instance()->GetParameter("FOOTPar"));
+
   // open files with saved graphs with pedestals
   TFile *parFile = new TFile(file, "READ");
   if (!parFile || parFile->IsZombie())
@@ -51,22 +54,32 @@ void TFOOTContainer::ReadCalibFromROOTfile(const char *file, Int_t i)
     return;
   }
 
-  Double_t *pedestal = pedestalsGraph->GetY();
-  for (size_t i = 0; i < 10; i++)
+  TGraph *pedestalsGraphSigma = (TGraph *)parFile->Get(Form("pedestalsSigmaFOOT%d", i));
+  if (!pedestalsGraphSigma)
   {
-    std::cout << "/t" << pedestal[i] << std::endl;
+    std::cerr << "Error: Unable to get graph \"pedestalsFOOT" << i << "\" from input file " << parFile << std::endl;
+    return;
+  }
+
+  Double_t *pedestal = pedestalsGraph->GetY();
+  Double_t *pedestalSigma = pedestalsGraphSigma->GetY();
+  for (size_t j = 0; j < 10; j++)
+  {
+    std::cout << "detector " << i << " pedestal:\t" << pedestal[j] << std::endl;
   }
 
   // filling of parameters
-  for (size_t i = 0; i < FOOT_CHN; i++)
+  for (size_t j = 0; j < FOOT_CHN; j++)
   {
-    C0[i] = pedestal[i];
-    if (pedestal[i] > 0)
-      bad[i] = 0;
+    C0[j] = pedestal[j];
+    if (pedestal[j] > 0)
+      bad[j] = 0;
     else
-      bad[i] = 1;
+      bad[j] = 1;
 
-    threshold[i] = 0;
+    threshold[j] = 10. * pedestalSigma[j];
+
+    // threshold[j] = par->thresholdsInSigmas[i] * pedestalSigma[j];
   }
 
   parFile->Close();

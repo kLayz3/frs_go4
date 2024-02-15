@@ -22,6 +22,9 @@ public:
 
   TH1 * hXXmult[2];  //!
   TH1 * hYYmult[2];  //!
+
+  TH1 * hXX[2];  //!
+  TH1 * hYY[2];  //!
   
   
   TH2D *hFOOT_tpcX[8];

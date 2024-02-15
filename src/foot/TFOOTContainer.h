@@ -5,6 +5,8 @@
 #include "foot_common.hh"
 #include "TObject.h"
 #include <vector>
+#include "TFOOTParameter.h"
+
 
 class TFOOTContainer : public TObject
 {
@@ -32,6 +34,8 @@ public:
   Int_t cllast[FOOT_CHN];   //[clmult] last strip in the cluster
   Double_t clE[FOOT_CHN];   //[clmult]
   Double_t clpos[FOOT_CHN]; //[clmult]
+
+  TFOOTParameter *par; //!
 
   ClassDef(TFOOTContainer, 1)
 };

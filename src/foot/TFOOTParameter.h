@@ -23,6 +23,7 @@ public:
   //todo: comment meaning of flip
   Bool_t flip[8];
   TString cal_prefix;
+  Double_t thresholdsInSigmas[8];
   ClassDef(TFOOTParameter, 1)
 };
 
