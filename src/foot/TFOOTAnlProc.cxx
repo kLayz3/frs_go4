@@ -78,6 +78,9 @@ void  TFOOTAnlProc::FillHist1(TFOOTCalibrEvent* ev, TFRSAnlEvent* ifrsanl, TFRSC
   fSci21_E = ifrsanl->sci_e[2];
   fTpc22_x = ifrsCal->tpc_x[1];
   fTpc22_y = ifrsCal->tpc_y[1];
+  
+  
+  std::cout<<"here: "<< fSci21_E <<" "<<fTpc22_x<<" "<<fTpc22_y<<std::endl;
 
   const int nx[3]={1,3,7};
   const int ny[3]={0,2,6};
