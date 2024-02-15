@@ -77,7 +77,7 @@ void TFOOTContainer::ReadCalibFromROOTfile(const char *file, Int_t i)
     else
       bad[j] = 1;
 
-    threshold[j] = 10. * pedestalSigma[j];
+    threshold[j] = 20. * pedestalSigma[j];
 
     // threshold[j] = par->thresholdsInSigmas[i] * pedestalSigma[j];
   }

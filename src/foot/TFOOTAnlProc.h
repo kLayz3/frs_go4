@@ -27,8 +27,8 @@ public:
   TH1 * hYY[2];  //!
   
   
-  TH2D *hFOOT_tpcX[8];
-  TH2D *hFOOT_tpcY[8];
+  TH2D *hFOOT_tpcX[3];
+  TH2D *hFOOT_tpcY[3];
   
   TH2D *hFOOT_SCI21[8];
   

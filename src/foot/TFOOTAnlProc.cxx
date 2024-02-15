@@ -78,25 +78,40 @@ TFOOTAnlProc::TFOOTAnlProc()
   }
 
   // FOOT correlations with TPCs
-  for (int i = 0; i < 8; i++)
+
+  const int nx[3] = {1, 3, 7};
+  const int ny[3] = {0, 2, 6};
+  for (int i = 0; i < 3; i++)
   {
     char fname[100];
     char fn[100];
-    sprintf(fname, "TPC22_X_FOOT_%d", i + 1);
+    sprintf(fname, "TPC22_FOOT%dX", nx[i] + 1);
     sprintf(fn, "Position distribution in X for TPC22 and FOOT_%d", i + 1);
     hFOOT_tpcX[i] = new TH2D(fname, fn, 300, -120, 120, 640, 0, 640);
     hFOOT_tpcX[i]->SetXTitle("TPC22_X [mm]");
     hFOOT_tpcX[i]->SetYTitle("Position (a. u.)");
     TGo4Analysis::Instance()->AddHistogram(hFOOT_tpcX[i], dir);
+  }
 
-    sprintf(fname, "TPC22_Y_FOOT_%d", i + 1);
+  for (int i = 0; i < 3; i++)
+  {
+    char fname[100];
+    char fn[100];
+    sprintf(fname, "TPC22_FOOT%dY", ny[i] + 1);
     sprintf(fn, "Position distribution in Y for TPC22 and FOOT_%d", i + 1);
     hFOOT_tpcY[i] = new TH2D(fname, fn, 300, -120, 120, 640, 0, 640);
     hFOOT_tpcY[i]->SetXTitle("TPC22_Y [mm]");
     hFOOT_tpcY[i]->SetYTitle("Position (a. u.)");
     TGo4Analysis::Instance()->AddHistogram(hFOOT_tpcY[i], dir);
+  }
 
-    sprintf(fname, "SCI21_E_FOOT_%d", i + 1);
+  // SCI21
+
+  for (int i = 0; i < 8; i++)
+  {
+    char fname[100];
+    char fn[100];
+    sprintf(fname, "SCI21E_FOOT%d", i + 1);
     sprintf(fn, "Energy correlation SCI21 and FOOT_%d", i + 1);
     hFOOT_SCI21[i] = new TH2D(fname, fn, 500, 0, 4100, FOOT_ADC_BINS, 0, FOOT_ADC_MAX);
     hFOOT_SCI21[i]->SetXTitle("SCI21_E (a.u.)");
@@ -135,11 +150,15 @@ void TFOOTAnlProc::FillHist1(TFOOTCalibrEvent *ev, TFRSAnlEvent *ifrsanl, TFRSCa
 
   if (fTpc22_y < 9999 && fTpc22_x < 9999)
   {
-    for (int i = 0; i < 8; i = i + 2)
+    for (int i = 0; i < 3; i++)
+    {
       // hFOOT_tpcY[i]->Fill(fTpc22_y, ev->data.at(i).mult);
-      hFOOT_tpcY[i]->Fill(fTpc22_y, ev->data.at(i).strip[i]);
-    for (int i = 1; i < 8; i = i + 2)
-      hFOOT_tpcX[i]->Fill(fTpc22_x, ev->data.at(i).mult);
+      if (ev->data.at(ny[i]).mult == 1)
+        hFOOT_tpcY[i]->Fill(fTpc22_y, ev->data.at(ny[i]).strip[0]);
+      //     // hFOOT_tpcX[i]->Fill(fTpc22_x, ev->data.at(i).mult);
+      if (ev->data.at(ny[i]).mult == 1)
+        hFOOT_tpcX[i]->Fill(fTpc22_x, ev->data.at(nx[i]).strip[0]);
+    }
   }
 
   double foot_maxener[8] = {0.};
