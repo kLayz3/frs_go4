@@ -62,7 +62,7 @@ TFOOTAnlProc::TFOOTAnlProc()
    
    sprintf(fname,"SCI21_E_FOOT_%d", i+1);
    sprintf(fn,"Energy correlation SCI21 and FOOT_%d", i+1);
-   hFOOT_SCI21[i] = new TH2D(fname, fn, 600, 0, 3000, FOOT_ADC_BINS, 0, FOOT_ADC_MAX);
+   hFOOT_SCI21[i] = new TH2D(fname, fn, 1000, 0, 4100, FOOT_ADC_BINS, 0, FOOT_ADC_MAX);
    hFOOT_SCI21[i]->SetXTitle("SCI21_E (a.u.)");
    hFOOT_SCI21[i]->SetYTitle("Energy deposit (a. u.)");
    TGo4Analysis::Instance()->AddHistogram(hFOOT_SCI21[i], dir);
@@ -92,7 +92,7 @@ void  TFOOTAnlProc::FillHist1(TFOOTCalibrEvent* ev, TFRSAnlEvent* ifrsanl, TFRSC
 		       ev->data.at(ny[i+1]).mult);		       
     }
     
-  if (fTpc22_y>-150 && fTpc22_x>-150) 
+  if (fTpc22_y<9999 && fTpc22_x<9999) 
   {     for(int i =0;i<8;i=i+2)
           hFOOT_tpcY[i]->Fill(fTpc22_y, ev->data.at(i).mult);
         for(int i =1;i<8;i=i+2)
