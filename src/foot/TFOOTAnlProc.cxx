@@ -2,6 +2,8 @@
 #include <algorithm>
 #include "TFOOTSortEvent.h"
 #include "TFOOTCalibrEvent.h"
+#include "TFRSCalibrEvent.h"
+#include "TFRSSortEvent.h"
 #include "TH2D.h"
 #include <TGo4AnalysisImp.h>
 
@@ -93,9 +95,19 @@ void  TFOOTAnlProc::FillHist1(TFOOTCalibrEvent* ev, TFRSSortEvent* ifrsSort, TFR
         for(int i =1;i<8;i=i+2)
           hFOOT_tpcX[i]->Fill(fTpc22_x, ev->data.at(i).mult);         
   }
+  
+  double foot_maxener[8] = {0.};
+  for (int i =0;i<8;i++)
+  for (UInt_t j = 0; j < oev->data.at(i).clmult; j++)
+  if (ev->data.at(i).clE[j]>foot_maxener[i]){
+       foot_maxener[i] = ev->data.at(i).clE[j];
+  }
+  
+  
   if (fSci21_E>0) 
-    for (int i =0;i<8;i++)            
-           hposE[i]->Fill(fSci21_E, oev->data.at(i).clE[j]);
+    for (int i =0;i<8;i++)  
+       if(foot_maxener[i]>0)          
+           hposE[i]->Fill(fSci21_E, foot_maxener[i]);
   
 }
 
