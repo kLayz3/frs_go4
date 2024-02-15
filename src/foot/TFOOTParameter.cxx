@@ -23,19 +23,24 @@ TFOOTParameter::TFOOTParameter(const char *name) : TGo4Parameter(name)
   }
   cal_prefix.Form("FOOT");
   //order of the de10nano before rebuilding the tower
+  // order[0] = 10;
+  // order[1] = 17;
+  // order[2] = 19;
+  // order[3] = 20;
+  // order[4] = 21;
+  // order[5] = 22;
+  // order[6] = 23;
+  // order[7] = 25;
+
+  //todo: order of the de10nano after rebuilding the tower  on 12th February 2024
   order[0] = 10;
   order[1] = 17;
   order[2] = 19;
   order[3] = 20;
-  order[4] = 21;
-  order[5] = 22;
+  order[4] = 22;
+  order[5] = 25;
   order[6] = 23;
-  order[7] = 25;
-
-  //todo: order of the de10nano after rebuilding the tower  on 12th February 2024
-  //
-  //  ........
-  //
+  order[7] = 21;
 }
 
 TFOOTParameter::~TFOOTParameter()
