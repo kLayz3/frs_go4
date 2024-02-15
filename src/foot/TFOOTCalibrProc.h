@@ -10,8 +10,6 @@
 
 class TFOOTSortEvent;
 class TFOOTCalibrEvent;
-class TFRSCalibrEvent;
-class TFRSSortEvent;
 class TH1;
 class TH2D;
 
@@ -27,19 +25,9 @@ public:
   TH1 * hpos;  //!
   TH1 * hposE[8];  //!
   TH1 * hclsize[8];  //!
-    
-  TH2D *hFOOT_tpcX[8];
-  TH2D *hFOOT_tpcY[8];
-  
-  TH2D *hFOOT_SCI21[8];
-  
-  double fSci21_E=0.;
-  double fTpc22_x=-150.;
-  double fTpc22_y=-150.;
   
   TFOOTParameter *par;
   void  FillEvent(TFOOTCalibrEvent * oev,  TFOOTSortEvent* iev);
-  void  FillFootTpcEvent(TFOOTCalibrEvent * oev, TFRSCalibrEvent* ifrsCal, TFRSSortEvent* ifrsSort);
 private:
   void  FillHist(TFOOTCalibrEvent* oev);
 };

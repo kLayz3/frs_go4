@@ -9,6 +9,8 @@
 #include "TFOOTParameter.h"
 
 class TFOOTCalibrEvent;
+class TFRSCalibrEvent;
+class TFRSSortEvent;
 class TH1;
 
 class TFOOTAnlProc
@@ -19,10 +21,22 @@ public:
 
   TH1 * hXXmult[2];  //!
   TH1 * hYYmult[2];  //!
+  
+  
+  TH2D *hFOOT_tpcX[8];
+  TH2D *hFOOT_tpcY[8];
+  
+  TH2D *hFOOT_SCI21[8];
+  
+  double fSci21_E=0.;
+  double fTpc22_x=-150.;
+  double fTpc22_y=-150.;
+  
+  
   TFOOTParameter *par;
   //void  FillEvent(TFOOTCalibrEvent * oev,  TFOOTSortEvent* iev);
   //private:
-  void  FillHist1(TFOOTCalibrEvent* ev );
+  void  FillHist1(TFOOTCalibrEvent* ev, TFRSSortEvent* ifrsSort, TFRSCalibrEvent* ifrsCal);
 };
 
 #endif  //TFOOTANLPROC_H

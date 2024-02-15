@@ -2,8 +2,6 @@
 #include <algorithm>
 #include "TFOOTSortEvent.h"
 #include "TFOOTCalibrEvent.h"
-#include "TFRSCalibrEvent.h"
-#include "TFRSSortEvent.h"
 #include "TH2D.h"
 #include <TGo4AnalysisImp.h>
 
@@ -69,33 +67,6 @@ TFOOTCalibrProc::TFOOTCalibrProc()
     hclsize[i]->SetYTitle("Energy deposit (a. u.)");
     TGo4Analysis::Instance()->AddHistogram(hclsize[i], dir);
   }
-  
-  // FOOT correlations with TPCs
-  for(int i=0;i<8;i++)
-  {
-   char fname[100];
-   char fn[100];
-   sprintf(fname,"TPC22_X_FOOT_%d", i+1);
-   sprintf(fn,"Position distribution in X for TPC22 and FOOT_%d", i+1);
-   hFOOT_tpcX[i] = new TH2D(fname,fn,300,-120,120,640,0,640);
-   hFOOT_tpcX[i]->SetXTitle("TPC22_X [mm]");
-   hFOOT_tpcX[i]->SetYTitle("Position (a. u.)");
-   TGo4Analysis::Instance()->AddHistogram(hFOOT_tpcX[i], dir);
-   
-   sprintf(fname,"TPC22_Y_FOOT_%d", i+1);
-   sprintf(fn,"Position distribution in Y for TPC22 and FOOT_%d", i+1);
-   hFOOT_tpcY[i] = new TH2D(fname,fn,300,-120,120,640,0,640);
-   hFOOT_tpcY[i]->SetXTitle("TPC22_Y [mm]");
-   hFOOT_tpcY[i]->SetYTitle("Position (a. u.)");
-   TGo4Analysis::Instance()->AddHistogram(hFOOT_tpcY[i], dir);
-   
-   sprintf(fname,"SCI21_E_FOOT_%d", i+1);
-   sprintf(fn,"Energy correlation SCI21 and FOOT_%d", i+1);
-   hFOOT_SCI21[i] = new TH2D(fname, fn, 600, 0, 3000, FOOT_ADC_BINS, 0, FOOT_ADC_MAX);
-   hFOOT_SCI21[i]->SetXTitle("SCI21_E (a.u.)");
-   hFOOT_SCI21[i]->SetYTitle("Energy deposit (a. u.)");
-   TGo4Analysis::Instance()->AddHistogram(hFOOT_SCI21[i], dir);
-  }
 }
 
 TFOOTCalibrProc::~TFOOTCalibrProc()
@@ -110,32 +81,6 @@ void TFOOTCalibrProc::FillEvent(TFOOTCalibrEvent *oev, TFOOTSortEvent *iev)
     oev->data.at(i).Set(iev->Get1(i));
   }
   FillHist(oev);
-}
-
-void TFOOTCalibrProc::FillFootTpcEvent(TFOOTCalibrEvent *oev, TFRSCalibrEvent* ifrsCal, TFRSSortEvent* ifrsSort)
-{
- /* for(int i=0;i<8;i++)
-  {
-   for (int j = 0; j < FOOT_CHN; j++)
-   {
-     hFOOT_tpcX[i]->Fill(ifrsCal->tpc_x[1],oev->data.at(i).clpos[j]);
-     hFOOT_tpcY[i]->Fill(ifrsCal->tpc_y[1],oev->data.at(i).clpos[j]);
-   }
-   
-   if (oev->data.at(i).clmult > 0)
-    {
-      for (UInt_t j = 0; j < oev->data.at(i).clmult; j++)
-      {
-        hposE[i]->Fill(0.5*(ifrsSort->de_21l+ifrsSort->de_21r),
-                       oev->data.at(i).clE[j]);
-      }
-    }
-
-  }*/
-  
-  fSci21_E = 0.5*(ifrsSort->de_21l+ifrsSort->de_21r);
-  fTpc22_x = ifrsCal->tpc_x[1];
-  fTpc22_y = ifrsCal->tpc_y[1];
 }
 
 void TFOOTCalibrProc::FillHist(TFOOTCalibrEvent *oev)
@@ -158,14 +103,7 @@ void TFOOTCalibrProc::FillHist(TFOOTCalibrEvent *oev)
                        oev->data.at(i).clE[j]);
         hclsize[i]->Fill(oev->data.at(i).cllast[j] -
                              oev->data.at(i).clfirst[j] + 1,
-                         oev->data.at(i).clE[j]);  
-        if ((i%2)==1 && fTpc22_y>-150) 
-        hFOOT_tpcY[i]->Fill(fTpc22_y,oev->data.at(i).clpos[j]);
-        else if (fTpc22_x>-150)
-        hFOOT_tpcX[i]->Fill(fTpc22_x,oev->data.at(i).clpos[j]); 
-        
-        if (fSci21_E>0)             
-           hposE[i]->Fill(fSci21_E, oev->data.at(i).clE[j]);
+                         oev->data.at(i).clE[j]);
       }
     }
   };
