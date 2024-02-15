@@ -44,7 +44,6 @@ TFRSCalibrProc::TFRSCalibrProc(const char* name) : TFRSBasicProc(name)
   Create_TPC_Hist();
   Create_SI_Hist();
   Create_LaBr_Hist();
-  Create_FOOT_Hist();
   //  Create_ElCurrent_Hist();
 
   InitProcessor();
