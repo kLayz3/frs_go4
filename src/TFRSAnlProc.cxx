@@ -116,7 +116,7 @@ Bool_t TFRSAnlProc::BuildEvent(TGo4EventElement* output)
 
   // foot part
   TFOOTCalibrEvent *clb1 = dynamic_cast < TFOOTCalibrEvent * > (clb);
-  FillHist1( clb1 );
+  FillHist1( clb1, srt, clb);
   return kTRUE;
 }
 
