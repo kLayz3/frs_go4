@@ -3,7 +3,7 @@
 #include "TFOOTSortEvent.h"
 #include "TFOOTCalibrEvent.h"
 #include "TFRSCalibrEvent.h"
-#include "TFRSSortEvent.h"
+#include "TFRSAnlEvent.h"
 #include "TH2D.h"
 #include <TGo4AnalysisImp.h>
 
@@ -72,10 +72,10 @@ TFOOTAnlProc::TFOOTAnlProc()
 TFOOTAnlProc::~TFOOTAnlProc()
 {;}
 
-void  TFOOTAnlProc::FillHist1(TFOOTCalibrEvent* ev, TFRSSortEvent* ifrsSort, TFRSCalibrEvent* ifrsCal)
+void  TFOOTAnlProc::FillHist1(TFOOTCalibrEvent* ev, TFRSAnlEvent* ifrsanl, TFRSCalibrEvent* ifrsCal)
 {
 
-  fSci21_E = 0.5*(ifrsSort->de_21l+ifrsSort->de_21r);
+  fSci21_E = ifrsanl->sci_e[2];
   fTpc22_x = ifrsCal->tpc_x[1];
   fTpc22_y = ifrsCal->tpc_y[1];
 
