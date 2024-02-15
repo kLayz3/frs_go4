@@ -106,12 +106,12 @@ void  TFOOTAnlProc::FillHist1(TFOOTCalibrEvent* ev, TFRSAnlEvent* ifrsanl, TFRSC
        foot_maxener[i] = ev->data.at(i).clE[j];
   }
   
-  std::cout<<"here:  "<<foot_maxener[0]<<"  "<<foot_maxener[1]<<std::endl;
+  //std::cout<<"here:  "<<foot_maxener[0]<<"  "<<foot_maxener[1]<<std::endl;
   
   if (fSci21_E>0) 
     for (int i =0;i<8;i++)  
        if(foot_maxener[i]>0)          
-           hFOOT_SCI21[i]->Fill(fSci21_E, foot_maxener[i]);
+           hFOOT_SCI21[i]->Fill(fSci21_E, foot_maxener[i]/100.);
   
 }
 
