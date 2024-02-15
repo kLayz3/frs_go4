@@ -110,8 +110,8 @@ void TFOOTCalibrProc::FillFootTpcEvent(TFOOTCalibrEvent *oev, TFRSCalibrEvent* i
   {
    for (int j = 0; j < FOOT_CHN; j++)
    {
-     hFOOT_tpcX[i]->Fill(ifrs->data.at(i).tpc_x[1],oev->data.at(i).clpos[j]);
-     hFOOT_tpcY[i]->Fill(ifrs->data.at(i).tpc_y[1],oev->data.at(i).clpos[j]);
+     hFOOT_tpcX[i]->Fill(ifrs->tpc_x[1],oev->data.at(i).clpos[j]);
+     hFOOT_tpcY[i]->Fill(ifrs->tpc_y[1],oev->data.at(i).clpos[j]);
    }
   }
 }
