@@ -12,6 +12,7 @@ class TFOOTCalibrEvent;
 class TFRSCalibrEvent;
 class TFRSSortEvent;
 class TH1;
+class TH2D;
 
 class TFOOTAnlProc
 {
