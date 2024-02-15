@@ -94,9 +94,9 @@ void  TFOOTAnlProc::FillHist1(TFOOTCalibrEvent* ev, TFRSAnlEvent* ifrsanl, TFRSC
     
   if (fTpc22_y<9999 && fTpc22_x<9999) 
   {     for(int i =0;i<8;i=i+2)
-          hFOOT_tpcY[i]->Fill(fTpc22_y, ev->data.at(i).clfirst[ev->data.at(i).mult]);
+          hFOOT_tpcY[i]->Fill(fTpc22_y, ev->data.at(i).mult);
         for(int i =1;i<8;i=i+2)
-          hFOOT_tpcX[i]->Fill(fTpc22_x, ev->data.at(i).clfirst[ev->data.at(i).mult]);         
+          hFOOT_tpcX[i]->Fill(fTpc22_x, ev->data.at(i).mult);         
   }
   
   double foot_maxener[8] = {0.};
