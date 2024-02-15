@@ -33,6 +33,10 @@ public:
   
   TH2D *hFOOT_SCI21[8];
   
+  double fSci21_E=0.;
+  double fTpc22_x=-150.;
+  double fTpc22_y=-150.;
+  
   TFOOTParameter *par;
   void  FillEvent(TFOOTCalibrEvent * oev,  TFOOTSortEvent* iev);
   void  FillFootTpcEvent(TFOOTCalibrEvent * oev, TFRSCalibrEvent* ifrsCal, TFRSSortEvent* ifrsSort);
