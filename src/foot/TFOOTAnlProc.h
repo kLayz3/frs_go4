@@ -10,7 +10,7 @@
 
 class TFOOTCalibrEvent;
 class TFRSCalibrEvent;
-class TFRSSortEvent;
+class TFRSAnlEvent;
 class TH1;
 class TH2D;
 
@@ -37,7 +37,7 @@ public:
   TFOOTParameter *par;
   //void  FillEvent(TFOOTCalibrEvent * oev,  TFOOTSortEvent* iev);
   //private:
-  void  FillHist1(TFOOTCalibrEvent* ev, TFRSSortEvent* ifrsSort, TFRSCalibrEvent* ifrsCal);
+  void  FillHist1(TFOOTCalibrEvent* ev, TFRSAnlEvent* ifrsanl, TFRSCalibrEvent* ifrsCal);
 };
 
 #endif  //TFOOTANLPROC_H
