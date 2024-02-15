@@ -98,7 +98,7 @@ void  TFOOTAnlProc::FillHist1(TFOOTCalibrEvent* ev, TFRSSortEvent* ifrsSort, TFR
   
   double foot_maxener[8] = {0.};
   for (int i =0;i<8;i++)
-  for (UInt_t j = 0; j < oev->data.at(i).clmult; j++)
+  for (UInt_t j = 0; j < ev->data.at(i).clmult; j++)
   if (ev->data.at(i).clE[j]>foot_maxener[i]){
        foot_maxener[i] = ev->data.at(i).clE[j];
   }
@@ -107,7 +107,7 @@ void  TFOOTAnlProc::FillHist1(TFOOTCalibrEvent* ev, TFRSSortEvent* ifrsSort, TFR
   if (fSci21_E>0) 
     for (int i =0;i<8;i++)  
        if(foot_maxener[i]>0)          
-           hposE[i]->Fill(fSci21_E, foot_maxener[i]);
+           hFOOT_SCI21[i]->Fill(fSci21_E, foot_maxener[i]);
   
 }
 
