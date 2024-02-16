@@ -18,7 +18,9 @@ public:
   void ReadCalibFromROOTfile(const char *file, Int_t i);
   void Set(UInt_t *data);
 
-  void Calib();
+  UInt_t maxstrip();
+  UInt_t maxcluster();
+  
   void EvalMult();
   void FindCluster();
   Double_t Amp[FOOT_CHN];

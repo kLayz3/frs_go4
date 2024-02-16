@@ -142,10 +142,10 @@ void TFOOTAnlProc::FillHist1(TFOOTCalibrEvent *ev, TFRSAnlEvent *ifrsanl, TFRSCa
     hYYmult[i]->Fill(ev->data.at(ny[i]).mult,
                      ev->data.at(ny[i + 1]).mult);
 
-    hXX[i]->Fill(ev->data.at(nx[i]).strip[0],
-                 ev->data.at(nx[i + 1]).strip[0]);
-    hYY[i]->Fill(ev->data.at(ny[i]).strip[0],
-                 ev->data.at(ny[i + 1]).strip[0]);
+    hXX[i]->Fill(ev->data.at(nx[i]).strip[ev->data.at(nx[i]).maxstrip()],
+                 ev->data.at(nx[i + 1]).strip[ev->data.at(nx[i+1]).maxstrip()]);
+    hYY[i]->Fill(ev->data.at(ny[i]).strip[ev->data.at(ny[i]).maxstrip()],
+                 ev->data.at(ny[i + 1]).strip[ev->data.at(ny[i + 1]).maxstrip()]);
   }
 
   if (fTpc22_y < 9999 && fTpc22_x < 9999)

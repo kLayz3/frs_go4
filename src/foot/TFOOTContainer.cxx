@@ -6,6 +6,8 @@
 #include "TFile.h"
 #include "TGraph.h"
 #include "TGo4AnalysisImp.h"
+#include <algorithm>
+#include <cmath>
 
 TFOOTContainer::TFOOTContainer()
 {
@@ -125,6 +127,7 @@ void TFOOTContainer::FindCluster()
   clfirst[0] = strip[0];
   cllast[0] = strip[0];
   clmult = 1;
+
   if (mult >= 1)
   {
     for (UInt_t i = 1; i < mult; i++)
@@ -153,23 +156,32 @@ void TFOOTContainer::FindCluster()
       }
     }
   }
+ 
   // Now we calculate  "charge" in cluster and it position
-  for (UInt_t i = 0; i < clmult; i++)
-  {
-    clE[i] = 0;
-    clpos[i] = 0;
-    for (int s = clfirst[i]; s <= cllast[i]; i++)
+  if(clmult>0)
     {
-      clE[i] += Amp[s];
-      clpos[i] += Amp[s] * s;
+      for (UInt_t i = 0; i < clmult; i++)
+	{
+	  clE[i] = 0;
+	  clpos[i] = 0;
+	  for (int s = clfirst[i]; s <= cllast[i]; s++)
+	    {
+	      clE[i] += Amp[s];
+	      clpos[i] += (s*Amp[s]);
+	    }
+	  clpos[i] = clpos[i] /clE[i];
+	}
     }
-    clpos[i] = clpos[i] / clE[i];
-  }
 }
-void TFOOTContainer::Calib()
-// TO BE REMOVED
+UInt_t TFOOTContainer::maxstrip()
 {
-  ;
+  //return the number of strip with maximal deposit in Ampnth and strip arrays
+  return  std::distance(Ampnth,std::max_element(Ampnth, Ampnth+mult));
+}
+
+UInt_t  TFOOTContainer::maxcluster()
+{
+  return  std::distance(clE,std::max_element(clE, clE+clmult));
 }
 
 ClassImp(TFOOTContainer)
