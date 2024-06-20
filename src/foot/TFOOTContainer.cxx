@@ -38,7 +38,8 @@ void TFOOTContainer::ReadCalib(const char *file)
 void TFOOTContainer::ReadCalibFromROOTfile(const char *file, Int_t i)
 {
 
-  par = dynamic_cast<TFOOTParameter *>(TGo4Analysis::Instance()->GetParameter("FOOTPar"));
+  par = dynamic_cast<TFOOTParameter *>
+    (TGo4Analysis::Instance()->GetParameter("FOOTPar"));
 
   // open files with saved graphs with pedestals
   TFile *parFile = new TFile(file, "READ");
@@ -65,10 +66,7 @@ void TFOOTContainer::ReadCalibFromROOTfile(const char *file, Int_t i)
 
   Double_t *pedestal = pedestalsGraph->GetY();
   Double_t *pedestalSigma = pedestalsGraphSigma->GetY();
-  for (size_t j = 0; j < 10; j++)
-  {
-    std::cout << "detector " << i << " pedestal:\t" << pedestal[j] << std::endl;
-  }
+  
 
   // filling of parameters
   for (size_t j = 0; j < FOOT_CHN; j++)
@@ -79,16 +77,21 @@ void TFOOTContainer::ReadCalibFromROOTfile(const char *file, Int_t i)
     else
       bad[j] = 1;
 
-    threshold[j] = 20. * pedestalSigma[j];
+    threshold[j] = 40. * pedestalSigma[j];
 
     // threshold[j] = par->thresholdsInSigmas[i] * pedestalSigma[j];
   }
-
+  for (size_t j = 0; j < 10; j++)
+    {
+      std::cout << "detector " << i << " pedestal:\t" << pedestal[j]
+		<<"thr.:\t" <<threshold[j] << std::endl;
+    }
   parFile->Close();
 }
 
 void TFOOTContainer::Set(UInt_t *data)
 {
+  
   for (int i = 0; i < FOOT_CHN; i++)
   {
     if (!bad[i])
@@ -100,6 +103,17 @@ void TFOOTContainer::Set(UInt_t *data)
       Amp[i] = 0.0;
     }
   }
+  for (int i = 0; i < 10; i++)
+    {
+      ASICShift[i]=GetASICShift(i);
+    }
+  for (int i = 0; i < FOOT_CHN; i++)
+    {
+      if (!bad[i])
+	{
+	  Amp[i]-=ASICShift[i/FOOT_ASIC_LEN];
+	}
+    }
   EvalMult();
   FindCluster();
 }
@@ -182,6 +196,27 @@ UInt_t TFOOTContainer::maxstrip()
 UInt_t  TFOOTContainer::maxcluster()
 {
   return  std::distance(clE,std::max_element(clE, clE+clmult));
+}
+
+double TFOOTContainer::GetASICShift(int i)
+{
+  double res=0;
+  int n=0;
+  for (int j=i;j<i+FOOT_ASIC_LEN;j++)
+    {
+      if((!bad[j])&&(Amp[i] < threshold[i]))
+	{
+	  res+=Amp[i];n++;
+	}
+    }
+  if(n==0)
+    {
+      return(0.0);
+    }
+  else
+    {
+      return(res/n);
+    }
 }
 
 ClassImp(TFOOTContainer)

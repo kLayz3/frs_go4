@@ -10,6 +10,8 @@
 
 class TFOOTContainer : public TObject
 {
+private:
+  double GetASICShift(int i);
 public:
   TFOOTContainer();
   virtual ~TFOOTContainer();
@@ -28,6 +30,7 @@ public:
   Double_t C0[FOOT_CHN]; //!
   // Double_t C1[FOOT_CHN]; //!
   Double_t threshold[FOOT_CHN]; //!
+  Double_t ASICShift[10]; //!
   UInt_t mult;                  // number of strips with deposit
   Double_t Ampnth[FOOT_CHN];    //[mult]
   Int_t strip[FOOT_CHN];        //[mult]

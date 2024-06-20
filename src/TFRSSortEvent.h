@@ -43,7 +43,7 @@ public:
   Double_t      systemtime_ms;
   Double_t      systemtime_s;
 
-  Int_t         pattern;  //! this is the TPAT
+  Int_t         pattern;  // this is the TPAT
   Int_t         trigger; //! this is the physical trigger
   Int_t         sptrigger; //!this is the physics triggt
   Int_t         snbtrig; //!number of triggers per event (in tpat)

@@ -23,6 +23,7 @@ TFOOTParameter::TFOOTParameter(const char *name) : TGo4Parameter(name)
     flip[i] = false;
     thresholdsInSigmas[i] = 5.;
   }
+  flip[0] = true;
   cal_prefix.Form("FOOT");
   // order of the de10nano before rebuilding the tower
   //  order[0] = 10;

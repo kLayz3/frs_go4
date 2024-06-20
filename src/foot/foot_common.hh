@@ -6,6 +6,8 @@
 #define FOOT_RAW_DATA_WORDS 320 
 #define FOOT_CHN (2 * FOOT_RAW_DATA_WORDS)
 
+#define FOOT_ASIC_LEN 64
+
 #define UNPACK_FOOT_WR_SUBEV
 
 
