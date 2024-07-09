@@ -9,7 +9,6 @@
 #include <vector>
 
 TTree *tree;
-// TFile *file;
 
 // Function to create a TChain from a list of TFiles
 TChain *createTChain(const std::vector<TString> &fileNames, const std::string &treeName)
@@ -48,18 +47,10 @@ TChain *createTChain(const std::vector<TString> &fileNames, const std::string &t
     return chain;
 }
 
-void drawConv()
+void OpenTree(const std::string fileName)
 {
-
-    // user parameters:
-    TString filesLocation = "/home/vratislav/data/S111/conv/";
-    TString convFile;
-    convFile = filesLocation + "conv_0057.root";
-
-    // trigger = 0;
-
     // Open the ROOT file
-    TFile *file = TFile::Open(convFile);
+    TFile *file = TFile::Open(fileName.c_str(), "READ");
     if (!file || file->IsZombie())
     {
         std::cerr << "Error: Cannot open the file!" << std::endl;
@@ -73,7 +64,15 @@ void drawConv()
         std::cerr << "Error: Cannot find the TTree!" << std::endl;
         return;
     }
-    // tree->SetLineWidth(4);
+}
+
+void drawConv()
+{
+
+    // user parameters:
+    TString filesLocation = "/home/vratislav/data/S111/conv/";
+    TString convFile;
+    convFile = filesLocation + "conv_0057.root";
 
     std::vector<TString> fileNames = {
         filesLocation + "conv_0058.root",
@@ -101,7 +100,6 @@ void drawConv()
 
     if (chain)
     {
-        // Use the TChain for further processing
         std::cout << "TChain successfully created with " << chain->GetNtrees() << " files." << std::endl;
     }
 
