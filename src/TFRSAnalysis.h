@@ -31,9 +31,11 @@ public:
 	       const char* cal=0, 
 	       const char* anal=0, 
 	       const char* user=0);
-  virtual ~TFRSAnalysis() ;
+  virtual ~TFRSAnalysis();
       
   virtual Bool_t InitEventClasses();
+  virtual Bool_t InitStandartFRSParameters();
+  virtual Bool_t InitFOOTParameters();
       
   virtual Int_t UserPreLoop();
   virtual Int_t UserEventFunc();

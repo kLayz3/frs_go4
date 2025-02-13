@@ -8,7 +8,7 @@
 TFOOTSortProc::TFOOTSortProc()
 {
   par = dynamic_cast<TFOOTParameter *>(TGo4Analysis::Instance()->GetParameter("FOOTPar"));
-  char dir[] = "FOOT/";
+  char dir[] = "FOOT/Sort";
 
   // create histograms with full information
   for (int i = 0; i < 8; i++)
@@ -17,6 +17,7 @@ TFOOTSortProc::TFOOTSortProc()
                             Form("FOOT Raw Amp. vs. stripN FOOT#%1d", i + 1),
                             FOOT_CHN, 0, FOOT_CHN,
                             FOOT_ADC_BINS + 200, -200., FOOT_ADC_MAX);
+
     hRawZeros[i]->SetMarkerColor(1);
     hRawZeros[i]->SetXTitle("strip");
     hRawZeros[i]->SetYTitle("ADC val.");
@@ -30,6 +31,7 @@ TFOOTSortProc::TFOOTSortProc()
                                       Form("FOOT Raw Amp. (sup. 0) vs. stripN FOOT#%1d", i + 1),
                                       FOOT_CHN, 0, FOOT_CHN,
                                       FOOT_ADC_BINS + 200, -200., FOOT_ADC_MAX);
+
     hRawZerosSuppressed[i]->SetMarkerColor(1);
     hRawZerosSuppressed[i]->SetXTitle("strip");
     hRawZerosSuppressed[i]->SetYTitle("ADC val.");
@@ -41,28 +43,28 @@ TFOOTSortProc::~TFOOTSortProc()
 {
   ;
 }
-void TFOOTSortProc::FillEvent(TFOOTSortEvent *oev,
-                              TFootPtr *iev)
+void TFOOTSortProc::FillEvent(TFOOTSortEvent *outEvent,
+                              TFootPtr *inEvent)
 {
   for (int i = 0; i < 8; i++)
   {
-    const int id = par->order[i];
+    const int detectorID = par->order[i];
     const bool flip = par->flip[i];
     if (flip)
-      oev->SetFlip(i, iev[id].foot_e);
+      outEvent->SetFlippedDetectorSorted(i, inEvent[detectorID].foot_e);
     else
-      oev->Set1(i, iev[id].foot_e);
+      outEvent->SetDetectorSorted(i, inEvent[detectorID].foot_e);
   }
 
-  FillHist(oev);
+  FillHist(outEvent);
 }
 
-void TFOOTSortProc::FillHist(TFOOTSortEvent *oev)
+void TFOOTSortProc::FillHist(TFOOTSortEvent *outEvent)
 {
   UInt_t *val;
   for (int i = 0; i < 8; i++)
   {
-    val = oev->Get1(i);
+    val = outEvent->GetDetectorSorted(i);
     for (int j = 0; j < FOOT_CHN; j++)
     {
       hRawZeros[i]->Fill(j, val[j]);

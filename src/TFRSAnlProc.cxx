@@ -116,7 +116,8 @@ Bool_t TFRSAnlProc::BuildEvent(TGo4EventElement* output)
 
   // foot part
   TFOOTCalibrEvent *clb1 = dynamic_cast < TFOOTCalibrEvent * > (clb);
-  FillHist1( clb1, poutevt, clb);
+  // FIXME: FillHist1 temporarily commented
+  // FillHist1( clb1, poutevt, clb);
   return kTRUE;
 }
 

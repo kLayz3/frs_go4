@@ -20,10 +20,10 @@ public:
   TH1 *hRawZeros[8]; //!
   TH1 *hRawZerosSuppressed[8]; //!
   TFOOTParameter *par;
-  void FillEvent(TFOOTSortEvent *oev, TFootPtr *iev);
+  void FillEvent(TFOOTSortEvent *outEvent, TFootPtr *inEvent);
 
 private:
-  void FillHist(TFOOTSortEvent *oev);
+  void FillHist(TFOOTSortEvent *outEvent);
 };
 
 #endif // TFOOTSORTPROC_H

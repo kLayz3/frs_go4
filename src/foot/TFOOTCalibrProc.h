@@ -3,10 +3,10 @@
 #ifndef TFOOTCALIBRPROC_H
 #define TFOOTCALIBRPROC_H
 
-
 #include "Riostream.h"
 #include "TObjString.h"
 #include "TFOOTParameter.h"
+#include "foot_common.hh"
 
 class TFOOTSortEvent;
 class TFOOTCalibrEvent;
@@ -16,20 +16,34 @@ class TH2D;
 class TFOOTCalibrProc
 {
 public:
-  TFOOTCalibrProc();
-  virtual ~TFOOTCalibrProc();
+	TFOOTCalibrProc();
+	virtual ~TFOOTCalibrProc();
 
-  TH1 * hcalamp[8];  //!
-  TH1 * hmult;  //!
-  TH1 * hclmult;  //!
-  TH1 * hpos;  //!
-  TH1 * hposE[8];  //!
-  TH1 * hclsize[8];  //!
-  
-  TFOOTParameter *par;
-  void  FillEvent(TFOOTCalibrEvent * oev,  TFOOTSortEvent* iev);
+	TH1 *hcalamp[FOOT_DETECTORS_USED]; //!
+	TH1 *hmult;		 //!
+	TH1 *hclmult;	 //!
+	TH1 *hpos;		 //!
+	TH1 *hposE[FOOT_DETECTORS_USED];	 //!
+	TH1 *hclsize[FOOT_DETECTORS_USED]; //!
+
+	TFOOTParameter *par;
+	void FillEvent(TFOOTCalibrEvent *outEvent, TFOOTSortEvent *inEvent);
+
+	void ReadCalibParsFromROOTfile(const char *file, Int_t i);	//TODO: change Int_t i to something reasonable
+	void PrintCalibPars(Int_t detNumber);
+
 private:
-  void  FillHist(TFOOTCalibrEvent* oev);
+
+	void SetAmp(TFOOTCalibrEvent *outEvent, TFOOTSortEvent *inEvent, Int_t detPosition);
+
+	void CreateHistograms();
+	void FillHist(TFOOTCalibrEvent *outEvent);
+
+	// Double_t *pedestal[8];			//!
+	// Double_t *pedestalSigma[8];		//!
+	Bool_t badStrip[FOOT_DETECTORS_USED][FOOT_CHN];  //!
+	Double_t C0[FOOT_DETECTORS_USED][FOOT_CHN]; //!
+	Double_t threshold[FOOT_DETECTORS_USED][FOOT_CHN]; //!
 };
 
-#endif  //TFOOTCALIBRPROC_H
+#endif // TFOOTCALIBRPROC_H

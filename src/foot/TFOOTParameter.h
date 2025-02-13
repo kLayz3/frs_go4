@@ -20,7 +20,7 @@ public:
 
   // array with numbers of de10nano
   Int_t order[8];
-  //todo: comment meaning of flip
+  //TODO: comment meaning of flip
   Bool_t flip[8];
   TString cal_prefix;
   Double_t thresholdsInSigmas[8];

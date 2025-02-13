@@ -16,9 +16,9 @@ public:
 
   UInt_t FOOTRawCh[8*FOOT_CHN];
   
-  void Set1(Int_t i,UInt_t * p);
-  void SetFlip(Int_t i,UInt_t * p);
-  UInt_t * Get1(Int_t i);
+  void SetDetectorSorted(Int_t detectorPosition, UInt_t * p);
+  void SetFlippedDetectorSorted(Int_t detectorPosition, UInt_t * p);
+  UInt_t * GetDetectorSorted(Int_t detectorPosition);
   
   ClassDef(TFOOTSortEvent,1)
 };
