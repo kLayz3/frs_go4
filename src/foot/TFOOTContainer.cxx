@@ -95,23 +95,26 @@ void TFOOTContainer::ReadCalib(const char *file)
 void TFOOTContainer::Set(UInt_t *data)
 {
 
-	for (int i = 0; i < FOOT_CHN; i++)
-	{
-		if (!bad[i])
-		{
-			Amp[i] = data[i] * 1.0 - C0[i];
-		}
-		else
-		{
-			Amp[i] = 0.0;
-		}
-	}
+	//TODO: move this functionality to CalibrProc and delete this function
+
+	// for (int i = 0; i < FOOT_CHN; i++)
+	// {
+	// 	if (!bad[i])
+	// 	{
+	// 		Amp[i] = data[i] * 1.0 - C0[i];
+	// 	}
+	// 	else
+	// 	{
+	// 		Amp[i] = 0.0;
+	// 	}
+	// }
 	// std::cout << Amp[320] << "\t" << data[320] << "\t" << C0[320] << std::endl;
 
 	for (int i = 0; i < 10; i++)
 	{
 		ASICShift[i] = GetASICShift(i);
 	}
+
 	for (int i = 0; i < FOOT_CHN; i++)
 	{
 		if (!bad[i])

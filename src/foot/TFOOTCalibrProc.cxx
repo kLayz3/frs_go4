@@ -37,8 +37,13 @@ TFOOTCalibrProc::~TFOOTCalibrProc()
 	;
 }
 
-void TFOOTCalibrProc::FillEvent(TFOOTCalibrEvent *outEvent, TFOOTSortEvent *inEvent)
+void TFOOTCalibrProc::FillEvent(TFOOTSortEvent *srcEvent, TFOOTCalibrEvent *tgtEvent)
 {
+
+	// TODO: check if events!=0
+	sortEvent = srcEvent;
+	calibEvent = tgtEvent;
+
 	//	loop over all detectors
 	// TODO: change to constant
 
@@ -46,13 +51,12 @@ void TFOOTCalibrProc::FillEvent(TFOOTCalibrEvent *outEvent, TFOOTSortEvent *inEv
 	// 	std::cout << badStrip[0][i] << std::endl;
 	// }
 
-
 	for (int i = 0; i < 8; i++)
 	{
-		// outEvent->data.at(i).Set(inEvent->GetDetectorSorted(i));
-		SetAmp(outEvent, inEvent, i);
+		SetAmp(i);
 	}
-	FillHist(outEvent);
+	
+	FillHist();
 }
 
 void TFOOTCalibrProc::ReadCalibParsFromROOTfile(const char *file, Int_t i)
@@ -60,7 +64,7 @@ void TFOOTCalibrProc::ReadCalibParsFromROOTfile(const char *file, Int_t i)
 
 	par = dynamic_cast<TFOOTParameter *>(TGo4Analysis::Instance()->GetParameter("FOOTPar"));
 
-	const Int_t detPosition = i+1;
+	const Int_t detPosition = i + 1;
 
 	// open files with saved graphs with pedestals
 	TFile *parFile = new TFile(file, "READ");
@@ -75,7 +79,7 @@ void TFOOTCalibrProc::ReadCalibParsFromROOTfile(const char *file, Int_t i)
 	if (!pedestalsGraph)
 	{
 		std::cerr << "Error: Unable to get graph \"pedestalsFOOT" << detPosition
-		 << "\" from input file " << parFile << std::endl;
+				  << "\" from input file " << parFile << std::endl;
 		return;
 	}
 
@@ -113,28 +117,27 @@ void TFOOTCalibrProc::ReadCalibParsFromROOTfile(const char *file, Int_t i)
 void TFOOTCalibrProc::PrintCalibPars(Int_t detNumber)
 {
 
-	//TODO: error handling for detNumber>8
+	// TODO: error handling for detNumber>8
 
 	// for (size_t j = 0; j < 0; j++)
 	for (size_t j = 0; j < FOOT_CHN / 10; j++)
 	{
 		std::cout << "detector " << detNumber
 				  << " pedestal:\t" << C0[detNumber][j]
-				//   << " thr.:\t" << threshold[detNumber][j]
+				  //   << " thr.:\t" << threshold[detNumber][j]
 				  << " badStrip:\t" << badStrip[detNumber][j]
 				  << std::endl;
 	}
 }
 
-void TFOOTCalibrProc::SetAmp(TFOOTCalibrEvent *outEvent, TFOOTSortEvent *inEvent, Int_t detPosition)
+void TFOOTCalibrProc::SetAmp(Int_t detPosition)
 {
 	// TODO: document this function
 
 	for (int i = 0; i < FOOT_CHN; i++)
 	{
 
-		// Double_t rawAmp = (Double_t)inEvent->GetDetectorSorted(detPosition)[i];
-		Double_t rawAmp = static_cast<Double_t>(inEvent->GetDetectorSorted(detPosition)[i]);
+		Double_t rawAmp = static_cast<Double_t>(sortEvent->GetDetectorSorted(detPosition)[i]);
 
 		// std::cout << detPosition
 		// 		  << "\t" << i
@@ -149,15 +152,12 @@ void TFOOTCalibrProc::SetAmp(TFOOTCalibrEvent *outEvent, TFOOTSortEvent *inEvent
 
 		if (!badStrip[detPosition][i])
 		{
-			// outEvent->data[detPosition].Amp[i] = (Double_t)inEvent->GetDetectorSorted(detPosition)[i] - C0[detPosition][i];
-			outEvent->data.at(detPosition).Amp[i] = rawAmp - C0[detPosition][i];
-
+			calibEvent->data.at(detPosition).Amp[i] = rawAmp - C0[detPosition][i];
 			// Amp[i] = data[i] * 1.0 - C0[i];
 		}
 		else
 		{
-			outEvent->data.at(detPosition).Amp[i] = 0.;
-			// Amp[i] = 0.0;
+			calibEvent->data.at(detPosition).Amp[i] = 0.;
 		}
 
 		// std::cout << detPosition
@@ -171,8 +171,66 @@ void TFOOTCalibrProc::SetAmp(TFOOTCalibrEvent *outEvent, TFOOTSortEvent *inEvent
 		// 		  << std::endl;
 	}
 
+	//TODO: change 10 to constant (number of ASICS)
+	for (int i = 0; i < 10; i++)
+	{
+		// ASICShift[detPosition][i] = GetASICShift(detPosition, i);
+	}
+	// for (int i = 0; i < FOOT_CHN; i++)
+	// {
+	// 	if (!bad[i])
+	// 	{
+	// 		Amp[i] -= ASICShift[i / FOOT_ASIC_LEN];
+	// 	}
+	// }
+
 	// // std::cout << outEvent->data.at(detPosition).Amp[320] << "\t" << inEvent->GetDetectorSorted(detPosition)[320] << "\t" << C0[detPosition][320] << std::endl
 	// 		  << std::endl;
+}
+
+void TFOOTCalibrProc::BaseLineCorrection(TFOOTCalibrEvent *outEvent, TFOOTSortEvent *inEvent, Int_t detPosition)
+{
+
+	// std::array<short,64> chip_vals;
+    // std::copy(start,start+64,chip_vals.begin());
+    
+    // std::nth_element(chip_vals.begin(),
+	// 	     chip_vals.begin()+31,
+	// 	     chip_vals.end());
+    
+    // short medval= (chip_vals[31]);
+    // for (int j=0;j<64;j++)
+    //   start[j]-=medval;
+
+}
+
+double TFOOTCalibrProc::GetASICShift(Int_t detPosition, Int_t asicsNumber)
+{
+	//TODO: write comments to this function and variables
+
+	//TODO: baseline correction
+	//	1) this function
+	//	2) alternative approach - Pavel's function
+	double res = 0;
+	int n = 0;
+	for (int j = asicsNumber; j < asicsNumber + FOOT_ASIC_LEN; j++)
+	{
+		// if ((!bad[detPosition][j]) && (Amp[detPosition][asicsNumber] < threshold[asicsNumber]))
+		if ((!badStrip[detPosition][j]) && (calibEvent->data.at(detPosition).Amp[j] < threshold[detPosition][j]))
+		
+		{
+			res += calibEvent->data.at(detPosition).Amp[j];
+			n++;
+		}
+	}
+	if (n == 0)
+	{
+		return (0.0);
+	}
+	else
+	{
+		return (res / n);
+	}
 }
 
 void TFOOTCalibrProc::CreateHistograms()
@@ -238,13 +296,14 @@ void TFOOTCalibrProc::CreateHistograms()
 	}
 }
 
-void TFOOTCalibrProc::FillHist(TFOOTCalibrEvent *outEvent)
+void TFOOTCalibrProc::FillHist()
 {
 	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < FOOT_CHN; j++)
 		{
-			hcalamp[i]->Fill(j, outEvent->data.at(i).Amp[j]);
+			// hcalamp[i]->Fill(j, outEvent->data.at(i).Amp[j]);
+			hcalamp[i]->Fill(j, calibEvent->data.at(i).Amp[j]);
 		}
 
 		// hmult->Fill(outEvent->data.at(i).mult, i);
