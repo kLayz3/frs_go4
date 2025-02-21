@@ -35,7 +35,7 @@ public:
 private:
 
 	void SetAmp(Int_t detPosition);
-	void BaseLineCorrection(TFOOTCalibrEvent *outEvent, TFOOTSortEvent *inEvent, Int_t detPosition);
+	void BaseLineCorrection(Int_t detPosition);
 	double GetASICShift(Int_t detPosition, Int_t asicsNumber);
 	
 	void CreateHistograms();

@@ -188,10 +188,10 @@ void TFOOTCalibrProc::SetAmp(Int_t detPosition)
 	// 		  << std::endl;
 }
 
-void TFOOTCalibrProc::BaseLineCorrection(TFOOTCalibrEvent *outEvent, TFOOTSortEvent *inEvent, Int_t detPosition)
+void TFOOTCalibrProc::BaseLineCorrection(Int_t detPosition)
 {
 
-	// std::array<short,64> chip_vals;
+	std::array<short,64> chip_vals;
     // std::copy(start,start+64,chip_vals.begin());
     
     // std::nth_element(chip_vals.begin(),
