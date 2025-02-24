@@ -28,6 +28,7 @@ public:
 	void FindCluster();
 
 	//TODO: write comments for all variables
+	Double_t AmpUncorrected[FOOT_CHN];				//TODO: rename this variable
 	Double_t Amp[FOOT_CHN];		//TODO: rename this variable
 	
 	//FIXME: variables moved to Proc class, they shold be deleted from here;

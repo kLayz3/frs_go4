@@ -14,7 +14,7 @@ TFOOTSortProc::TFOOTSortProc()
   for (int i = 0; i < 8; i++)
   {
     hRawZeros[i] = new TH2I(Form("rawAmpFull_ch_%1d", i + 1),
-                            Form("FOOT Raw Amp. vs. stripN FOOT#%1d", i + 1),
+                            Form("FOOT Raw AmpUncorrected. vs. stripN FOOT#%1d", i + 1),
                             FOOT_CHN, 0, FOOT_CHN,
                             FOOT_ADC_BINS + 200, -200., FOOT_ADC_MAX);
 
@@ -28,7 +28,7 @@ TFOOTSortProc::TFOOTSortProc()
   for (int i = 0; i < 8; i++)
   {
     hRawZerosSuppressed[i] = new TH2I(Form("rawAmp_ch_%1d", i + 1),
-                                      Form("FOOT Raw Amp. (sup. 0) vs. stripN FOOT#%1d", i + 1),
+                                      Form("FOOT Raw AmpUncorrected. (sup. 0) vs. stripN FOOT#%1d", i + 1),
                                       FOOT_CHN, 0, FOOT_CHN,
                                       FOOT_ADC_BINS + 200, -200., FOOT_ADC_MAX);
 

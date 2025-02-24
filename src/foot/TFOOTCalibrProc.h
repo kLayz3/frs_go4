@@ -7,6 +7,7 @@
 #include "TObjString.h"
 #include "TFOOTParameter.h"
 #include "foot_common.hh"
+#include <RtypesCore.h>
 
 class TFOOTSortEvent;
 class TFOOTCalibrEvent;
@@ -19,7 +20,9 @@ public:
 	TFOOTCalibrProc();
 	virtual ~TFOOTCalibrProc();
 
-	TH1 *hcalamp[FOOT_DETECTORS_USED]; //!
+	// TH1 *hcalamp[FOOT_DETECTORS_USED]; //!
+	TH2D *hcalamp[FOOT_DETECTORS_USED]; //!
+	TH2D *hcalampCorr[FOOT_DETECTORS_USED]; //!
 	TH1 *hmult;		 //!
 	TH1 *hclmult;	 //!
 	TH1 *hpos;		 //!
@@ -35,7 +38,9 @@ public:
 private:
 
 	void SetAmp(Int_t detPosition);
+	// void BaseLineCorrection(Int_t detPosition, Short_t *start);
 	void BaseLineCorrection(Int_t detPosition);
+	void BaseLineCorrectionASIC(Int_t detPosition, Double_t *start);
 	double GetASICShift(Int_t detPosition, Int_t asicsNumber);
 	
 	void CreateHistograms();
@@ -48,7 +53,11 @@ private:
 	// Double_t *pedestal[8];			//!
 	// Double_t *pedestalSigma[8];		//!
 	Bool_t badStrip[FOOT_DETECTORS_USED][FOOT_CHN];  //!
+
+	//pedestals
 	Double_t C0[FOOT_DETECTORS_USED][FOOT_CHN]; //!
+	
+	//thresholds
 	Double_t threshold[FOOT_DETECTORS_USED][FOOT_CHN]; //!
 	
 	// TODO: change 10 to constant corresponding to number of ASICS

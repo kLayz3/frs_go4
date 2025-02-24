@@ -101,14 +101,14 @@ void TFOOTContainer::Set(UInt_t *data)
 	// {
 	// 	if (!bad[i])
 	// 	{
-	// 		Amp[i] = data[i] * 1.0 - C0[i];
+	// 		AmpUncorrected[i] = data[i] * 1.0 - C0[i];
 	// 	}
 	// 	else
 	// 	{
-	// 		Amp[i] = 0.0;
+	// 		AmpUncorrected[i] = 0.0;
 	// 	}
 	// }
-	// std::cout << Amp[320] << "\t" << data[320] << "\t" << C0[320] << std::endl;
+	// std::cout << AmpUncorrected[320] << "\t" << data[320] << "\t" << C0[320] << std::endl;
 
 	for (int i = 0; i < 10; i++)
 	{
@@ -119,7 +119,7 @@ void TFOOTContainer::Set(UInt_t *data)
 	{
 		if (!bad[i])
 		{
-			Amp[i] -= ASICShift[i / FOOT_ASIC_LEN];
+			AmpUncorrected[i] -= ASICShift[i / FOOT_ASIC_LEN];
 		}
 	}
 	EvalMult();
@@ -131,9 +131,9 @@ void TFOOTContainer::EvalMult()
 	mult = 0;
 	for (int i = 0; i < FOOT_CHN; i++)
 	{
-		if ((!bad[i]) && (Amp[i] > threshold[i]))
+		if ((!bad[i]) && (AmpUncorrected[i] > threshold[i]))
 		{
-			Ampnth[mult] = Amp[i];
+			Ampnth[mult] = AmpUncorrected[i];
 			strip[mult] = i;
 			mult++;
 		}
@@ -188,8 +188,8 @@ void TFOOTContainer::FindCluster()
 			clpos[i] = 0;
 			for (int s = clfirst[i]; s <= cllast[i]; s++)
 			{
-				clE[i] += Amp[s];
-				clpos[i] += (s * Amp[s]);
+				clE[i] += AmpUncorrected[s];
+				clpos[i] += (s * AmpUncorrected[s]);
 			}
 			clpos[i] = clpos[i] / clE[i];
 		}
@@ -212,9 +212,9 @@ double TFOOTContainer::GetASICShift(int i)
 	int n = 0;
 	for (int j = i; j < i + FOOT_ASIC_LEN; j++)
 	{
-		if ((!bad[j]) && (Amp[i] < threshold[i]))
+		if ((!bad[j]) && (AmpUncorrected[i] < threshold[i]))
 		{
-			res += Amp[i];
+			res += AmpUncorrected[i];
 			n++;
 		}
 	}

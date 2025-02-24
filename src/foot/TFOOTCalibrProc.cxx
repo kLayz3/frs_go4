@@ -55,7 +55,19 @@ void TFOOTCalibrProc::FillEvent(TFOOTSortEvent *srcEvent, TFOOTCalibrEvent *tgtE
 	{
 		SetAmp(i);
 	}
-	
+
+	// for (int j = 0; j < 640; j++)
+	// {
+	// 	B1[j] = short(srcEvent->FOOTRawCh[j + 640 * 0]) - offset[0][j];
+	// 	B2[j] = short(srcEvent->FOOTRawCh[j + 640 * 1]) - offset[1][j];
+	// 	// B3[j] = short(ev->FOOTRawCh[j + 640 * 2]) - offset[2][j];
+	// 	// B4[j] = short(ev->FOOTRawCh[j + 640 * 3]) - offset[3][j];
+	// 	// B5[j] = short(ev->FOOTRawCh[j + 640 * 4]) - offset[4][j];
+	// 	// B6[j] = short(ev->FOOTRawCh[j + 640 * 5]) - offset[5][j];
+	// 	// B7[j] = short(ev->FOOTRawCh[j + 640 * 6]) - offset[6][j];
+	// 	// B8[j] = short(ev->FOOTRawCh[j + 640 * 7]) - offset[7][j];
+	// }
+
 	FillHist();
 }
 
@@ -139,87 +151,83 @@ void TFOOTCalibrProc::SetAmp(Int_t detPosition)
 
 		Double_t rawAmp = static_cast<Double_t>(sortEvent->GetDetectorSorted(detPosition)[i]);
 
-		// std::cout << detPosition
-		// 		  << "\t" << i
-		// 		//   << "\t" << outEvent->data.at(detPosition).Amp[i]
-		// 		  << "\tempty Amp[i]"
-		// 		  //   << "\t" << inEvent->GetDetectorSorted(detPosition)[i]
-		// 		  << "\t" << rawAmp
-		// 		  << "\t" << C0[detPosition][i]
-		// 		  << "\t" << badStrip[detPosition][i]
-		// 		  //   << std::endl
-		// 		  << std::endl;
-
 		if (!badStrip[detPosition][i])
 		{
-			calibEvent->data.at(detPosition).Amp[i] = rawAmp - C0[detPosition][i];
-			// Amp[i] = data[i] * 1.0 - C0[i];
+			calibEvent->data.at(detPosition).AmpUncorrected[i] = rawAmp - C0[detPosition][i];
 		}
 		else
 		{
-			calibEvent->data.at(detPosition).Amp[i] = 0.;
+			calibEvent->data.at(detPosition).AmpUncorrected[i] = 0.;
 		}
 
-		// std::cout << detPosition
-		// 		  << "\t" << i
-		// 		  << "\t" << outEvent->data.at(detPosition).Amp[i]
-		// 		  //   << "\t" << inEvent->GetDetectorSorted(detPosition)[i]
-		// 		  << "\t" << rawAmp
-		// 		  << "\t" << C0[detPosition][i]
-		// 		  << "\t" << badStrip[detPosition][i]
-		// 		  //   << std::endl
-		// 		  << std::endl;
 	}
 
-	//TODO: change 10 to constant (number of ASICS)
+	BaseLineCorrection(detPosition);
+
+	// TODO: change 10 to constant (number of ASICS)
 	for (int i = 0; i < 10; i++)
 	{
 		// ASICShift[detPosition][i] = GetASICShift(detPosition, i);
 	}
+
 	// for (int i = 0; i < FOOT_CHN; i++)
 	// {
 	// 	if (!bad[i])
 	// 	{
-	// 		Amp[i] -= ASICShift[i / FOOT_ASIC_LEN];
+	// 		AmpUncorrected[i] -= ASICShift[i / FOOT_ASIC_LEN];
 	// 	}
 	// }
 
-	// // std::cout << outEvent->data.at(detPosition).Amp[320] << "\t" << inEvent->GetDetectorSorted(detPosition)[320] << "\t" << C0[detPosition][320] << std::endl
+	// // std::cout << outEvent->data.at(detPosition).AmpUncorrected[320] << "\t" << inEvent->GetDetectorSorted(detPosition)[320] << "\t" << C0[detPosition][320] << std::endl
 	// 		  << std::endl;
+}
+
+// TODO: rename start variable
+void TFOOTCalibrProc::BaseLineCorrectionASIC(Int_t detPosition, Double_t *start)
+{
+	//baseline correction for one ASIC
+
+	std::array<short, 64> chip_vals;
+	std::copy(start, start + 64, chip_vals.begin());
+
+	std::nth_element(chip_vals.begin(),
+					 chip_vals.begin() + 31,
+					 chip_vals.end());
+
+	Short_t medval = (chip_vals[31]);
+
+	// TODO: change 64 to parameter
+	for (int j = 0; j < 64; j++)
+		start[j] -= medval; // TODO: rename start variable
 }
 
 void TFOOTCalibrProc::BaseLineCorrection(Int_t detPosition)
 {
 
-	std::array<short,64> chip_vals;
-    // std::copy(start,start+64,chip_vals.begin());
-    
-    // std::nth_element(chip_vals.begin(),
-	// 	     chip_vals.begin()+31,
-	// 	     chip_vals.end());
-    
-    // short medval= (chip_vals[31]);
-    // for (int j=0;j<64;j++)
-    //   start[j]-=medval;
+	std::copy(calibEvent->data.at(detPosition).AmpUncorrected, calibEvent->data.at(detPosition).AmpUncorrected + 640, calibEvent->data.at(detPosition).Amp);
+	for (int cn = 0; cn < 10; cn++)
+	{
+		BaseLineCorrectionASIC(detPosition, calibEvent->data.at(detPosition).Amp + 64 * cn);
+	}
 
 }
 
 double TFOOTCalibrProc::GetASICShift(Int_t detPosition, Int_t asicsNumber)
 {
-	//TODO: write comments to this function and variables
+	// TODO: write comments to this function and variables
 
-	//TODO: baseline correction
+	// TODO: baseline correction
 	//	1) this function
 	//	2) alternative approach - Pavel's function
 	double res = 0;
 	int n = 0;
 	for (int j = asicsNumber; j < asicsNumber + FOOT_ASIC_LEN; j++)
 	{
-		// if ((!bad[detPosition][j]) && (Amp[detPosition][asicsNumber] < threshold[asicsNumber]))
-		if ((!badStrip[detPosition][j]) && (calibEvent->data.at(detPosition).Amp[j] < threshold[detPosition][j]))
-		
+		// if ((!bad[detPosition][j]) && (AmpUncorrected[detPosition][asicsNumber] < threshold[asicsNumber]))
+		if ((!badStrip[detPosition][j]) && (calibEvent->data.at(detPosition).AmpUncorrected[j] < threshold[detPosition][j]))
+
 		{
-			res += calibEvent->data.at(detPosition).Amp[j];
+			res += calibEvent->data.at(detPosition).AmpUncorrected[j];
 			n++;
 		}
 	}
@@ -236,10 +244,11 @@ double TFOOTCalibrProc::GetASICShift(Int_t detPosition, Int_t asicsNumber)
 void TFOOTCalibrProc::CreateHistograms()
 {
 	char dir[] = "FOOT/Calibrated";
+
 	for (int i = 0; i < 8; i++)
 	{
 		hcalamp[i] = new TH2D(Form("amp_ch_%1d", i + 1),
-							  Form("FOOT  Amp. vs. ch. layer #%1d", i + 1),
+							  Form("FOOT  AmpUncorrected. vs. ch. layer #%1d", i + 1),
 							  FOOT_CHN, 0, FOOT_CHN,
 							  FOOT_ADC_BINS + 400, -400., FOOT_ADC_MAX);
 		hcalamp[i]->SetMarkerColor(1);
@@ -248,6 +257,20 @@ void TFOOTCalibrProc::CreateHistograms()
 		TGo4Analysis::Instance()->AddHistogram(hcalamp[i], dir);
 		//
 	}
+
+	for (int i = 0; i < 8; i++)
+	{
+		hcalampCorr[i] = new TH2D(Form("amp_Corr_ch_%1d", i + 1),
+								  Form("FOOT  AmpCorr. vs. ch. layer #%1d", i + 1),
+								  FOOT_CHN, 0, FOOT_CHN,
+								  FOOT_ADC_BINS + 400, -400., FOOT_ADC_MAX);
+		hcalampCorr[i]->SetMarkerColor(1);
+		hcalampCorr[i]->SetXTitle("channel");
+		hcalampCorr[i]->SetYTitle("ADC val.");
+		TGo4Analysis::Instance()->AddHistogram(hcalampCorr[i], dir);
+		//
+	}
+
 	for (int i = 0; i < 8; i++)
 	{
 		hposE[i] = new TH2D(Form("cl_pos_E_%1d", i),
@@ -298,12 +321,20 @@ void TFOOTCalibrProc::CreateHistograms()
 
 void TFOOTCalibrProc::FillHist()
 {
+	// TODO: change 8 to constant
+
 	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < FOOT_CHN; j++)
 		{
-			// hcalamp[i]->Fill(j, outEvent->data.at(i).Amp[j]);
-			hcalamp[i]->Fill(j, calibEvent->data.at(i).Amp[j]);
+			// hcalamp[i]->Fill(j, outEvent->data.at(i).AmpUncorrected[j]);
+			hcalamp[i]->Fill(j, calibEvent->data.at(i).AmpUncorrected[j]);
+		}
+
+		for (int j = 0; j < FOOT_CHN; j++)
+		{
+			// hcalamp[i]->Fill(j, outEvent->data.at(i).AmpUncorrected[j]);
+			hcalampCorr[i]->Fill(j, calibEvent->data.at(i).Amp[j]);
 		}
 
 		// hmult->Fill(outEvent->data.at(i).mult, i);
