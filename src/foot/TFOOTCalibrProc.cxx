@@ -6,6 +6,7 @@
 #include <TGo4AnalysisImp.h>
 #include "TFile.h"
 #include "TGraph.h"
+#include "TError.h"
 
 TFOOTCalibrProc::TFOOTCalibrProc()
 {
@@ -19,15 +20,15 @@ TFOOTCalibrProc::TFOOTCalibrProc()
 		// std::cout << "Call of ReadCalibFromROOTfile " << i << std::endl;
 		// data.at(i).ReadCalibFromROOTfile("FOOT_HG.root", i + 1);
 		// ReadCalibParsFromROOTfile("FOOT_HG.root", i + 1);
-		ReadCalibParsFromROOTfile("FOOT_HG.root", i);
+		ReadCalibParsFromROOTfile(par->pedestalROOTfile, i);
 	}
 
 	// for (Int_t i = 0; i < FOOT_CHN; i++) {
 	// 	std::cout << badStrip[0][i] << std::endl;
 	// }
 
-	// PrintCalibPars(1);
-	PrintCalibPars(7);
+	// PrintCalibPars(0);
+	// PrintCalibPars(7);
 
 	CreateHistograms();
 }
@@ -47,26 +48,10 @@ void TFOOTCalibrProc::FillEvent(TFOOTSortEvent *srcEvent, TFOOTCalibrEvent *tgtE
 	//	loop over all detectors
 	// TODO: change to constant
 
-	// for (Int_t i = 0; i < FOOT_CHN; i++) {
-	// 	std::cout << badStrip[0][i] << std::endl;
-	// }
-
 	for (int i = 0; i < 8; i++)
 	{
 		SetAmp(i);
 	}
-
-	// for (int j = 0; j < 640; j++)
-	// {
-	// 	B1[j] = short(srcEvent->FOOTRawCh[j + 640 * 0]) - offset[0][j];
-	// 	B2[j] = short(srcEvent->FOOTRawCh[j + 640 * 1]) - offset[1][j];
-	// 	// B3[j] = short(ev->FOOTRawCh[j + 640 * 2]) - offset[2][j];
-	// 	// B4[j] = short(ev->FOOTRawCh[j + 640 * 3]) - offset[3][j];
-	// 	// B5[j] = short(ev->FOOTRawCh[j + 640 * 4]) - offset[4][j];
-	// 	// B6[j] = short(ev->FOOTRawCh[j + 640 * 5]) - offset[5][j];
-	// 	// B7[j] = short(ev->FOOTRawCh[j + 640 * 6]) - offset[6][j];
-	// 	// B8[j] = short(ev->FOOTRawCh[j + 640 * 7]) - offset[7][j];
-	// }
 
 	FillHist();
 }
@@ -76,53 +61,65 @@ void TFOOTCalibrProc::ReadCalibParsFromROOTfile(const char *file, Int_t i)
 
 	par = dynamic_cast<TFOOTParameter *>(TGo4Analysis::Instance()->GetParameter("FOOTPar"));
 
-	const Int_t detPosition = i + 1;
+	// const Int_t detPosition = i + 1;
+	const Int_t detPosition = i;
 
 	// open files with saved graphs with pedestals
 	TFile *parFile = new TFile(file, "READ");
 	if (!parFile || parFile->IsZombie())
 	{
-		std::cerr << "Error: Unable to open input file " << parFile << std::endl;
+		std::cerr << "Error: Unable to open input file " << parFile->GetName() << std::endl;
 		return;
 	}
 
 	// take a graph
-	TGraph *pedestalsGraph = (TGraph *)parFile->Get(Form("pedestalsFOOT%d", detPosition));
+	TString pedestalGraphName;
+	pedestalGraphName.Form("pedestalGraph_%d", par->order[detPosition]);
+	TGraph *pedestalsGraph = (TGraph *)parFile->Get(pedestalGraphName);
 	if (!pedestalsGraph)
 	{
-		std::cerr << "Error: Unable to get graph \"pedestalsFOOT" << detPosition
-				  << "\" from input file " << parFile << std::endl;
+		std::cerr << "Error: Unable to get graph \"" << pedestalGraphName
+				  << "\" from input file " << parFile->GetName() << std::endl;
 		return;
 	}
 
-	TGraph *pedestalsGraphSigma = (TGraph *)parFile->Get(Form("pedestalsSigmaFOOT%d", detPosition));
+	TString pedestalSigmaGraphName;
+	pedestalSigmaGraphName.Form("pedestalSigmaGraph_%d", par->order[detPosition]);
+	TGraph *pedestalsGraphSigma = (TGraph *)parFile->Get(pedestalSigmaGraphName);
 	if (!pedestalsGraphSigma)
 	{
-		std::cerr << "Error: Unable to get graph \"pedestalsFOOT" << detPosition << "\" from input file " << parFile << std::endl;
+		std::cerr << "Error: Unable to get graph \"" << pedestalSigmaGraphName << "\" from input file " << parFile->GetName() << std::endl;
 		return;
 	}
+
+	Info("TFOOTCalibrProc::ReadCalibParsFromROOTfile", "Graph \"%s\" loaded", pedestalsGraph->GetName());
+	Info("TFOOTCalibrProc::ReadCalibParsFromROOTfile", "Graph with sigmas \"%s\" loaded\n", pedestalsGraphSigma->GetName());
 
 	Double_t *pedestal = pedestalsGraph->GetY();
 	Double_t *pedestalSigma = pedestalsGraphSigma->GetY();
-	// pedestal[i] = pedestalsGraph->GetY();
-	// pedestalSigma[i] = pedestalsGraphSigma->GetY();
 
 	// filling of parameters
+	if (!par->flip[i])
+	{
+		std::copy_n(pedestal, FOOT_CHN, C0[i]);
+	}
+	else
+	{
+		std::copy_n(pedestal + FOOT_RAW_DATA_WORDS, FOOT_RAW_DATA_WORDS, C0[i]);
+		std::copy_n(pedestal, FOOT_RAW_DATA_WORDS, C0[i] + FOOT_RAW_DATA_WORDS);
+	}
+
 	for (size_t j = 0; j < FOOT_CHN; j++)
 	{
-		// std::cout << badStrip[i][j] << std::endl;
-		C0[i][j] = pedestal[j];
 		if (pedestal[j] > 0)
 			badStrip[i][j] = 0;
 		else
 			badStrip[i][j] = 1;
 
+		// FIXME: rework thresholds
 		threshold[i][j] = 40. * pedestalSigma[j];
-
-		// std::cout << badStrip[i][j] << std::endl;
-
-		// threshold[j] = par->thresholdsInSigmas[i] * pedestalSigma[j];
 	}
+	
 	parFile->Close();
 }
 
@@ -130,6 +127,8 @@ void TFOOTCalibrProc::PrintCalibPars(Int_t detNumber)
 {
 
 	// TODO: error handling for detNumber>8
+
+	Info("TFOOTCalibrProc::PrintCalibPars", "Parameters for detector %d", detNumber);
 
 	// for (size_t j = 0; j < 0; j++)
 	for (size_t j = 0; j < FOOT_CHN / 10; j++)
@@ -159,13 +158,12 @@ void TFOOTCalibrProc::SetAmp(Int_t detPosition)
 		{
 			calibEvent->data.at(detPosition).AmpUncorrected[i] = 0.;
 		}
-
 	}
 
 	BaseLineCorrection(detPosition);
 
 	// TODO: change 10 to constant (number of ASICS)
-	for (int i = 0; i < 10; i++)
+	// for (int i = 0; i < 10; i++)
 	{
 		// ASICShift[detPosition][i] = GetASICShift(detPosition, i);
 	}
@@ -185,7 +183,7 @@ void TFOOTCalibrProc::SetAmp(Int_t detPosition)
 // TODO: rename start variable
 void TFOOTCalibrProc::BaseLineCorrectionASIC(Int_t detPosition, Double_t *start)
 {
-	//baseline correction for one ASIC
+	// baseline correction for one ASIC
 
 	std::array<short, 64> chip_vals;
 	std::copy(start, start + 64, chip_vals.begin());
@@ -209,7 +207,6 @@ void TFOOTCalibrProc::BaseLineCorrection(Int_t detPosition)
 	{
 		BaseLineCorrectionASIC(detPosition, calibEvent->data.at(detPosition).Amp + 64 * cn);
 	}
-
 }
 
 double TFOOTCalibrProc::GetASICShift(Int_t detPosition, Int_t asicsNumber)

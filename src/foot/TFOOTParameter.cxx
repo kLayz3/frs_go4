@@ -14,6 +14,7 @@ TFOOTParameter::TFOOTParameter() : TGo4Parameter("FOOTParameter")
     thresholdsInSigmas[i] = 0.;
   }
   cal_prefix.Form("FOOT");
+  pedestalROOTfile.Form("FOOT_HG.root");
 }
 
 TFOOTParameter::TFOOTParameter(const char *name) : TGo4Parameter(name)
@@ -25,6 +26,7 @@ TFOOTParameter::TFOOTParameter(const char *name) : TGo4Parameter(name)
     thresholdsInSigmas[i] = 0.;
   }
   cal_prefix.Form("FOOT");
+  pedestalROOTfile.Form("FOOT_HG.root");
 }
 
 TFOOTParameter::~TFOOTParameter()
@@ -48,6 +50,8 @@ void TFOOTParameter::Print(Option_t *) const
   for (int i = 0; i < 8; i++)
     std::cout << ' ' << thresholdsInSigmas[i];
   std::cout << std::endl;
+
+  std::cout << pedestalROOTfile << std::endl;
 }
 
 Bool_t TFOOTParameter::UpdateFrom(TGo4Parameter *pp)

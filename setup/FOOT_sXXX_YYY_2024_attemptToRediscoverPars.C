@@ -71,6 +71,7 @@ void FOOT_sXXX_YYY_2024_attemptToRediscoverPars()
 	// cout << "Focus distance S4: " << frs->dist_focS4 << endl;
 
 	foot->cal_prefix.Form("FOOT");
+	foot->pedestalROOTfile.Form("~/data/S111/pedestals/sort_0018_HG.root");
 
 	cout << "Setup of parameters for FOOT done. " << endl;
 }
