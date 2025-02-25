@@ -184,58 +184,13 @@ TFRSAnalysis::TFRSAnalysis(const char *lmd,
 
 Bool_t TFRSAnalysis::InitEventClasses()
 {
-  Bool_t res = TGo4Analysis::InitEventClasses();
-  // std::string nameExperiment;
-  // std::ifstream ifs ( "config.txt" );
-  // if(ifs.is_open())
-  //   {
-  //     const std::string CommentSymbol("#");
-  //     const std::string ExpNameSymbol("NameExperiment");
-
-  //     std::string temp_line;
-  //     while(std::getline(ifs,temp_line))
-  // {
-  //   std::stringstream stream(temp_line);
-  //   std::string testComment(stream.str());
-  //   std::size_t it_comment = testComment.find(CommentSymbol);
-  //   if(it_comment!=std::string::npos)
-  //     {
-  //       //std::cout<<"!> Skip comment"<<temp_line<<std::endl;
-  //       continue;
-  //     }
-  //   std::string key, value;
-  //   stream >> key >> value ;
-  //   if(key==ExpNameSymbol)
-  //     nameExperiment=value;
-  // }
-  //   }
-  // std::string nameSetupFile ("setup/setup_");
-  // nameSetupFile+=nameExperiment;
-  // nameSetupFile+=".C";
-
-  // std::cout << "TFRSAnalysis::Call "<< nameSetupFile<<" script" << std::endl;
-
-  // std::ifstream testingFileExist(nameSetupFile.c_str());
-  // if(testingFileExist.good()==false)
-  //   {
-  //     std::cout<<" E> !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! "<<std::endl;
-  //     std::cout<<" E> Setup file "<<nameSetupFile<<" not found ! Please look to directory ./setup/ if it exits or set proper name of experiment in config.txt"<<std::endl;
-  //     std::cout<<" E> !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! "<<std::endl;
-
-  //     std::exit(-1);
-  //   }
-
-  // std::string processL(".x ");
-  // processL += nameSetupFile;
-  // gROOT->ProcessLine(processL.c_str());
-
-  // std::string processL(".L ");
-  //  processL += nameSetupFile;
-  // gROOT->ProcessLine(processL.c_str());
-  // gROOT->ProcessLine("setup()");
-
+  
   InitStandartFRSParameters();
   InitFOOTParameters();
+  
+  Bool_t res = TGo4Analysis::InitEventClasses();
+
+  // InitFOOTParameters();
 
   //  ModPar->setMap();
   SetupPolyCond("cID_ZAoQ(0)", 5, fIDPar->ID_Z_AoverQ[0]);
