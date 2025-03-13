@@ -87,6 +87,12 @@ Bool_t TFRSCalibrProc::BuildEvent(TGo4EventElement* output)
   tgt->crtrig = src->trigger ; //readout trigger
   tgt->cnbtrig = src->snbtrig ; //number of trigger per event (in tpat)
   tgt->cmaxtrig = src->smaxtrig ; //second trigger(in tpat)
+	
+  //FIXME: this part should be probably moved before Process* functions as in go4_2025
+  // FOOT Part
+  TFOOTCalibrEvent * tgtFOOT = dynamic_cast < TFOOTCalibrEvent * > (tgt);
+  TFOOTSortEvent * srcFOOT = dynamic_cast < TFOOTSortEvent * > (src);  
+  this->TFOOTCalibrProc::FillEvent(srcFOOT, tgtFOOT);
 
   Process_Scaler_Analysis(*src, *tgt);  
   //  Process_MON_Analysis(*src, *tgt);
@@ -96,10 +102,11 @@ Bool_t TFRSCalibrProc::BuildEvent(TGo4EventElement* output)
   Process_SI_Analysis(*src, *tgt);  
   //  Process_ElCurrent_Analysis(*src, *tgt);
 
-  // FOOT Part
-  TFOOTCalibrEvent * tgtFOOT = dynamic_cast < TFOOTCalibrEvent * > (tgt);
-  TFOOTSortEvent * srcFOOT = dynamic_cast < TFOOTSortEvent * > (src);  
-  this->TFOOTCalibrProc::FillEvent(srcFOOT, tgtFOOT);
+  // //FIXME: this part should be probably moved before Process* functions as in go4_2025
+  // // FOOT Part
+  // TFOOTCalibrEvent * tgtFOOT = dynamic_cast < TFOOTCalibrEvent * > (tgt);
+  // TFOOTSortEvent * srcFOOT = dynamic_cast < TFOOTSortEvent * > (src);  
+  // this->TFOOTCalibrProc::FillEvent(srcFOOT, tgtFOOT);
 
   return kTRUE;
 }
@@ -359,8 +366,16 @@ void TFRSCalibrProc::Create_TPC_Hist()
       hTPC_X1_Y3[i]=MakeH2I(fname,name, 300,-120,120,200,-60,60, "X1 [mm] ","Y3 [mm] ", 2);
 
     }
-
-
+// <<<<<<< HEAD
+	for(int i=0; i<8; ++i) {
+		hTPC_FOOTvsS2Focus[i] = MakeH2I("TPC", Form("FOOT%dvsTPC_x", i), 1000, -100, 100, 640, 0, 640, "TPC s2 X", "FOOT", 2);
+	}
+// =======
+//     for(int i=0; i<8; ++i) {
+//         //hTPC_FOOTvsS2Focus[i] = MakeH2I("TPC", Form("FOOT%dvsTPC_x", i), 80,-40.,40., 640, 0, 640, "TPC s2 X", "FOOT", 2);
+//         hTPC_FOOTvsTPC23x[i] = MakeH2I("TPC", Form("FOOT%dvsTPC23_x", i), 80,-40.,40., 640, 0, 640, "TPC23 X", "FOOT", 2);
+//     }
+// >>>>>>> c19364951ce0e4f865174f641dad9cd325fb1621
 
     for(int i=0;i<8;i++){
         int dummy_min = 1;
@@ -1342,6 +1357,26 @@ void TFRSCalibrProc::Process_TPC_Analysis(const TFRSSortEvent& src, TFRSCalibrEv
 	  
 	}
     }
+
+  for(int foot_det = 0; foot_det < 8; ++foot_det) {
+// <<<<<<< HEAD
+	  // auto thr = par->thresholds[foot_det];
+	  // for(int i=0; i<640; ++i) {
+		  if(tgt.data[foot_det].cluster_multiplicity_ == 1){
+			  // hTPC_FOOTvsS2Focus[foot_det]->Fill(tgt.tpc_x_s2_foc_21_22, i);
+        // hTPC_FOOTvsS2Focus[foot_det]->Fill(tgt.tpc_x_s2_foc_21_22, tgt.data[foot_det].cluster_position_[0]);
+        // hTPC_FOOTvsS2Focus[foot_det]->Fill(tgt.tpc_y_s2_foc_21_22, tgt.data[foot_det].cluster_position_[0]);
+        hTPC_FOOTvsS2Focus[foot_det]->Fill(tgt.tpc_x[2], tgt.data[foot_det].cluster_position_[0]);
+// =======
+// 	  auto thr = par->thresholds[foot_det];
+// 	  for(int i=0; i<640; ++i) {
+// 		  if(tgt.data[foot_det].Amp[i] > thr){
+// 			  //hTPC_FOOTvsS2Focus[foot_det]->Fill(tgt.tpc_x_s2_foc_21_22,i);
+// 			  hTPC_FOOTvsTPC23x[foot_det]->Fill(tgt.tpc_x[2],i);
+// >>>>>>> c19364951ce0e4f865174f641dad9cd325fb1621
+		  }
+    //  }
+  }
 }
 
 

@@ -27,3 +27,4 @@ file_loc
 src/foot/__foot_*
 src/foot/*.swp
 jsroot-dir
+src/foot/FOOTDict.cxx

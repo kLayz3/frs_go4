@@ -19,6 +19,28 @@ TFOOTContainer::~TFOOTContainer()
 	;
 }
 
+void TFOOTContainer::ClearFOOTContainer()
+{
+	// Double_t AmpUncorrected[FOOT_CHN]; // TODO: rename this variable
+	// Double_t Amp[FOOT_CHN];			   // TODO: rename this variable
+	std::fill(AmpUncorrected, AmpUncorrected + FOOT_CHN, 0);
+	std::fill(Amp, Amp + FOOT_CHN, 0);
+	
+	mult = 0;
+	multStrip = 0;
+	cluster_multiplicity_ = 0;
+	strip_id_.clear();
+	strip_energy_.clear();
+	cluster_strip_id_.clear();
+	cluster_strip_energy_.clear();
+	cluster_number_strips_.clear();
+
+	cluster_sigma_.clear();
+	cluster_position_.clear();
+	cluster_energy_summed_.clear();
+	Eta_.clear();
+}
+
 void TFOOTContainer::ReadCalib(const char *file)
 {
 	std::ifstream *input = new std::ifstream(file);
@@ -97,48 +119,35 @@ void TFOOTContainer::Set(UInt_t *data)
 
 	//TODO: move this functionality to CalibrProc and delete this function
 
+	// for (int i = 0; i < 10; i++)
+	// {
+	// 	ASICShift[i] = GetASICShift(i);
+	// }
+
 	// for (int i = 0; i < FOOT_CHN; i++)
 	// {
 	// 	if (!bad[i])
 	// 	{
-	// 		AmpUncorrected[i] = data[i] * 1.0 - C0[i];
-	// 	}
-	// 	else
-	// 	{
-	// 		AmpUncorrected[i] = 0.0;
+	// 		AmpUncorrected[i] -= ASICShift[i / FOOT_ASIC_LEN];
 	// 	}
 	// }
-	// std::cout << AmpUncorrected[320] << "\t" << data[320] << "\t" << C0[320] << std::endl;
-
-	for (int i = 0; i < 10; i++)
-	{
-		ASICShift[i] = GetASICShift(i);
-	}
-
-	for (int i = 0; i < FOOT_CHN; i++)
-	{
-		if (!bad[i])
-		{
-			AmpUncorrected[i] -= ASICShift[i / FOOT_ASIC_LEN];
-		}
-	}
-	EvalMult();
+	// EvalMult();
 	FindCluster();
 }
 
-void TFOOTContainer::EvalMult()
-{
-	mult = 0;
-	for (int i = 0; i < FOOT_CHN; i++)
-	{
-		if ((!bad[i]) && (AmpUncorrected[i] > threshold[i]))
-		{
-			Ampnth[mult] = AmpUncorrected[i];
-			strip[mult] = i;
-			mult++;
-		}
-	}
-}
+// void TFOOTContainer::EvalMult()
+// {
+// 	mult = 0;
+// 	for (int i = 0; i < FOOT_CHN; i++)
+// 	{
+// 		if ((!bad[i]) && (AmpUncorrected[i] > threshold[i]))
+// 		{
+// 			Ampnth[mult] = AmpUncorrected[i];
+// 			strip[mult] = i;
+// 			mult++;
+// 		}
+// 	}
+// }
 
 void TFOOTContainer::FindCluster()
 {
@@ -206,26 +215,26 @@ UInt_t TFOOTContainer::maxcluster()
 	return std::distance(clE, std::max_element(clE, clE + clmult));
 }
 
-double TFOOTContainer::GetASICShift(int i)
-{
-	double res = 0;
-	int n = 0;
-	for (int j = i; j < i + FOOT_ASIC_LEN; j++)
-	{
-		if ((!bad[j]) && (AmpUncorrected[i] < threshold[i]))
-		{
-			res += AmpUncorrected[i];
-			n++;
-		}
-	}
-	if (n == 0)
-	{
-		return (0.0);
-	}
-	else
-	{
-		return (res / n);
-	}
-}
+// double TFOOTContainer::GetASICShift(int i)
+// {
+// 	double res = 0;
+// 	int n = 0;
+// 	for (int j = i; j < i + FOOT_ASIC_LEN; j++)
+// 	{
+// 		if ((!bad[j]) && (AmpUncorrected[i] < threshold[i]))
+// 		{
+// 			res += AmpUncorrected[i];
+// 			n++;
+// 		}
+// 	}
+// 	if (n == 0)
+// 	{
+// 		return (0.0);
+// 	}
+// 	else
+// 	{
+// 		return (res / n);
+// 	}
+// }
 
 ClassImp(TFOOTContainer)

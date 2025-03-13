@@ -11,13 +11,13 @@
 #include "foot_common.hh"
 
 struct TFootPtr {
-	Bool_t* ts_bad;
-	UInt_t* ts_lo;
-	UInt_t* ts_hi;
-	UInt_t* sync_value;
-	UInt_t* data_avail;
-	UInt_t* foot_i;
-	UInt_t* foot_e;
+	Bool_t* ts_bad;		//!
+	UInt_t* ts_lo;		//!
+	UInt_t* ts_hi;		//!
+	UInt_t* sync_value;		//!
+	UInt_t* data_avail;		//!
+	UInt_t* foot_i;		//!
+	UInt_t* foot_e;		//!
 	TFootPtr() = default;
 };
 

@@ -7,12 +7,13 @@
 #include "TFile.h"
 #include "TGraph.h"
 #include "TError.h"
+#include <set>
 
 TFOOTCalibrProc::TFOOTCalibrProc()
 {
 	par = dynamic_cast<TFOOTParameter *>(TGo4Analysis::Instance()->GetParameter("FOOTPar"));
 
-	// par = dynamic_cast<TFOOTParameter *>(TGo4Analysis::Instance()->GetParameter("FOOTPar"));
+	Info("TFOOTCalibrProc::TFOOTCalibrProc", "Pedestals will be loaded from \"%s\"", par->pedestalROOTfile.Data());
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -22,10 +23,6 @@ TFOOTCalibrProc::TFOOTCalibrProc()
 		// ReadCalibParsFromROOTfile("FOOT_HG.root", i + 1);
 		ReadCalibParsFromROOTfile(par->pedestalROOTfile, i);
 	}
-
-	// for (Int_t i = 0; i < FOOT_CHN; i++) {
-	// 	std::cout << badStrip[0][i] << std::endl;
-	// }
 
 	// PrintCalibPars(0);
 	// PrintCalibPars(7);
@@ -83,6 +80,7 @@ void TFOOTCalibrProc::ReadCalibParsFromROOTfile(const char *file, Int_t i)
 		return;
 	}
 
+	// FIXME: all treating of sigmas are unused and may be probably deleted
 	TString pedestalSigmaGraphName;
 	pedestalSigmaGraphName.Form("pedestalSigmaGraph_%d", par->order[detPosition]);
 	TGraph *pedestalsGraphSigma = (TGraph *)parFile->Get(pedestalSigmaGraphName);
@@ -115,11 +113,8 @@ void TFOOTCalibrProc::ReadCalibParsFromROOTfile(const char *file, Int_t i)
 			badStrip[i][j] = 0;
 		else
 			badStrip[i][j] = 1;
-
-		// FIXME: rework thresholds
-		threshold[i][j] = 40. * pedestalSigma[j];
 	}
-	
+
 	parFile->Close();
 }
 
@@ -152,7 +147,8 @@ void TFOOTCalibrProc::SetAmp(Int_t detPosition)
 
 		if (!badStrip[detPosition][i])
 		{
-			calibEvent->data.at(detPosition).AmpUncorrected[i] = rawAmp - C0[detPosition][i];
+			if (rawAmp > 0.)
+				calibEvent->data.at(detPosition).AmpUncorrected[i] = rawAmp - C0[detPosition][i];
 		}
 		else
 		{
@@ -162,22 +158,13 @@ void TFOOTCalibrProc::SetAmp(Int_t detPosition)
 
 	BaseLineCorrection(detPosition);
 
-	// TODO: change 10 to constant (number of ASICS)
-	// for (int i = 0; i < 10; i++)
-	{
-		// ASICShift[detPosition][i] = GetASICShift(detPosition, i);
-	}
+	SetStripMultiplicity(detPosition);
 
-	// for (int i = 0; i < FOOT_CHN; i++)
-	// {
-	// 	if (!bad[i])
-	// 	{
-	// 		AmpUncorrected[i] -= ASICShift[i / FOOT_ASIC_LEN];
-	// 	}
-	// }
-
-	// // std::cout << outEvent->data.at(detPosition).AmpUncorrected[320] << "\t" << inEvent->GetDetectorSorted(detPosition)[320] << "\t" << C0[detPosition][320] << std::endl
-	// 		  << std::endl;
+	ResizeEventData(detPosition);
+	FindStripsAboveThreshold(detPosition);
+	GroupStrips(detPosition);
+	ResizeAfterClusterFind(detPosition);
+	ComputeClusterProperties(detPosition);
 }
 
 // TODO: rename start variable
@@ -209,45 +196,279 @@ void TFOOTCalibrProc::BaseLineCorrection(Int_t detPosition)
 	}
 }
 
-double TFOOTCalibrProc::GetASICShift(Int_t detPosition, Int_t asicsNumber)
+void TFOOTCalibrProc::SetStripMultiplicity(Int_t detPosition)
 {
-	// TODO: write comments to this function and variables
 
-	// TODO: baseline correction
-	//	1) this function
-	//	2) alternative approach - Pavel's function
-	double res = 0;
-	int n = 0;
-	for (int j = asicsNumber; j < asicsNumber + FOOT_ASIC_LEN; j++)
+	for (int i = 0; i < FOOT_CHN; i++)
 	{
-		// if ((!bad[detPosition][j]) && (AmpUncorrected[detPosition][asicsNumber] < threshold[asicsNumber]))
-		if ((!badStrip[detPosition][j]) && (calibEvent->data.at(detPosition).AmpUncorrected[j] < threshold[detPosition][j]))
-
+		// FIXME: really AmpUncorrected[i] in condition?
+		if ((!badStrip[detPosition][i]) && (calibEvent->data.at(detPosition).AmpUncorrected[i] > par->thresholds[detPosition]))
 		{
-			res += calibEvent->data.at(detPosition).AmpUncorrected[j];
-			n++;
+			// Ampnth[mult] = AmpUncorrected[i];
+			// strip[mult] = i;
+			calibEvent->data.at(detPosition).mult++;
 		}
 	}
-	if (n == 0)
+}
+
+void TFOOTCalibrProc::ResizeEventData(Int_t detector_index)
+{
+	// Resizing to the maximum limit for number of clusters
+	const Int_t temp_max_number_clusters = 200;
+
+	calibEvent->data.at(detector_index).cluster_number_strips_.resize(temp_max_number_clusters);
+	calibEvent->data.at(detector_index).cluster_strip_id_.resize(temp_max_number_clusters);
+	calibEvent->data.at(detector_index).cluster_strip_energy_.resize(temp_max_number_clusters);
+
+	calibEvent->data.at(detector_index).cluster_position_.resize(temp_max_number_clusters);
+	// cluster_position_adj1_[iDetector].resize(temp_max_number_clusters);
+	// cluster_position_adj2_[iDetector].resize(temp_max_number_clusters);
+
+	calibEvent->data.at(detector_index).cluster_energy_summed_.resize(temp_max_number_clusters);
+	// cluster_energy_summed_adj1_[iDetector].resize(temp_max_number_clusters);
+	// cluster_energy_summed_adj2_[iDetector].resize(temp_max_number_clusters);
+
+	calibEvent->data.at(detector_index).cluster_sigma_.resize(temp_max_number_clusters);
+	// cluster_sigma_adj1_[iDetector].resize(temp_max_number_clusters);
+	// cluster_sigma_adj2_[iDetector].resize(temp_max_number_clusters);
+
+	calibEvent->data.at(detector_index).Eta_.resize(temp_max_number_clusters);
+	// Eta_adj1_[iDetector].resize(temp_max_number_clusters);
+	// Eta_adj2_[iDetector].resize(temp_max_number_clusters);
+}
+
+void TFOOTCalibrProc::FindStripsAboveThreshold(Int_t detector_index)
+{
+	std::set<int> unique_strips;
+
+	TFOOTContainer &container = calibEvent->data.at(detector_index);
+
+	for (Int_t strip = 0; strip < FOOT_CHN; ++strip)
 	{
-		return (0.0);
+		// std::cout << strip << std::endl;
+		// TODO: treat the trigger, it should be very probably taken from FRSEvent
+		//  if (/* trigger_pattern_ == chosen_tpat_ && */ data_baseline_corr_[detector_index][strip] > par->thresholds[detector_index])
+		// if (calibEvent->data.at(detector_index).Amp[strip] > par->thresholds[detector_index])
+		// if (!badStrip[detector_index][strip] && (container.Amp[strip] > par->thresholds[detector_index]))
+		if (!badStrip[detector_index][strip] && (calibEvent->data.at(detector_index).Amp[strip] > par->thresholds[detector_index]))
+		{
+			unique_strips.insert(strip);
+		}
 	}
-	else
+
+	for (const auto &strip : unique_strips)
 	{
-		return (res / n);
+		// strip_id_[detector_index].push_back(strip);
+		// strip_energy_[detector_index].push_back(calibEvent->data.at(detector_index).Amp[strip][detector_index][strip]);
+		// container.strip_id_.push_back(strip);
+		// container.strip_energy_.push_back(container.Amp[strip]);
+		calibEvent->data.at(detector_index).strip_id_.push_back(strip);
+		calibEvent->data.at(detector_index).strip_energy_.push_back(calibEvent->data.at(detector_index).Amp[strip]);
+	}
+
+	calibEvent->data.at(detector_index).multStrip = (Int_t)calibEvent->data.at(detector_index).strip_id_.size();
+}
+
+void TFOOTCalibrProc::GroupStrips(Int_t detector_index)
+{
+
+	// Maybe rewrite it in a way that the strip_id and strip_energy entries are not erased, but rather there is a loop over all chosen strips
+	Int_t cluster_count = 0;
+	Int_t temp_strip_id = 0;
+
+	// Int_t j = 0;
+	size_t j = 0;
+
+	while (j < calibEvent->data.at(detector_index).strip_id_.size())
+	{
+		if (j == 0)
+		{
+			temp_strip_id = calibEvent->data.at(detector_index).strip_id_[j];
+		}
+
+		// j++; // TODO: delete this line
+		// std::cout << j << std::endl;
+		// std::cout << calibEvent->data.at(detector_index).strip_id_[cluster_count] << std::endl;
+		// calibEvent->data.at(detector_index).cluster_number_strips_.push_back(0);
+		// std::cout << calibEvent->data.at(detector_index).cluster_number_strips_.size() << std::endl;
+		calibEvent->data.at(detector_index).cluster_number_strips_[cluster_count]++;
+		// std::cout << calibEvent->data.at(detector_index).cluster_number_strips_[cluster_count] << std::endl;
+		// std::cout << calibEvent->data.at(detector_index).strip_id_[j] << std::endl;
+		// calibEvent->data.at(detector_index).cluster_strip_id_.push_back(cluster_count);
+		// calibEvent->data.at(detector_index).cluster_strip_id_.push_back(calibEvent->data.at(detector_index).strip_id_[j]);
+		calibEvent->data.at(detector_index).cluster_strip_id_[cluster_count].push_back(calibEvent->data.at(detector_index).strip_id_[j]);
+		calibEvent->data.at(detector_index).cluster_strip_energy_[cluster_count].push_back(calibEvent->data.at(detector_index).strip_energy_[j]);
+		// Int_t k = j + 1;
+		size_t k = j + 1;
+		while (k < calibEvent->data.at(detector_index).strip_id_.size() && (calibEvent->data.at(detector_index).strip_id_[k] - temp_strip_id) == 1)
+		{
+			calibEvent->data.at(detector_index).cluster_number_strips_[cluster_count]++;
+			calibEvent->data.at(detector_index).cluster_strip_id_[cluster_count].push_back(calibEvent->data.at(detector_index).strip_id_[k]);
+			calibEvent->data.at(detector_index).cluster_strip_energy_[cluster_count].push_back(calibEvent->data.at(detector_index).strip_energy_[k]);
+			temp_strip_id = calibEvent->data.at(detector_index).strip_id_[k];
+			calibEvent->data.at(detector_index).strip_id_.erase(calibEvent->data.at(detector_index).strip_id_.begin() + k);
+			calibEvent->data.at(detector_index).strip_energy_.erase(calibEvent->data.at(detector_index).strip_energy_.begin() + k);
+		}
+
+		calibEvent->data.at(detector_index).strip_id_.erase(calibEvent->data.at(detector_index).strip_id_.begin() + j);
+		calibEvent->data.at(detector_index).strip_energy_.erase(calibEvent->data.at(detector_index).strip_energy_.begin() + j);
+
+		cluster_count++;
+	}
+	calibEvent->data.at(detector_index).cluster_multiplicity_ = cluster_count;
+}
+
+void TFOOTCalibrProc::ResizeAfterClusterFind(Int_t detector_index)
+{
+	calibEvent->data.at(detector_index).cluster_position_.resize(calibEvent->data.at(detector_index).cluster_multiplicity_);
+	// cluster_position_adj1_[detector_index].resize(cluster_multiplicity_[detector_index]);
+	// cluster_position_adj2_[detector_index].resize(cluster_multiplicity_[detector_index]);
+
+	calibEvent->data.at(detector_index).cluster_energy_summed_.resize(calibEvent->data.at(detector_index).cluster_multiplicity_);
+	// cluster_energy_summed_adj1_[detector_index].resize(cluster_multiplicity_[detector_index]);
+	// cluster_energy_summed_adj2_[detector_index].resize(cluster_multiplicity_[detector_index]);
+
+	calibEvent->data.at(detector_index).cluster_sigma_.resize(calibEvent->data.at(detector_index).cluster_multiplicity_);
+	// cluster_sigma_adj1_[detector_index].resize(cluster_multiplicity_[detector_index]);
+	// cluster_sigma_adj2_[detector_index].resize(cluster_multiplicity_[detector_index]);
+
+	// Eta_[detector_index].resize(cluster_multiplicity_[detector_index]);
+	// Eta_adj1_[detector_index].resize(cluster_multiplicity_[detector_index]);
+	// Eta_adj2_[detector_index].resize(cluster_multiplicity_[detector_index]);
+
+	calibEvent->data.at(detector_index).cluster_number_strips_.resize(calibEvent->data.at(detector_index).cluster_multiplicity_);
+	calibEvent->data.at(detector_index).cluster_strip_id_.resize(calibEvent->data.at(detector_index).cluster_multiplicity_);
+	calibEvent->data.at(detector_index).cluster_strip_energy_.resize(calibEvent->data.at(detector_index).cluster_multiplicity_);
+}
+
+void TFOOTCalibrProc::ComputeClusterProperties(Int_t detector_index)
+{
+
+	for (Int_t iCluster = 0; iCluster < calibEvent->data.at(detector_index).cluster_multiplicity_; iCluster++)
+	{
+		for (Int_t iStrip = 0; iStrip < calibEvent->data.at(detector_index).cluster_number_strips_[iCluster]; iStrip++)
+		{
+
+			calibEvent->data.at(detector_index).cluster_energy_summed_[iCluster] += calibEvent->data.at(detector_index).cluster_strip_energy_[iCluster][iStrip];
+			calibEvent->data.at(detector_index).cluster_position_[iCluster] += calibEvent->data.at(detector_index).cluster_strip_energy_[iCluster][iStrip] * calibEvent->data.at(detector_index).cluster_strip_id_[iCluster][iStrip];
+
+			// Creating variables with addition of adjacent strips
+			//  cluster_energy_summed_adj1_[detector_index][iCluster] += cluster_strip_energy_[detector_index][iCluster][iStrip];
+			//  cluster_energy_summed_adj2_[detector_index][iCluster] += cluster_strip_energy_[detector_index][iCluster][iStrip];
+
+			// cluster_position_adj1_[detector_index][iCluster] += cluster_strip_energy_[detector_index][iCluster][iStrip] * cluster_strip_id_[detector_index][iCluster][iStrip];
+			// cluster_position_adj2_[detector_index][iCluster] += cluster_strip_energy_[detector_index][iCluster][iStrip] * cluster_strip_id_[detector_index][iCluster][iStrip];
+
+			// //Adding the left strips characteristics
+			// if (iStrip == 0) {
+			//     if (cluster_strip_id_[detector_index][iCluster][iStrip] > 0 && cluster_strip_id_[detector_index][iCluster][iStrip] < foot_constants::kNumberStrips - 1) {
+
+			//         cluster_position_adj1_[detector_index][iCluster] += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] - 1] * (cluster_strip_id_[detector_index][iCluster][iStrip] - 1);
+			//         cluster_position_adj2_[detector_index][iCluster] += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] - 1] * (cluster_strip_id_[detector_index][iCluster][iStrip] - 1);
+
+			//         cluster_energy_summed_adj1_[detector_index][iCluster] += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] - 1];
+			//         cluster_energy_summed_adj2_[detector_index][iCluster] += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] - 1];
+
+			//         if (cluster_strip_id_[detector_index][iCluster][iStrip] > 1 && cluster_strip_id_[detector_index][iCluster][iStrip] < foot_constants::kNumberStrips - 2) {
+			//             cluster_position_adj2_[detector_index][iCluster] += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] - 2] * (cluster_strip_id_[detector_index][iCluster][iStrip] - 2);
+
+			//             cluster_energy_summed_adj2_[detector_index][iCluster] += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] - 2];
+			//         }
+
+			//     }
+			// }
+
+			// //Adding the right strips characteristics
+			// if (iStrip == (cluster_number_strips_[detector_index][iCluster] - 1)) {
+			//     if (cluster_strip_id_[detector_index][iCluster][iStrip] > 0 && cluster_strip_id_[detector_index][iCluster][iStrip] < foot_constants::kNumberStrips - 1) {
+
+			//         cluster_position_adj1_[detector_index][iCluster] += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] + 1] * (cluster_strip_id_[detector_index][iCluster][iStrip] + 1);
+			//         cluster_position_adj2_[detector_index][iCluster] += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] + 1] * (cluster_strip_id_[detector_index][iCluster][iStrip] + 1);
+
+			//         cluster_energy_summed_adj1_[detector_index][iCluster] += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] + 1];
+			//         cluster_energy_summed_adj2_[detector_index][iCluster] += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] + 1];
+
+			//         if (cluster_strip_id_[detector_index][iCluster][iStrip] > 1 && cluster_strip_id_[detector_index][iCluster][iStrip] < foot_constants::kNumberStrips - 2) {
+			//             cluster_position_adj2_[detector_index][iCluster] += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] + 2] * (cluster_strip_id_[detector_index][iCluster][iStrip] + 2);
+
+			//             cluster_energy_summed_adj2_[detector_index][iCluster] += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] + 2];
+			//         }
+
+			//     }
+
+			// }
+		}
+		// Normalizing strip position and calculating Eta, which represents relative position of the hit with respect to the nears readout strip
+		calibEvent->data.at(detector_index).cluster_position_[iCluster] = calibEvent->data.at(detector_index).cluster_position_[iCluster] / calibEvent->data.at(detector_index).cluster_energy_summed_[iCluster];
+		// cluster_position_adj1_[detector_index][iCluster] = cluster_position_adj1_[detector_index][iCluster] / cluster_energy_summed_adj1_[detector_index][iCluster];
+		// cluster_position_adj2_[detector_index][iCluster] = cluster_position_adj2_[detector_index][iCluster] / cluster_energy_summed_adj2_[detector_index][iCluster];
+
+		calibEvent->data.at(detector_index).Eta_[iCluster] = calibEvent->data.at(detector_index).cluster_position_[iCluster] - (Int_t)calibEvent->data.at(detector_index).cluster_position_[iCluster];
+		// Eta_adj1_[detector_index][iCluster] = cluster_position_adj1_[detector_index][iCluster] - (Int_t)cluster_position_adj1_[detector_index][iCluster];
+		// Eta_adj2_[detector_index][iCluster] = cluster_position_adj2_[detector_index][iCluster] - (Int_t)cluster_position_adj2_[detector_index][iCluster];
+		// put sigma computation and output here
+		// Calculating sigma
+		Double_t sum_squared_diff = 0.0;
+		// Double_t sum_squared_diff_adj1 = 0.0;
+		// Double_t sum_squared_diff_adj2 = 0.0;
+		for (Int_t iStrip = 0; iStrip < calibEvent->data.at(detector_index).cluster_number_strips_[iCluster]; iStrip++)
+		{
+			Double_t diff = calibEvent->data.at(detector_index).cluster_strip_id_[iCluster][iStrip] - calibEvent->data.at(detector_index).cluster_position_[iCluster];
+			sum_squared_diff += calibEvent->data.at(detector_index).cluster_strip_energy_[iCluster][iStrip] * diff * diff;
+			// sum_squared_diff_adj1 += cluster_strip_energy_[detector_index][iCluster][iStrip] * diff * diff;
+			// sum_squared_diff_adj2 += cluster_strip_energy_[detector_index][iCluster][iStrip] * diff * diff;
+			// if (iStrip == 0)
+			// {
+			// 	if (cluster_strip_id_[detector_index][iCluster][iStrip] > 0 && cluster_strip_id_[detector_index][iCluster][iStrip] < foot_constants::kNumberStrips - 1)
+			// 	{
+			// 		Double_t diff_adj1 = cluster_strip_id_[detector_index][iCluster][iStrip] - 1 - cluster_position_adj1_[detector_index][iCluster];
+			// 		Double_t diff_adj2 = cluster_strip_id_[detector_index][iCluster][iStrip] - 1 - cluster_position_adj2_[detector_index][iCluster];
+			// 		sum_squared_diff_adj1 += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] - 1] * diff_adj1 * diff_adj1;
+			// 		sum_squared_diff_adj2 += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] - 1] * diff_adj2 * diff_adj2;
+			// 		if (cluster_strip_id_[detector_index][iCluster][iStrip] > 1 && cluster_strip_id_[detector_index][iCluster][iStrip] < foot_constants::kNumberStrips - 2)
+			// 		{
+
+			// 			diff_adj2 = cluster_strip_id_[detector_index][iCluster][iStrip] - 2 - cluster_position_adj2_[detector_index][iCluster];
+
+			// 			sum_squared_diff_adj2 += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] - 2] * diff_adj2 * diff_adj2;
+			// 		}
+			// 	}
+			// }
+			// if (iStrip == (cluster_number_strips_[detector_index][iCluster] - 1))
+			// {
+			// 	if (cluster_strip_id_[detector_index][iCluster][iStrip] > 0 && cluster_strip_id_[detector_index][iCluster][iStrip] < foot_constants::kNumberStrips - 1)
+			// 	{
+			// 		Double_t diff_adj1 = cluster_strip_id_[detector_index][iCluster][iStrip] + 1 - cluster_position_adj1_[detector_index][iCluster];
+			// 		Double_t diff_adj2 = cluster_strip_id_[detector_index][iCluster][iStrip] + 1 - cluster_position_adj2_[detector_index][iCluster];
+			// 		sum_squared_diff_adj1 += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] + 1] * diff_adj1 * diff_adj1;
+			// 		sum_squared_diff_adj2 += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] + 1] * diff_adj2 * diff_adj2;
+			// 		if (cluster_strip_id_[detector_index][iCluster][iStrip] > 1 && cluster_strip_id_[detector_index][iCluster][iStrip] < foot_constants::kNumberStrips - 2)
+			// 		{
+
+			// 			diff_adj2 = cluster_strip_id_[detector_index][iCluster][iStrip] + 2 - cluster_position_adj2_[detector_index][iCluster];
+
+			// 			sum_squared_diff_adj2 += data_baseline_corr_[detector_index][cluster_strip_id_[detector_index][iCluster][iStrip] + 2] * diff_adj2 * diff_adj2;
+			// 		}
+			// 	}
+			// }
+		}
+		calibEvent->data.at(detector_index).cluster_sigma_[iCluster] = sqrt(sum_squared_diff / calibEvent->data.at(detector_index).cluster_energy_summed_[iCluster]);
+		// cluster_sigma_adj1_[detector_index][iCluster] = sqrt(sum_squared_diff_adj1 / cluster_energy_summed_adj1_[detector_index][iCluster]);
+		// cluster_sigma_adj2_[detector_index][iCluster] = sqrt(sum_squared_diff_adj2 / cluster_energy_summed_adj2_[detector_index][iCluster]);
 	}
 }
 
 void TFOOTCalibrProc::CreateHistograms()
 {
-	char dir[] = "FOOT/Calibrated";
+	// char dir[] = "FOOT/Calibrated";
+	TString dir = "FOOT/Calibrated";
 
 	for (int i = 0; i < 8; i++)
 	{
 		hcalamp[i] = new TH2D(Form("amp_ch_%1d", i + 1),
 							  Form("FOOT  AmpUncorrected. vs. ch. layer #%1d", i + 1),
 							  FOOT_CHN, 0, FOOT_CHN,
-							  FOOT_ADC_BINS + 400, -400., FOOT_ADC_MAX);
+							  FOOT_ADC_BINS + 400 * FOOT_ADC_MAX / FOOT_ADC_BINS, -400., FOOT_ADC_MAX);
 		hcalamp[i]->SetMarkerColor(1);
 		hcalamp[i]->SetXTitle("channel");
 		hcalamp[i]->SetYTitle("ADC val.");
@@ -260,25 +481,14 @@ void TFOOTCalibrProc::CreateHistograms()
 		hcalampCorr[i] = new TH2D(Form("amp_Corr_ch_%1d", i + 1),
 								  Form("FOOT  AmpCorr. vs. ch. layer #%1d", i + 1),
 								  FOOT_CHN, 0, FOOT_CHN,
-								  FOOT_ADC_BINS + 400, -400., FOOT_ADC_MAX);
+								  FOOT_ADC_BINS + 400 * FOOT_ADC_MAX / FOOT_ADC_BINS, -400., FOOT_ADC_MAX);
 		hcalampCorr[i]->SetMarkerColor(1);
 		hcalampCorr[i]->SetXTitle("channel");
 		hcalampCorr[i]->SetYTitle("ADC val.");
 		TGo4Analysis::Instance()->AddHistogram(hcalampCorr[i], dir);
 		//
 	}
-
-	for (int i = 0; i < 8; i++)
-	{
-		hposE[i] = new TH2D(Form("cl_pos_E_%1d", i),
-							Form("Cluster pos.  vs. cluster dep. #%1d", i),
-							FOOT_CHN, 0, FOOT_CHN,
-							FOOT_ADC_BINS, 0, FOOT_ADC_MAX);
-		hposE[i]->SetMarkerColor(1);
-		hposE[i]->SetXTitle("position (a. u.)");
-		hposE[i]->SetYTitle("Energy deposit (a. u.)");
-		TGo4Analysis::Instance()->AddHistogram(hposE[i], dir);
-	}
+	dir = "FOOT/multiplicities";
 	hmult = new TH2I("hmult",
 					 "FOOT mult. by layer",
 					 640, 0, FOOT_CHN,
@@ -288,31 +498,105 @@ void TFOOTCalibrProc::CreateHistograms()
 	hmult->SetYTitle("FOOT Layer");
 	TGo4Analysis::Instance()->AddHistogram(hmult, dir);
 
-	hclmult = new TH2I("hclmult",
-					   "FOOT mult. by layer",
-					   640, 0, FOOT_CHN,
-					   8, 0, 8);
-	hclmult->SetXTitle("Cluster Multiplicity");
-	hclmult->SetYTitle("FOOT Layer");
-	TGo4Analysis::Instance()->AddHistogram(hclmult, dir);
+	hmultStrip = new TH2I("MultStrip",
+						  "FOOT strip mult. by layer",
+						  640, 0, FOOT_CHN,
+						  8, 0, 8);
+	hmultStrip->SetMarkerColor(1);
+	hmultStrip->SetXTitle("Strip multiplicity");
+	hmultStrip->SetYTitle("FOOT Layer");
+	TGo4Analysis::Instance()->AddHistogram(hmultStrip, dir);
 
-	hpos = new TH2D("hclpos",
-					"Cluster position by layer",
-					FOOT_CHN, 0, FOOT_CHN,
-					8, 0, 8);
-	hpos->SetXTitle("position (a. u.)");
-	hpos->SetYTitle("FOOT Layer");
-	TGo4Analysis::Instance()->AddHistogram(hpos, dir);
+	hmultCluster = new TH2I("MultCluster",
+							"FOOT cluster mult. by layer",
+							640, 0, FOOT_CHN,
+							8, 0, 8);
+	hmultCluster->SetMarkerColor(1);
+	hmultCluster->SetXTitle("Cluster multiplicity");
+	hmultCluster->SetYTitle("FOOT Layer");
+	TGo4Analysis::Instance()->AddHistogram(hmultCluster, dir);
+
+	/////////////////////////////////////
+	// clusters
+	/////////////////////////////////////
+
+	dir = "FOOT/clusters";
+
+	hClusterEnergy = new TH2I("Cluster_E",
+							  "FOOT cluster energy",
+							  FOOT_ADC_MAX, 0, 4 * FOOT_ADC_MAX,
+							  8, 0, 8);
+	hClusterEnergy->SetMarkerColor(1);
+	hClusterEnergy->SetXTitle("Cluster energy");
+	hClusterEnergy->SetYTitle("FOOT Layer");
+	TGo4Analysis::Instance()->AddHistogram(hClusterEnergy, dir);
+
+	hSingleClusterPositionX = new TH2I("SingleClusterPositionX",
+									   "proper title",
+									   640, 0, FOOT_CHN,
+									   4, 0, 4);
+	hSingleClusterPositionX->SetMarkerColor(1);
+	hSingleClusterPositionX->SetXTitle("Cluster position [strip]");
+	hSingleClusterPositionX->SetYTitle("FOOT X Layer");
+
+    TGo4Analysis::Instance()->AddHistogram(hSingleClusterPositionX, dir);
+
+	hSingleClusterPositionY = new TH2I("SingleClusterPositionY",
+									   "proper title",
+									   640, 0, FOOT_CHN,
+									   4, 0, 4);
+	hSingleClusterPositionY->SetMarkerColor(1);
+	hSingleClusterPositionY->SetXTitle("Cluster position [strip]");
+	hSingleClusterPositionY->SetYTitle("FOOT Y Layer");
+	TGo4Analysis::Instance()->AddHistogram(hSingleClusterPositionY, dir);
+
+	// number of stations
+	for (Int_t i = 0; i < 4; i++)
+	{
+		hClusterProjection[i] = new TH2I(Form("Cluster_projection_%1d", i),
+										 Form("Cluster projection in station #%1d", i),
+										 640, 0, FOOT_CHN,
+										 640, 0, FOOT_CHN);
+		hClusterProjection[i]->SetMarkerColor(1);
+		hClusterProjection[i]->SetXTitle("X");
+		hClusterProjection[i]->SetYTitle("Y");
+		TGo4Analysis::Instance()->AddHistogram(hClusterProjection[i], dir);
+	}
+
+	for (Int_t i = 0; i < 3; i++)
+	{
+		hSingleClusterCorrXX[i] = new TH2I(Form("Cluster_corrX0X%1d", i+1),
+										   Form("Cluster correlation in XX station #%1d", i+1),
+										   640, 0, FOOT_CHN,
+										   640, 0, FOOT_CHN);
+		hSingleClusterCorrXX[i]->SetMarkerColor(1);
+		hSingleClusterCorrXX[i]->SetXTitle("X0");
+		hSingleClusterCorrXX[i]->SetYTitle(Form("X%1d", i+1));
+		TGo4Analysis::Instance()->AddHistogram(hSingleClusterCorrXX[i], dir);
+
+		hSingleClusterCorrYY[i] = new TH2I(Form("Cluster_corrY0Y%1d", i+1),
+										   Form("Cluster correlations in YY station #%1d", i+1),
+										   640, 0, FOOT_CHN,
+										   640, 0, FOOT_CHN);
+		hSingleClusterCorrYY[i]->SetMarkerColor(1);
+		hSingleClusterCorrYY[i]->SetXTitle("Y0");
+		hSingleClusterCorrYY[i]->SetYTitle(Form("Y%1d", i+1));
+		TGo4Analysis::Instance()->AddHistogram(hSingleClusterCorrYY[i], dir);
+	}
+
+	///////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////
+
 	for (int i = 0; i < 8; i++)
 	{
-		hclsize[i] = new TH2D(Form("cl_len_E_%1d", i),
-							  Form("Cluster length  vs. cluster dep. #%1d", i),
-							  FOOT_CHN, 0, FOOT_CHN,
-							  FOOT_ADC_BINS, 0, FOOT_ADC_MAX);
-		hclsize[i]->SetMarkerColor(1);
-		hclsize[i]->SetXTitle("cluster length (a. u.)");
-		hclsize[i]->SetYTitle("Energy deposit (a. u.)");
-		TGo4Analysis::Instance()->AddHistogram(hclsize[i], dir);
+		hClusterLengthDeposit[i] = new TH2I(Form("ClusterLengthDepCorr_%1d", i),
+											Form("Cluster length  vs. cluster dep. #%1d", i),
+											FOOT_CHN, 0, FOOT_CHN,
+											FOOT_ADC_MAX, 0, 4 * FOOT_ADC_MAX);
+		hClusterLengthDeposit[i]->SetMarkerColor(1);
+		hClusterLengthDeposit[i]->SetXTitle("Cluster length (a. u.)");
+		hClusterLengthDeposit[i]->SetYTitle("Energy deposit (a. u.)");
+		TGo4Analysis::Instance()->AddHistogram(hClusterLengthDeposit[i], dir);
 	}
 }
 
@@ -334,19 +618,40 @@ void TFOOTCalibrProc::FillHist()
 			hcalampCorr[i]->Fill(j, calibEvent->data.at(i).Amp[j]);
 		}
 
-		// hmult->Fill(outEvent->data.at(i).mult, i);
-		// hclmult->Fill(outEvent->data.at(i).clmult, i);
-		// if (outEvent->data.at(i).clmult > 0)
-		// {
-		// 	for (UInt_t j = 0; j < outEvent->data.at(i).clmult; j++)
-		// 	{
-		// 		hpos->Fill(outEvent->data.at(i).clpos[j], i);
-		// 		hposE[i]->Fill(outEvent->data.at(i).clpos[j],
-		// 					   outEvent->data.at(i).clE[j]);
-		// 		hclsize[i]->Fill(outEvent->data.at(i).cllast[j] -
-		// 							 outEvent->data.at(i).clfirst[j] + 1,
-		// 						 outEvent->data.at(i).clE[j]);
-		// 	}
-		// }
+		hmult->Fill(calibEvent->data.at(i).mult, i);
+
+		hmultStrip->Fill(calibEvent->data.at(i).multStrip, i);
+
+		hmultCluster->Fill(calibEvent->data.at(i).cluster_multiplicity_, i);
+
+		// single cluster histograms
+		if (calibEvent->data.at(i).cluster_multiplicity_ == 1)
+		{
+			hClusterEnergy->Fill(calibEvent->data.at(i).cluster_energy_summed_[0], i);
+
+			hClusterLengthDeposit[i]->Fill(calibEvent->data.at(i).cluster_number_strips_[0], calibEvent->data.at(i).cluster_energy_summed_[0]);
+		}
 	};
+
+	// loop over all stations
+	for (Int_t i = 0; i < 4; i++)
+	{
+		if (calibEvent->data.at(2 * i).cluster_multiplicity_ == 1)
+			hSingleClusterPositionY->Fill(calibEvent->data.at(2 * i).cluster_position_[0], i);
+		if (calibEvent->data.at(2 * i + 1).cluster_multiplicity_ == 1)
+			hSingleClusterPositionX->Fill(calibEvent->data.at(2 * i + 1).cluster_position_[0], i);
+
+        if (calibEvent->data.at(2 * i).cluster_multiplicity_ == 1 && calibEvent->data.at(2 * i + 1).cluster_multiplicity_ == 1)
+			hClusterProjection[i]->Fill(calibEvent->data.at(2 * i + 1).cluster_position_[0], calibEvent->data.at(2 * i).cluster_position_[0]);
+	}
+
+	// spatial correlations
+	for (Int_t i = 0; i < 3; i++)
+	{
+		if (calibEvent->data.at(0).cluster_multiplicity_ == 1 && calibEvent->data.at(2 * i + 2).cluster_multiplicity_ == 1)
+			hSingleClusterCorrYY[i]->Fill(calibEvent->data.at(0).cluster_position_[0], calibEvent->data.at(2 * i + 2).cluster_position_[0]);
+
+		if (calibEvent->data.at(1).cluster_multiplicity_ == 1 && calibEvent->data.at(2 * i + 3).cluster_multiplicity_ == 1)
+			hSingleClusterCorrXX[i]->Fill(calibEvent->data.at(1).cluster_position_[0], calibEvent->data.at(2 * i + 3).cluster_position_[0]);
+	}
 }

@@ -24,7 +24,7 @@ public:
   Bool_t flip[8];
   TString cal_prefix;
   TString pedestalROOTfile;
-  Double_t thresholdsInSigmas[8];
+  Double_t thresholds[8];
   ClassDef(TFOOTParameter, 1)
 };
 

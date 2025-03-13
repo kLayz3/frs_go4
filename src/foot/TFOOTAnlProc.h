@@ -3,7 +3,6 @@
 #ifndef TFOOTANLPROC_H
 #define TFOOTANLPROC_H
 
-
 #include "Riostream.h"
 #include "TObjString.h"
 #include "TFOOTParameter.h"
@@ -17,30 +16,24 @@ class TH2D;
 class TFOOTAnlProc
 {
 public:
-  TFOOTAnlProc();
-  virtual ~TFOOTAnlProc();
+	TFOOTAnlProc();
+	virtual ~TFOOTAnlProc();
+	
+	void FillHist(TFOOTCalibrEvent *ev, TFRSAnlEvent *ifrsanl, TFRSCalibrEvent *ifrsCal);
+private:
 
-  TH1 * hXXmult[2];  //!
-  TH1 * hYYmult[2];  //!
+	TH2D *hFOOT_tpcX[3];
+	TH2D *hFOOT_tpcY[3];
 
-  TH1 * hXX[2];  //!
-  TH1 * hYY[2];  //!
-  
-  
-  TH2D *hFOOT_tpcX[3];
-  TH2D *hFOOT_tpcY[3];
-  
-  TH2D *hFOOT_SCI21[8];
-  
-  double fSci21_E=0.;
-  double fTpc22_x=-150.;
-  double fTpc22_y=-150.;
-  
-  
-  TFOOTParameter *par;
-  //void  FillEvent(TFOOTCalibrEvent * oev,  TFOOTSortEvent* iev);
-  //private:
-  void  FillHist1(TFOOTCalibrEvent* ev, TFRSAnlEvent* ifrsanl, TFRSCalibrEvent* ifrsCal);
+	TH2D *hFOOT_SCI21[8];
+
+	double fSci21_E = 0.;
+	double fTpc22_x = -150.;
+	double fTpc22_y = -150.;
+
+	TFOOTParameter *par;
+	// void  FillEvent(TFOOTCalibrEvent * oev,  TFOOTSortEvent* iev);
+	void CreateHistograms();
 };
 
 #endif  //TFOOTANLPROC_H

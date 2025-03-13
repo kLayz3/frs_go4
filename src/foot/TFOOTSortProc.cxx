@@ -16,7 +16,7 @@ TFOOTSortProc::TFOOTSortProc()
     hRawZeros[i] = new TH2I(Form("rawAmpFull_ch_%1d", i + 1),
                             Form("FOOT Raw AmpUncorrected. vs. stripN FOOT#%1d", i + 1),
                             FOOT_CHN, 0, FOOT_CHN,
-                            FOOT_ADC_BINS + 200, -200., FOOT_ADC_MAX);
+                            FOOT_ADC_BINS + 200*FOOT_ADC_MAX/FOOT_ADC_BINS, -200., FOOT_ADC_MAX);
 
     hRawZeros[i]->SetMarkerColor(1);
     hRawZeros[i]->SetXTitle("strip");
@@ -30,7 +30,7 @@ TFOOTSortProc::TFOOTSortProc()
     hRawZerosSuppressed[i] = new TH2I(Form("rawAmp_ch_%1d", i + 1),
                                       Form("FOOT Raw AmpUncorrected. (sup. 0) vs. stripN FOOT#%1d", i + 1),
                                       FOOT_CHN, 0, FOOT_CHN,
-                                      FOOT_ADC_BINS + 200, -200., FOOT_ADC_MAX);
+                                      FOOT_ADC_BINS + 200*FOOT_ADC_MAX/FOOT_ADC_BINS, -200., FOOT_ADC_MAX);
 
     hRawZerosSuppressed[i]->SetMarkerColor(1);
     hRawZerosSuppressed[i]->SetXTitle("strip");
@@ -46,6 +46,10 @@ TFOOTSortProc::~TFOOTSortProc()
 void TFOOTSortProc::FillEvent(TFOOTSortEvent *outEvent,
                               TFootPtr *inEvent)
 {
+
+  //TODO: very probably it should be called from event itself as in the case of TFOOTCalibrEvent::Clear
+  outEvent->ClearSortEvent();
+
   for (int i = 0; i < 8; i++)
   {
     const int detectorID = par->order[i];

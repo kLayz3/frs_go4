@@ -337,7 +337,8 @@ private:
   TH1I 	*hct_trigger_SY;
   TH1I 	*hct_DU;
   TH1I 	*hct_SY;
-
+  TH2I *hTPC_FOOTvsS2Focus[8];
+  // TH2I *hTPC_FOOTvsTPC23x[8];
   //Electron Current
   TH1I 	*helcurrent;
 

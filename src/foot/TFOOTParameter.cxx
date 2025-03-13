@@ -11,7 +11,7 @@ TFOOTParameter::TFOOTParameter() : TGo4Parameter("FOOTParameter")
   {
     order[i] = i + 10;
     flip[i] = false;
-    thresholdsInSigmas[i] = 0.;
+    thresholds[i] = 0.;
   }
   cal_prefix.Form("FOOT");
   pedestalROOTfile.Form("FOOT_HG.root");
@@ -23,7 +23,7 @@ TFOOTParameter::TFOOTParameter(const char *name) : TGo4Parameter(name)
   {
     order[i] = i + 10;
     flip[i] = false;
-    thresholdsInSigmas[i] = 0.;
+    thresholds[i] = 0.;
   }
   cal_prefix.Form("FOOT");
   pedestalROOTfile.Form("FOOT_HG.root");
@@ -48,7 +48,7 @@ void TFOOTParameter::Print(Option_t *) const
   std::cout << std::endl;
   std::cout << "thresholds\t";
   for (int i = 0; i < 8; i++)
-    std::cout << ' ' << thresholdsInSigmas[i];
+    std::cout << ' ' << thresholds[i];
   std::cout << std::endl;
 
   std::cout << pedestalROOTfile << std::endl;
@@ -66,7 +66,7 @@ Bool_t TFOOTParameter::UpdateFrom(TGo4Parameter *pp)
   {
     order[i] = from->order[i];
     flip[i] = from->flip[i];
-    thresholdsInSigmas[i] = from->thresholdsInSigmas[i];
+    thresholds[i] = from->thresholds[i];
   }
   // std::copy_n(from->order,8,order);
   // std::copy_n(from->flip,8,flip);

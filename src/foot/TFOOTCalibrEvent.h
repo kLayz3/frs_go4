@@ -20,6 +20,8 @@ public:
 	TFOOTParameter *par; //!
 	void ReadCalib();
 
+	void ClearFOOTCalibrEvent();
+
 	ClassDef(TFOOTCalibrEvent, 1)
 };
 

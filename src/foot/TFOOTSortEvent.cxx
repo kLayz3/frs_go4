@@ -27,4 +27,8 @@ UInt_t *TFOOTSortEvent::GetDetectorSorted(Int_t detectorPosition)
   return static_cast<UInt_t *>(FOOTRawCh + 640 * detectorPosition);
 }
 
+void TFOOTSortEvent::ClearSortEvent() {
+  memset(FOOTRawCh, 0, sizeof(FOOTRawCh));
+}
+
 ClassImp(TFOOTSortEvent)

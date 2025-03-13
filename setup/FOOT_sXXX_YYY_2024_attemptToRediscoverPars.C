@@ -71,7 +71,21 @@ void FOOT_sXXX_YYY_2024_attemptToRediscoverPars()
 	// cout << "Focus distance S4: " << frs->dist_focS4 << endl;
 
 	foot->cal_prefix.Form("FOOT");
-	foot->pedestalROOTfile.Form("~/data/S111/pedestals/sort_0018_HG.root");
+	// foot->pedestalROOTfile.Form("~/data/S111/pedestals/sort_0018_HG.root");
+	foot->pedestalROOTfile.Form("~/data/S111/pedestals/main_0003_unpack_HG.root");
+	// foot->pedestalROOTfile.Form("~/data/S111/pedestals/main_0018_unpack_HG.root");
+	// foot->pedestalROOTfile.Form("~/data/S111/pedestals/main_0019_unpack_HG.root");
+	// foot->pedestalROOTfile.Form("~/data/S115/78Kr_setting04_withFOOT_0018_0001_unpack_HG.root");
 
+	//thresholds for each detector
+	foot->thresholds[0] = 1000;
+	foot->thresholds[1] = 1000;
+	foot->thresholds[2] = 1000;
+	foot->thresholds[3] = 1000;
+	foot->thresholds[4] = 1000;
+	foot->thresholds[5] = 1000;
+	foot->thresholds[6] = 1000;
+	foot->thresholds[7] = 1000;
+	
 	cout << "Setup of parameters for FOOT done. " << endl;
 }
