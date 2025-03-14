@@ -72,12 +72,10 @@ private:
 	TFOOTSortEvent *sortEvent;
 	TFOOTCalibrEvent *calibEvent;
 
-	// Double_t *pedestal[8];			//!
-	// Double_t *pedestalSigma[8];		//!
-	Bool_t badStrip[FOOT_DETECTORS_USED][FOOT_CHN]; //!
+	std::array<std::array<Bool_t,FOOT_CHN>, FOOT_DETECTORS_USED> badStrip; //!
 
 	// pedestals
-	Double_t C0[FOOT_DETECTORS_USED][FOOT_CHN]; //!
+	std::array<std::array<Double_t,FOOT_CHN>, FOOT_DETECTORS_USED> C0; //!
 
 };
 

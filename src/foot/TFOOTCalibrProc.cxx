@@ -99,12 +99,12 @@ void TFOOTCalibrProc::ReadCalibParsFromROOTfile(const char *file, Int_t i)
 	// filling of parameters
 	if (!par->flip[i])
 	{
-		std::copy_n(pedestal, FOOT_CHN, C0[i]);
+		std::copy_n(pedestal, FOOT_CHN, C0[i].begin());
 	}
 	else
 	{
-		std::copy_n(pedestal + FOOT_RAW_DATA_WORDS, FOOT_RAW_DATA_WORDS, C0[i]);
-		std::copy_n(pedestal, FOOT_RAW_DATA_WORDS, C0[i] + FOOT_RAW_DATA_WORDS);
+		std::copy_n(pedestal + FOOT_RAW_DATA_WORDS, FOOT_RAW_DATA_WORDS, C0[i].begin());
+		std::copy_n(pedestal, FOOT_RAW_DATA_WORDS, C0[i].begin() + FOOT_RAW_DATA_WORDS);
 	}
 
 	for (size_t j = 0; j < FOOT_CHN; j++)
