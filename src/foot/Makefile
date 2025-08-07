@@ -17,7 +17,7 @@ FOOT_O=$(addsuffix .o,$(CLASSLIST))
 FOOT_H=$(addsuffix .h,$(CLASSLIST))
 
 CPPFLAGS := $(addprefix -I,\
-$(shell root-config --incdir) $(GO4SYS)/include ../) -fPIC
+	$(shell root-config --incdir) $(GO4SYS)/include ../) -fPIC -std=c++17
 CXXFLAGS := -Wall -MMD -MP -O2
 LDFLAGS := $(addprefix -L,\
 $(shell root-config --libdir) $(GO4SYS)/lib)

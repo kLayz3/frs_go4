@@ -28,6 +28,27 @@ TFRSSortProc::TFRSSortProc(const char* name) : TFRSBasicProc(name)
 TFRSSortProc::~TFRSSortProc() {
 }
 
+void CopyFoot(TFRSUnpackEvent* iev, TFRSSortEvent* oev) {
+#define COPY_FOOT(iev, oev, x) \
+	oev->FOOT##x##TSBAD = iev->FOOT##x##TSBAD; \
+	oev->FOOT##x##TLO = iev->FOOT##x##TLO; \
+	oev->FOOT##x##THI = iev->FOOT##x##THI; \
+	oev->FOOT##x##SY = iev->FOOT##x##SY; \
+	oev->FOOT##x = iev->FOOT##x; \
+	memcpy(oev->FOOT##x##I, iev->FOOT##x##I, sizeof(UInt_t) * FOOT_CHN); \
+	memcpy(oev->FOOT##x##E, iev->FOOT##x##E, sizeof(UInt_t) * FOOT_CHN);
+
+
+	COPY_FOOT(iev, oev, 25);
+	COPY_FOOT(iev, oev, 23);
+	COPY_FOOT(iev, oev, 22);
+	COPY_FOOT(iev, oev, 21);
+	COPY_FOOT(iev, oev, 20);
+	COPY_FOOT(iev, oev, 19);
+	COPY_FOOT(iev, oev, 17);
+	COPY_FOOT(iev, oev, 10);
+}
+
 Bool_t TFRSSortProc::BuildEvent(TGo4EventElement* output)
 {
 
@@ -42,6 +63,8 @@ Bool_t TFRSSortProc::BuildEvent(TGo4EventElement* output)
   if (src-> IsValid()==kFALSE) return kFALSE;
   if (src==nullptr)
     return kFALSE;
+
+  CopyFoot(src, tgt);
 
   /* now we can assign the parameters according to cabling:  */
 

@@ -19,6 +19,8 @@ submakes :
 	$(MAKE) -C foot
 
 -include Module.mk
+CXXFLAGS+= -std=c++17 # Added by Martin B. 23.09.2024, to enable compilation on lustre.hpc machines.
+CPPFLAGS+= -std=c++17 # Added by Martin B. 23.09.2024, to enable compilation on lustre.hpc machines.
 
 build: all-$(MODULE_NAME)
 

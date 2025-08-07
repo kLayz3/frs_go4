@@ -4,7 +4,7 @@
 
 #include "TFRSSortProc.h"
 #include "Go4EventServer/TGo4FileSource.h"
-
+#include "foot/__foot_clear_all.hh"
 
 TFRSSortEvent::TFRSSortEvent() : TGo4EventElement("FRSSortEvent")//, fxProc(0), fxFileSrc(0) {
 { }
@@ -306,6 +306,7 @@ void TFRSSortEvent::Clear(Option_t *t)
   for(int i=0; i<6; i++){
     hall_probe_adc[i] = 0;
   }
+  CLEAR_FOOT
 }
 
 ClassImp(TFRSSortEvent)

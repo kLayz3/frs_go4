@@ -5,6 +5,7 @@
 
 #include "define.hh"
 #include "foot/TFOOTSortEvent.h"
+#include "foot/foot_unpack_event.hh"
 
 class TFRSSortProc;
 class TGo4FileSource;
@@ -273,7 +274,8 @@ public:
 
   // Hall probe
   Int_t hall_probe_adc[6];
-
+  // M.B. 26.09.2024
+	FOOT_UNPACK_STRUCTURES_DECL
 private:
   // TFRSSortProc   *fxProc;     //! This is processor
   // TGo4FileSource *fxFileSrc;  //! This is file source
