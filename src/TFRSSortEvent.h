@@ -49,6 +49,7 @@ public:
   Int_t         sptrigger; //!this is the physics triggt
   Int_t         snbtrig; //!number of triggers per event (in tpat)
   Int_t         smaxtrig; //!second trigger (in tpat)
+  uint64_t      frs_wr;
 
   // scaler readings
   UInt_t sc_long[66]; //changed from 32 to 64 (10.07.2018)// add 2 ratios (19.03.21)

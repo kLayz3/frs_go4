@@ -22,6 +22,12 @@ TFRSSortProc::TFRSSortProc(const char* name) : TFRSBasicProc(name)
   PreviousTS = -1;
   counter = 0;
 
+  tpc =  dynamic_cast<TTPCParameter*>(GetParameter("TPCPar"));
+  if(tpc == nullptr) {
+	  fprintf(stderr, "TPC downcast in sortproc failed? Terminating.\n");
+	  exit(111);
+  }
+
   v1190_channel_init();
 }
 
@@ -717,6 +723,18 @@ void TFRSSortProc::v1190_channel_init(){
   //94,95 empty
 
   //time reference signal
+#define TPC_TIMEREF_CHN_START 96
+  for(int i=0; i < 7; ++i) {
+	int tref_chn = TPC_TIMEREF_CHN_START + tpc->id_tpc_timeref[i];
+	if(tref_chn > 128 || tref_chn < 0) {
+		fprintf(stderr, 
+			Form("tref tpc[%d] (0..4 => S2; 4,5 = S4, 6 = S3) ref sci channel out of range: (0,128): %d.\n", i, tref_chn)
+		);
+		exit(112);
+	}
+	v1190_channel_timeref[i] = tref_chn;
+  }
+/*
   v1190_channel_timeref[0] = 96; //accept trig
   v1190_channel_timeref[1] = 97; //sc21
   v1190_channel_timeref[2] = 98; //sc22
@@ -724,8 +742,8 @@ void TFRSSortProc::v1190_channel_init(){
   v1190_channel_timeref[4] =100; //sc41
   v1190_channel_timeref[5] =101; //
   v1190_channel_timeref[6] =102; //
+*/
   v1190_channel_timeref[7] =103; //
-
   //
   v1190_channel_calibgrid[0] = 104;//tpc21grid
   v1190_channel_calibgrid[1] = 105;//tpc22grid

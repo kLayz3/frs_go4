@@ -2,6 +2,7 @@
 #define TFRSSORTPROCESSOR_H
 
 #include "TFRSBasicProc.h"
+#include "TFRSParameter.h"
 
 #include "TFRSVftxSetting.h"
 
@@ -39,6 +40,8 @@ private:
   Int_t v1190_channel_rt[7][2];
   Int_t v1190_channel_timeref[8];
   Int_t v1190_channel_calibgrid[7];
+
+  TTPCParameter* tpc;
 
   ClassDef(TFRSSortProc,1)
 };

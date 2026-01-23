@@ -191,7 +191,6 @@ TFRSAnalysis::TFRSAnalysis(const char* lmd,
 
 Bool_t TFRSAnalysis::InitEventClasses()
 {
-  Bool_t res = TGo4Analysis::InitEventClasses();
   std::string nameExperiment;
   std::ifstream ifs ( "config.txt" );
   if(ifs.is_open())
@@ -240,6 +239,8 @@ Bool_t TFRSAnalysis::InitEventClasses()
   // processL += nameSetupFile;
   //gROOT->ProcessLine(processL.c_str());
   //gROOT->ProcessLine("setup()");
+
+  Bool_t res = TGo4Analysis::InitEventClasses();
 
   //  ModPar->setMap();
   SetupPolyCond("cID_ZAoQ(0)", 5, fIDPar->ID_Z_AoverQ[0]);
