@@ -128,6 +128,8 @@ Bool_t TFRSSortProc::BuildEvent(TGo4EventElement* output)
   tgt->snbtrig = src->unbtrig;
   tgt->smaxtrig = src->umaxtrig;
 
+  tgt->frs_wr = src->frs_wr;
+
   /* ### scalers:  */
   /* these are treated as 32-bit integers directly  */
   for(int i=0;i<32;i++)
